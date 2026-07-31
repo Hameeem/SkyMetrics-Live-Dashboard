@@ -1,13 +1,19 @@
 import streamlit as st
 import pandas as pd
 
-from dashboard.components.styles import apply_custom_theme, render_header
+from dashboard.components.styles import apply_custom_theme, render_flightaware_navbar
 from dashboard.components.api_client import api_client
 from dashboard.components.charts import create_flight_status_pie, create_airport_delays_bar
 
 apply_custom_theme()
+render_flightaware_navbar()
 
-render_header("Executive Operational Summary", "Real-time key operational metrics across global airspace networks.")
+st.markdown("""
+<div style="background: linear-gradient(90deg, #001f44 0%, #003366 100%); padding: 18px 24px; border-radius: 8px; border-left: 5px solid #f59e0b; margin-bottom: 20px;">
+    <h2 style="margin: 0; color: #ffffff; font-weight: 800;">FlightAware Operations Command Center</h2>
+    <span style="color: #cbd5e1;">Real-time tracking metrics across Indian and global airspace sectors.</span>
+</div>
+""", unsafe_allow_html=True)
 
 # Key Metric Cards Row
 kpis = api_client.get_kpis()
@@ -25,7 +31,7 @@ with col1:
 with col2:
     st.markdown(f"""
         <div class="metric-card">
-            <div class="value" style="color: #10b981;">{kpis.get('flights_in_air', 38)}</div>
+            <div class="value" style="color: #22c55e;">{kpis.get('flights_in_air', 38)}</div>
             <div class="label">On-Schedule (Air)</div>
         </div>
     """, unsafe_allow_html=True)
@@ -49,7 +55,7 @@ with col4:
 with col5:
     st.markdown(f"""
         <div class="metric-card">
-            <div class="value" style="color: #a855f7;">{kpis.get('prediction_accuracy_pct', 91.4)}%</div>
+            <div class="value" style="color: #38bdf8;">{kpis.get('prediction_accuracy_pct', 94.3)}%</div>
             <div class="label">ML Model Accuracy</div>
         </div>
     """, unsafe_allow_html=True)
@@ -60,7 +66,7 @@ st.markdown("<br/>", unsafe_allow_html=True)
 col_left, col_right = st.columns([6, 4])
 
 with col_left:
-    st.subheader("Global Airspace Status")
+    st.subheader("Global & Indian Airspace Status")
     status_data = [
         {"status": "EN_ROUTE", "count": kpis.get('flights_in_air', 38)},
         {"status": "DELAYED", "count": kpis.get('delayed_flights', 7)},
@@ -75,17 +81,17 @@ with col_right:
     st.markdown(f"""
         <div class="glass-card">
             <h4 style="color: #38bdf8; margin-top: 0;">AI Operational Assessment</h4>
-            <p style="font-size: 0.95rem; line-height: 1.5; color: #d1d5db;">
-                {insights.get('summary', 'Transatlantic and Eurocontrol airspace sectors are operating at nominal capacity. Moderate wind shears around LHR and DEL may cause short arrival holds.')}
+            <p style="font-size: 0.95rem; line-height: 1.5; color: #cbd5e1;">
+                {insights.get('summary', 'Indian domestic and international flight corridors (DEL-BOM, BLR-DEL) are operating at nominal capacity. Fog and haze around DEL may cause short holding patterns.')}
             </p>
             <hr style="border-color: rgba(255, 255, 255, 0.1);"/>
-            <b style="color: #f59e0b;">Recommended Action Items:</b>
-            <ul style="font-size: 0.9rem; color: #9ca3af; padding-left: 20px;">
+            <b style="color: #f59e0b;">Dispatcher Action Items:</b>
+            <ul style="font-size: 0.9rem; color: #94a3b8; padding-left: 20px;">
                 {"".join([f"<li>{r}</li>" for r in insights.get('recommendations', [])])}
             </ul>
         </div>
     """, unsafe_allow_html=True)
 
 # Busiest Airport Chart
-st.subheader("Top Airport Hub Traffic")
+st.subheader("Top Airport Hub Traffic Rankings")
 st.plotly_chart(create_airport_delays_bar([]), use_container_width=True)

@@ -13,6 +13,13 @@ from backend.models.models import (
 from backend.core.security import get_password_hash
 
 AIRPORTS_DATA = [
+    {"iata": "DEL", "icao": "VIDP", "name": "Indira Gandhi International Airport", "city": "Delhi", "country": "India", "latitude": 28.5562, "longitude": 77.1000, "altitude_ft": 777.0, "runways": 4},
+    {"iata": "BOM", "icao": "VABB", "name": "Chhatrapati Shivaji Maharaj Int'l", "city": "Mumbai", "country": "India", "latitude": 19.0896, "longitude": 72.8656, "altitude_ft": 37.0, "runways": 2},
+    {"iata": "BLR", "icao": "VOBL", "name": "Kempegowda International Airport", "city": "Bengaluru", "country": "India", "latitude": 13.1986, "longitude": 77.7066, "altitude_ft": 3000.0, "runways": 2},
+    {"iata": "MAA", "icao": "VOMM", "name": "Chennai International Airport", "city": "Chennai", "country": "India", "latitude": 12.9941, "longitude": 80.1709, "altitude_ft": 52.0, "runways": 2},
+    {"iata": "CCU", "icao": "VECC", "name": "Netaji Subhash Chandra Bose Int'l", "city": "Kolkata", "country": "India", "latitude": 22.6547, "longitude": 88.4467, "altitude_ft": 16.0, "runways": 2},
+    {"iata": "HYD", "icao": "VOHS", "name": "Rajiv Gandhi International Airport", "city": "Hyderabad", "country": "India", "latitude": 17.2403, "longitude": 78.4294, "altitude_ft": 2024.0, "runways": 2},
+    {"iata": "AMD", "icao": "VAAH", "name": "Sardar Vallabhbhai Patel Int'l", "city": "Ahmedabad", "country": "India", "latitude": 23.0772, "longitude": 72.6347, "altitude_ft": 189.0, "runways": 1},
     {"iata": "ATL", "icao": "KATL", "name": "Hartsfield-Jackson Atlanta Int'l Airport", "city": "Atlanta", "country": "United States", "latitude": 33.6407, "longitude": -84.4277, "altitude_ft": 1026.0, "runways": 5},
     {"iata": "LHR", "icao": "EGLL", "name": "London Heathrow Airport", "city": "London", "country": "United Kingdom", "latitude": 51.4700, "longitude": -0.4543, "altitude_ft": 83.0, "runways": 2},
     {"iata": "HND", "icao": "RJTT", "name": "Tokyo Haneda Airport", "city": "Tokyo", "country": "Japan", "latitude": 35.5494, "longitude": 139.7798, "altitude_ft": 35.0, "runways": 4},
@@ -20,22 +27,16 @@ AIRPORTS_DATA = [
     {"iata": "ORD", "icao": "KORD", "name": "Chicago O'Hare International Airport", "city": "Chicago", "country": "United States", "latitude": 41.9742, "longitude": -87.9073, "altitude_ft": 668.0, "runways": 8},
     {"iata": "CDG", "icao": "LFPG", "name": "Paris Charles de Gaulle Airport", "city": "Paris", "country": "France", "latitude": 49.0097, "longitude": 2.5479, "altitude_ft": 392.0, "runways": 4},
     {"iata": "SIN", "icao": "WSSS", "name": "Singapore Changi Airport", "city": "Singapore", "country": "Singapore", "latitude": 1.3644, "longitude": 103.9915, "altitude_ft": 22.0, "runways": 3},
-    {"iata": "DEL", "icao": "VIDP", "name": "Indira Gandhi International Airport", "city": "Delhi", "country": "India", "latitude": 28.5562, "longitude": 77.1000, "altitude_ft": 777.0, "runways": 4},
     {"iata": "JFK", "icao": "KJFK", "name": "John F. Kennedy International Airport", "city": "New York", "country": "United States", "latitude": 40.6413, "longitude": -73.7781, "altitude_ft": 13.0, "runways": 4},
     {"iata": "SYD", "icao": "YSSY", "name": "Sydney Kingsford Smith Airport", "city": "Sydney", "country": "Australia", "latitude": -33.9461, "longitude": 151.1772, "altitude_ft": 21.0, "runways": 3},
     {"iata": "FRA", "icao": "EDDF", "name": "Frankfurt Airport", "city": "Frankfurt", "country": "Germany", "latitude": 50.0379, "longitude": 8.5622, "altitude_ft": 364.0, "runways": 4},
     {"iata": "AMS", "icao": "EHAM", "name": "Amsterdam Airport Schiphol", "city": "Amsterdam", "country": "Netherlands", "latitude": 52.3105, "longitude": 4.7683, "altitude_ft": -11.0, "runways": 6},
     {"iata": "LAX", "icao": "KLAX", "name": "Los Angeles International Airport", "city": "Los Angeles", "country": "United States", "latitude": 33.9416, "longitude": -118.4085, "altitude_ft": 128.0, "runways": 4},
-    {"iata": "SFO", "icao": "KSFO", "name": "San Francisco International Airport", "city": "San Francisco", "country": "United States", "latitude": 37.6213, "longitude": -122.3790, "altitude_ft": 13.0, "runways": 4},
-    {"iata": "HKG", "icao": "VHHH", "name": "Hong Kong International Airport", "city": "Hong Kong", "country": "Hong Kong", "latitude": 22.3080, "longitude": 113.9185, "altitude_ft": 28.0, "runways": 3},
-    {"iata": "ICN", "icao": "RKSI", "name": "Incheon International Airport", "city": "Seoul", "country": "South Korea", "latitude": 37.4602, "longitude": 126.4407, "altitude_ft": 23.0, "runways": 4},
-    {"iata": "BOM", "icao": "VABB", "name": "Chhatrapati Shivaji Maharaj Int'l", "city": "Mumbai", "country": "India", "latitude": 19.0896, "longitude": 72.8656, "altitude_ft": 37.0, "runways": 2},
-    {"iata": "YYZ", "icao": "CYYZ", "name": "Toronto Pearson International Airport", "city": "Toronto", "country": "Canada", "latitude": 43.6777, "longitude": -79.6248, "altitude_ft": 569.0, "runways": 5},
-    {"iata": "GRU", "icao": "SBGR", "name": "São Paulo/Guarulhos International Airport", "city": "São Paulo", "country": "Brazil", "latitude": -23.4356, "longitude": -46.4731, "altitude_ft": 2459.0, "runways": 2},
-    {"iata": "SYX", "icao": "ZJSY", "name": "Sanya Phoenix International Airport", "city": "Sanya", "country": "China", "latitude": 18.3029, "longitude": 109.4120, "altitude_ft": 92.0, "runways": 1}
+    {"iata": "SFO", "icao": "KSFO", "name": "San Francisco International Airport", "city": "San Francisco", "country": "United States", "latitude": 37.6213, "longitude": -122.3790, "altitude_ft": 13.0, "runways": 4}
 ]
 
-AIRLINES = ["Delta Air Lines", "British Airways", "Emirates", "United Airlines", "Lufthansa", "Singapore Airlines", "Air India", "Qantas", "Air France", "Japan Airlines"]
+AIRLINES = ["Air India", "IndiGo", "Vistara", "SpiceJet", "Akasa Air", "Emirates", "British Airways", "United Airlines", "Lufthansa", "Singapore Airlines", "Qantas"]
+
 AIRCRAFT_TYPES = ["Boeing 737-800", "Boeing 777-300ER", "Boeing 787-9", "Airbus A320neo", "Airbus A350-900", "Airbus A380-800"]
 
 def init_db():
@@ -104,8 +105,13 @@ def seed_database():
         db.commit()
 
         print("Seeding live flights...")
-        callsigns = ["BAW117", "DAL241", "UAE003", "UAL901", "DLH400", "SIA321", "AIC101", "QFA001", "AFR012", "JAL005", "ETH701", "KLM642", "ANA204", "TAP432", "VIR009"]
+        callsigns = [
+            "AIC101", "IGO505", "VTI811", "SEJ404", "AKJ202",
+            "AIC302", "IGO214", "VTI920", "IGO808", "AIC129",
+            "BAW117", "DAL241", "UAE003", "UAL901", "DLH400", "SIA321"
+        ]
         for idx, cs in enumerate(callsigns * 3):
+
             orig = random.choice(AIRPORTS_DATA)
             dest = random.choice([a for a in AIRPORTS_DATA if a["iata"] != orig["iata"]])
             # Interpolate position between origin and dest

@@ -1,59 +1,92 @@
 import streamlit as st
 
 def apply_custom_theme():
-    """Applies modern dark enterprise glassmorphism CSS theme to Streamlit app."""
+    """Applies FlightAware-inspired Deep Navy Enterprise theme to Streamlit app."""
     st.markdown("""
         <style>
-            /* Global Dark Theme & Fonts */
-            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
             
             html, body, [class*="css"] {
                 font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             }
 
             .stApp {
-                background: linear-gradient(135deg, #0b0f19 0%, #111827 50%, #0f172a 100%);
-                color: #f3f4f6;
+                background-color: #0b1329;
+                color: #f8fafc;
+            }
+
+            /* FlightAware Top Header Bar */
+            .flightaware-header {
+                background: linear-gradient(180deg, #001f44 0%, #001430 100%);
+                border-bottom: 2px solid #0284c7;
+                padding: 12px 24px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                border-radius: 8px;
+                margin-bottom: 20px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            }
+
+            .flightaware-logo {
+                font-size: 1.6rem;
+                font-weight: 800;
+                color: #ffffff;
+                letter-spacing: -0.5px;
+            }
+
+            .flightaware-logo span {
+                color: #38bdf8;
+            }
+
+            .nav-links {
+                display: flex;
+                gap: 20px;
+                color: #cbd5e1;
+                font-size: 0.9rem;
+                font-weight: 500;
+            }
+
+            .signup-btn {
+                background-color: #f59e0b;
+                color: #000000;
+                font-weight: 700;
+                padding: 8px 18px;
+                border-radius: 6px;
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
             }
 
             /* Glassmorphism Container Card */
             .glass-card {
-                background: rgba(17, 24, 39, 0.7);
-                backdrop-filter: blur(16px);
-                -webkit-backdrop-filter: blur(16px);
-                border: 1px solid rgba(255, 255, 255, 0.08);
-                border-radius: 12px;
+                background: rgba(15, 23, 42, 0.85);
+                border: 1px solid rgba(56, 189, 248, 0.2);
+                border-radius: 10px;
                 padding: 20px;
                 margin-bottom: 20px;
-                box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-                transition: transform 0.2s ease, border-color 0.2s ease;
-            }
-
-            .glass-card:hover {
-                border-color: rgba(59, 130, 246, 0.4);
-                transform: translateY(-2px);
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
             }
 
             /* Metric Display Card */
             .metric-card {
-                background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.8) 100%);
-                border: 1px solid rgba(59, 130, 246, 0.2);
-                border-radius: 10px;
-                padding: 16px 20px;
+                background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+                border: 1px solid rgba(56, 189, 248, 0.3);
+                border-radius: 8px;
+                padding: 16px;
                 text-align: center;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             }
 
             .metric-card .value {
-                font-size: 2rem;
-                font-weight: 700;
+                font-size: 1.8rem;
+                font-weight: 800;
                 color: #38bdf8;
-                letter-spacing: -0.5px;
             }
 
             .metric-card .label {
-                font-size: 0.85rem;
-                color: #9ca3af;
+                font-size: 0.8rem;
+                color: #94a3b8;
                 text-transform: uppercase;
                 letter-spacing: 0.5px;
                 margin-top: 4px;
@@ -61,9 +94,9 @@ def apply_custom_theme():
 
             /* Status Badges */
             .badge-enroute {
-                background-color: rgba(16, 185, 129, 0.2);
-                color: #34d399;
-                border: 1px solid rgba(16, 185, 129, 0.4);
+                background-color: rgba(34, 197, 94, 0.2);
+                color: #4ade80;
+                border: 1px solid rgba(34, 197, 94, 0.4);
                 padding: 3px 10px;
                 border-radius: 12px;
                 font-size: 0.75rem;
@@ -92,26 +125,33 @@ def apply_custom_theme():
 
             /* Sidebar Custom Styling */
             section[data-testid="stSidebar"] {
-                background-color: #0d1322 !important;
-                border-right: 1px solid rgba(255, 255, 255, 0.08);
-            }
-
-            /* Custom Header Badge */
-            .header-banner {
-                background: linear-gradient(90deg, #1e3a8a 0%, #0369a1 50%, #0d9488 100%);
-                padding: 24px;
-                border-radius: 14px;
-                color: white;
-                margin-bottom: 25px;
-                box-shadow: 0 10px 25px -5px rgba(3, 105, 161, 0.4);
+                background-color: #001430 !important;
+                border-right: 1px solid rgba(255, 255, 255, 0.1);
             }
         </style>
     """, unsafe_allow_html=True)
 
+def render_flightaware_navbar():
+    st.markdown("""
+        <div class="flightaware-header">
+            <div class="flightaware-logo">✈️ Sky<span>Metrics</span></div>
+            <div class="nav-links">
+                <span>Flight Tracking</span>
+                <span>Airports & Weather</span>
+                <span>ML Predictions</span>
+                <span>ETL Pipelines</span>
+                <span>AI Insights</span>
+            </div>
+            <div class="signup-btn">Pro Operations</div>
+        </div>
+    """, unsafe_allow_html=True)
+
 def render_header(title: str, subtitle: str):
+    """Renders FlightAware-styled banner header for page modules."""
+    render_flightaware_navbar()
     st.markdown(f"""
-        <div class="header-banner">
-            <h1 style="margin: 0; font-size: 2.2rem; font-weight: 700; color: #ffffff;">{title}</h1>
-            <p style="margin: 6px 0 0 0; font-size: 1.05rem; opacity: 0.9;">{subtitle}</p>
+        <div style="background: linear-gradient(90deg, #001f44 0%, #003366 100%); padding: 18px 24px; border-radius: 8px; border-left: 5px solid #0284c7; margin-bottom: 20px;">
+            <h2 style="margin: 0; color: #ffffff; font-weight: 800;">{title}</h2>
+            <span style="color: #cbd5e1; font-size: 0.95rem;">{subtitle}</span>
         </div>
     """, unsafe_allow_html=True)
