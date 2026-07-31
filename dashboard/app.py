@@ -1,5 +1,8 @@
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.getcwd())
+
 import streamlit as st
-import os
 
 st.set_page_config(
     page_title="FlightAware | SkyMetrics Aviation Intelligence",
@@ -7,6 +10,7 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
 
 from dashboard.components.styles import apply_custom_theme, render_flightaware_navbar
 from dashboard.components.api_client import api_client

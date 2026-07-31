@@ -1,5 +1,10 @@
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+sys.path.insert(0, os.getcwd())
+
 import streamlit as st
 import pandas as pd
+
 from streamlit_folium import st_folium
 
 from dashboard.components.styles import apply_custom_theme, render_flightaware_navbar
