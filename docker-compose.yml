@@ -72,3 +72,5 @@ services:
 
 volumes:
   postgres_data:
+  name: Azure Login
+  uses: Azure/login@v3.0.0
