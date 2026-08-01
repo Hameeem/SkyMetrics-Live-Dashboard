@@ -9,25 +9,24 @@ def render_pydeck_flight_map(flights: List[Dict[str, Any]], airports: List[Dict[
     if df_flights.empty:
         df_flights = pd.DataFrame([{
             "callsign": "AIC101", "latitude": 28.5562, "longitude": 77.1000,
-            "altitude_m": 10000, "velocity_mps": 240, "origin_country": "India",
-            "status": "EN_ROUTE"
+            "altitude_m": 10500, "velocity_mps": 240, "origin_country": "India",
+            "status": "EN_ROUTE", "heading_deg": 190
         }])
 
-    # FlightAware icon tan/orange color: [249, 115, 22, 230]
     def get_color(status):
         if status == "DELAYED":
-            return [239, 68, 68, 230] # Red
+            return [239, 68, 68, 240] # Red
         elif status == "ON_APPROACH":
-            return [234, 179, 8, 230] # Yellow
-        return [249, 115, 22, 230] # FlightAware Orange
+            return [245, 158, 11, 240] # Yellow
+        return [16, 185, 129, 240] # Green (On-Time)
 
     df_flights["color"] = df_flights["status"].apply(get_color)
 
     view_state = pdk.ViewState(
         latitude=22.0,
-        longitude=78.0, # Center around South Asia / India
-        zoom=3.8,
-        pitch=30,
+        longitude=78.0,
+        zoom=4.0,
+        pitch=0,
         bearing=0
     )
 
@@ -36,80 +35,95 @@ def render_pydeck_flight_map(flights: List[Dict[str, Any]], airports: List[Dict[
         data=df_flights,
         get_position=["longitude", "latitude"],
         get_color="color",
-        get_radius=80000,
+        get_radius=60000,
         pickable=True,
-        auto_highlight=True
+        auto_highlight=True,
+        stroked=True,
+        get_line_color=[255, 255, 255, 255],
+        get_line_width=2000
     )
 
     deck = pdk.Deck(
         layers=[layer_flights],
         initial_view_state=view_state,
-        map_style="mapbox://styles/mapbox/dark-v10",
+        map_style="mapbox://styles/mapbox/light-v10",
         tooltip={
-            "html": "<div style='font-family: Arial; padding: 6px;'>"
-                    "<b style='color:#38bdf8;'>✈️ Callsign:</b> {callsign}<br/>"
+            "html": "<div style='font-family: Arial, sans-serif; padding: 8px; background: #ffffff; color: #0f172a; border-radius: 6px; border: 2px solid #0284c7; box-shadow: 0 4px 12px rgba(0,0,0,0.15);'>"
+                    "<b style='color:#0284c7; font-size:1.05rem;'>✈️ Callsign:</b> {callsign}<br/>"
                     "<b>Country:</b> {origin_country}<br/>"
                     "<b>Altitude:</b> {altitude_m} m | <b>Speed:</b> {velocity_mps} m/s<br/>"
-                    "<b>Status:</b> {status}</div>",
-            "style": {"backgroundColor": "#001430", "color": "white", "fontSize": "13px", "border": "1px solid #0284c7"}
+                    "<b>Operational Status:</b> {status}</div>",
+            "style": {"fontSize": "13px"}
         }
     )
 
     return deck
 
 def create_folium_flight_map(flights: List[Dict[str, Any]], airports: List[Dict[str, Any]] = None):
-    m = folium.Map(location=[22.0, 78.0], zoom_start=4, tiles="CartoDB dark_matter")
+    # Crisp high-contrast vector tiles
+    m = folium.Map(location=[22.0, 78.0], zoom_start=4, tiles="CartoDB positron")
 
-    # Add airports as green nodes with yellow IATA badge labels (FlightAware style!)
+    # Add green circle markers with yellow IATA labels for airports
     if airports:
-        for ap in airports[:25]:
-            # Add airport green circle
+        for ap in airports[:30]:
             folium.CircleMarker(
                 location=[ap["latitude"], ap["longitude"]],
-                radius=6,
-                popup=f"<b>Airport:</b> {ap['name']} ({ap['iata']})<br/><b>Country:</b> {ap['country']}",
-                color="#22c55e",
+                radius=5,
+                popup=f"<b>Airport Hub:</b> {ap['name']} ({ap['iata']})<br/><b>Country:</b> {ap['country']}",
+                color="#0284c7",
                 fill=True,
-                fill_color="#4ade80",
-                fill_opacity=0.9
+                fill_color="#38bdf8",
+                fill_opacity=0.95
             ).add_to(m)
 
-            # Add yellow text label for IATA code
+            # High-resolution IATA Text Badge
             folium.map.Marker(
-                [ap["latitude"] + 0.3, ap["longitude"] + 0.3],
+                [ap["latitude"] + 0.35, ap["longitude"] + 0.35],
                 icon=folium.DivIcon(
-                    html=f'<div style="font-size: 10pt; font-weight: bold; color: #facc15; text-shadow: 1px 1px 2px black;">{ap["iata"]}</div>'
+                    html=f'<div style="font-size: 9pt; font-weight: 800; color: #0369a1; background: #ffffff; padding: 1px 5px; border-radius: 4px; border: 1px solid #38bdf8; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">{ap["iata"]}</div>'
                 )
             ).add_to(m)
 
-    # Add FlightAware tan/orange aircraft markers
+    # Add Airplane Icons (✈️) for aircraft markers with color coding
     for f in flights[:60]:
-        color = "#f97316" # FlightAware orange/tan
-        if f.get("status") == "DELAYED":
-            color = "#ef4444"
-        elif f.get("status") == "ON_APPROACH":
-            color = "#eab308"
+        status = f.get("status", "EN_ROUTE")
+        
+        # Color Legend Logic
+        if status == "DELAYED":
+            color = "#ef4444" # Red for Delayed
+            status_text = "🔴 DELAYED (>15 mins)"
+        elif status == "ON_APPROACH":
+            color = "#f59e0b" # Yellow for Holding / Approach
+            status_text = "🟡 ON APPROACH / HOLDING"
+        else:
+            color = "#10b981" # Green for On-Time En-Route
+            status_text = "🟢 ON-TIME (EN ROUTE)"
 
-        popup_html = f"""
-        <div style="font-family: Arial, sans-serif; min-width: 190px; background:#001430; color:white; padding:8px; border-radius:6px;">
-            <h4 style="margin: 0 0 6px 0; color: #38bdf8;">✈️ {f.get('callsign', 'N/A')}</h4>
-            <b>Country:</b> {f.get('origin_country', 'India')}<br/>
-            <b>Route:</b> {f.get('origin_iata', 'DEL')} ➔ {f.get('destination_iata', 'BOM')}<br/>
-            <b>Altitude:</b> {f.get('altitude_m', 0):,.0f} m<br/>
-            <b>Velocity:</b> {f.get('velocity_mps', 0)} m/s<br/>
-            <b>Status:</b> <span style="color:{color}; font-weight:bold;">{f.get('status', 'EN_ROUTE')}</span>
+        heading = f.get("heading_deg", 0)
+
+        # Custom Airplane Icon Div (✈️)
+        plane_html = f"""
+        <div style="font-size: 16pt; color: {color}; transform: rotate({heading}deg); text-shadow: 0 0 4px #ffffff, 0 0 2px #000000; cursor: pointer;">
+            ✈️
         </div>
         """
 
-        folium.CircleMarker(
-            location=[f["latitude"], f["longitude"]],
-            radius=7,
+        popup_html = f"""
+        <div style="font-family: Arial, sans-serif; min-width: 200px; background:#ffffff; color:#0f172a; padding:10px; border-radius:8px; border: 2px solid #0284c7; box-shadow:0 4px 15px rgba(0,0,0,0.15);">
+            <h4 style="margin: 0 0 6px 0; color: #0284c7;">✈️ {f.get('callsign', 'N/A')}</h4>
+            <b>Country:</b> {f.get('origin_country', 'India')}<br/>
+            <b>Route:</b> {f.get('origin_iata', 'DEL')} ➔ {f.get('destination_iata', 'BOM')}<br/>
+            <b>Altitude:</b> {f.get('altitude_m', 0):,.0f} meters<br/>
+            <b>Speed:</b> {f.get('velocity_mps', 0)} m/s<br/>
+            <b>Status:</b> <span style="color:{color}; font-weight:800;">{status_text}</span>
+        </div>
+        """
+
+        folium.map.Marker(
+            [f["latitude"], f["longitude"]],
+            icon=folium.DivIcon(html=plane_html),
             popup=popup_html,
-            tooltip=f.get("callsign", "Aircraft"),
-            color=color,
-            fill=True,
-            fill_color=color,
-            fill_opacity=0.95
+            tooltip=f"{f.get('callsign', 'Aircraft')} ({status_text})"
         ).add_to(m)
 
     return m
