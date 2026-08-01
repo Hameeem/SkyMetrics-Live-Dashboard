@@ -129,15 +129,27 @@ class APIClient:
             {"id": 2, "iata": "BOM", "icao": "VABB", "name": "Chhatrapati Shivaji Maharaj Int'l", "city": "Mumbai", "country": "India", "latitude": 19.0896, "longitude": 72.8656, "altitude_ft": 37.0, "runways_count": 2},
             {"id": 3, "iata": "BLR", "icao": "VOBL", "name": "Kempegowda International Airport", "city": "Bengaluru", "country": "India", "latitude": 13.1986, "longitude": 77.7066, "altitude_ft": 3000.0, "runways_count": 2},
             {"id": 4, "iata": "MAA", "icao": "VOMM", "name": "Chennai International Airport", "city": "Chennai", "country": "India", "latitude": 12.9941, "longitude": 80.1709, "altitude_ft": 52.0, "runways_count": 2},
-            {"id": 5, "iata": "SXR", "icao": "VISR", "name": "Sheikh ul-Alam International Airport", "city": "Srinagar", "country": "India", "latitude": 33.9872, "longitude": 74.7741, "altitude_ft": 5458.0, "runways_count": 1},
-            {"id": 6, "iata": "DHM", "icao": "VIGG", "name": "Kangra Gaggal Airport", "city": "Dharamshala", "country": "India", "latitude": 32.1651, "longitude": 76.2634, "altitude_ft": 2525.0, "runways_count": 1},
-            {"id": 7, "iata": "ATQ", "icao": "VIAR", "name": "Sri Guru Ram Dass Jee Int'l", "city": "Amritsar", "country": "India", "latitude": 31.7096, "longitude": 74.7973, "altitude_ft": 756.0, "runways_count": 1},
-            {"id": 8, "iata": "IXC", "icao": "VICG", "name": "Shaheed Bhagat Singh Int'l", "city": "Chandigarh", "country": "India", "latitude": 30.6735, "longitude": 76.7885, "altitude_ft": 1012.0, "runways_count": 1},
-            {"id": 9, "iata": "TRZ", "icao": "VOTR", "name": "Tiruchirappalli International Airport", "city": "Tiruchirappalli", "country": "India", "latitude": 10.7654, "longitude": 78.7097, "altitude_ft": 288.0, "runways_count": 1},
-            {"id": 10, "iata": "CJB", "icao": "VOCB", "name": "Coimbatore International Airport", "city": "Coimbatore", "country": "India", "latitude": 11.0300, "longitude": 77.0434, "altitude_ft": 1319.0, "runways_count": 1},
-            {"id": 11, "iata": "IXM", "icao": "VOMD", "name": "Madurai Airport", "city": "Madurai", "country": "India", "latitude": 9.8345, "longitude": 78.0934, "altitude_ft": 463.0, "runways_count": 1},
-            {"id": 12, "iata": "LHR", "icao": "EGLL", "name": "London Heathrow Airport", "city": "London", "country": "United Kingdom", "latitude": 51.4700, "longitude": -0.4543, "altitude_ft": 83.0, "runways_count": 2}
+            {"id": 5, "iata": "HYD", "icao": "VOHS", "name": "Rajiv Gandhi International Airport", "city": "Hyderabad", "country": "India", "latitude": 17.2403, "longitude": 78.4294, "altitude_ft": 2024.0, "runways_count": 2},
+            {"id": 6, "iata": "CCU", "icao": "VECC", "name": "Netaji Subhash Chandra Bose Int'l", "city": "Kolkata", "country": "India", "latitude": 22.6547, "longitude": 88.4467, "altitude_ft": 16.0, "runways_count": 2},
+            {"id": 7, "iata": "AMD", "icao": "VAAH", "name": "Sardar Vallabhbhai Patel Int'l", "city": "Ahmedabad", "country": "India", "latitude": 23.0772, "longitude": 72.6347, "altitude_ft": 189.0, "runways_count": 2},
+            {"id": 8, "iata": "COK", "icao": "VOCI", "name": "Cochin International Airport", "city": "Kochi", "country": "India", "latitude": 10.1520, "longitude": 76.4019, "altitude_ft": 30.0, "runways_count": 1},
+            {"id": 9, "iata": "GOI", "icao": "VOGO", "name": "Dabolim Airport", "city": "Goa", "country": "India", "latitude": 15.3808, "longitude": 73.8314, "altitude_ft": 184.0, "runways_count": 1},
+            {"id": 10, "iata": "PNQ", "icao": "VAPO", "name": "Pune Airport", "city": "Pune", "country": "India", "latitude": 18.5821, "longitude": 73.9197, "altitude_ft": 1942.0, "runways_count": 1},
+            {"id": 11, "iata": "JAI", "icao": "VIJP", "name": "Jaipur International Airport", "city": "Jaipur", "country": "India", "latitude": 26.8242, "longitude": 75.8122, "altitude_ft": 1263.0, "runways_count": 1},
+            {"id": 12, "iata": "LKO", "icao": "VILK", "name": "Chaudhary Charan Singh Int'l", "city": "Lucknow", "country": "India", "latitude": 26.7606, "longitude": 80.8893, "altitude_ft": 410.0, "runways_count": 1},
+            {"id": 13, "iata": "SXR", "icao": "VISR", "name": "Sheikh ul-Alam International Airport", "city": "Srinagar", "country": "India", "latitude": 33.9872, "longitude": 74.7741, "altitude_ft": 5458.0, "runways_count": 1},
+            {"id": 14, "iata": "DHM", "icao": "VIGG", "name": "Kangra Gaggal Airport", "city": "Dharamshala", "country": "India", "latitude": 32.1651, "longitude": 76.2634, "altitude_ft": 2525.0, "runways_count": 1},
+            {"id": 15, "iata": "ATQ", "icao": "VIAR", "name": "Sri Guru Ram Dass Jee Int'l", "city": "Amritsar", "country": "India", "latitude": 31.7096, "longitude": 74.7973, "altitude_ft": 756.0, "runways_count": 1},
+            {"id": 16, "iata": "IXC", "icao": "VICG", "name": "Shaheed Bhagat Singh Int'l", "city": "Chandigarh", "country": "India", "latitude": 30.6735, "longitude": 76.7885, "altitude_ft": 1012.0, "runways_count": 1},
+            {"id": 17, "iata": "TRZ", "icao": "VOTR", "name": "Tiruchirappalli International Airport", "city": "Tiruchirappalli", "country": "India", "latitude": 10.7654, "longitude": 78.7097, "altitude_ft": 288.0, "runways_count": 1},
+            {"id": 18, "iata": "CJB", "icao": "VOCB", "name": "Coimbatore International Airport", "city": "Coimbatore", "country": "India", "latitude": 11.0300, "longitude": 77.0434, "altitude_ft": 1319.0, "runways_count": 1},
+            {"id": 19, "iata": "IXM", "icao": "VOMD", "name": "Madurai Airport", "city": "Madurai", "country": "India", "latitude": 9.8345, "longitude": 78.0934, "altitude_ft": 463.0, "runways_count": 1},
+            {"id": 20, "iata": "PAT", "icao": "VEPT", "name": "Jay Prakash Narayan Airport", "city": "Patna", "country": "India", "latitude": 25.5913, "longitude": 85.0880, "altitude_ft": 170.0, "runways_count": 1},
+            {"id": 21, "iata": "GHY", "icao": "VEGT", "name": "Lokpriya Gopinath Bordoloi Int'l", "city": "Guwahati", "country": "India", "latitude": 26.1061, "longitude": 91.5859, "altitude_ft": 162.0, "runways_count": 1},
+            {"id": 22, "iata": "BBI", "icao": "VEBS", "name": "Biju Patnaik International Airport", "city": "Bhubaneswar", "country": "India", "latitude": 20.2444, "longitude": 85.8178, "altitude_ft": 140.0, "runways_count": 1},
+            {"id": 23, "iata": "LHR", "icao": "EGLL", "name": "London Heathrow Airport", "city": "London", "country": "United Kingdom", "latitude": 51.4700, "longitude": -0.4543, "altitude_ft": 83.0, "runways_count": 2}
         ]
+
 
 
     def get_kpis(self) -> Dict[str, Any]:

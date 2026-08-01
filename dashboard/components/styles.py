@@ -25,7 +25,7 @@ def get_dark_trail_logo_base64():
     return get_flight_trail_logo_base64()
 
 def apply_custom_theme():
-    """Applies Enterprise Aviation Command Center White & Minimal Theme (#F8FAFC background)."""
+    """Applies Enterprise Aviation Command Center Theme with large SkyMetrics title & bright slate background."""
     st.markdown("""
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
@@ -40,11 +40,11 @@ def apply_custom_theme():
                 color: #111827 !important;
             }
 
-            /* Global Typography & Input Controls */
+            /* Global Form Label & Text High-Contrast Rules */
             label, .stMarkdown p, .stMarkdown span, .stSlider label, .stTextInput label, .stNumberInput label, .stSelectbox label, .stCheckbox label, div[data-baseweb="input"] label {
                 color: #111827 !important;
                 font-weight: 700 !important;
-                font-size: 0.95rem !important;
+                font-size: 0.98rem !important;
             }
 
             /* Modern Inputs & Dropdowns */
@@ -80,13 +80,14 @@ def apply_custom_theme():
             .hero-left {
                 display: flex;
                 align-items: center;
-                gap: 16px;
+                gap: 20px;
             }
 
+            /* Extra Large Airplane Logo Icon */
             .hero-logo-img {
-                height: 72px;
+                height: 86px;
                 width: auto;
-                filter: drop-shadow(0 4px 6px rgba(0,0,0,0.08));
+                filter: drop-shadow(0 4px 8px rgba(0,0,0,0.12));
             }
 
             .hero-title-box {
@@ -94,28 +95,31 @@ def apply_custom_theme():
                 flex-direction: column;
             }
 
+            /* Extra Large SkyMetrics Title */
             .hero-title-main {
-                font-size: 2.2rem;
-                font-weight: 900;
+                font-size: 3.4rem !important;
+                font-weight: 900 !important;
                 color: #111827;
-                letter-spacing: -0.5px;
+                letter-spacing: -1px;
                 margin: 0;
-                line-height: 1.1;
+                line-height: 1;
             }
 
             .hero-title-main span {
                 color: #1E88E5;
+                font-weight: 900;
             }
 
             .hero-subtitle {
-                font-size: 1.05rem;
-                font-weight: 700;
+                font-size: 1.15rem;
+                font-weight: 800;
                 color: #1E88E5;
-                margin-top: 4px;
+                margin-top: 6px;
+                letter-spacing: 0.2px;
             }
 
             .hero-description {
-                font-size: 0.9rem;
+                font-size: 0.95rem;
                 color: #6B7280;
                 margin-top: 2px;
             }
@@ -126,9 +130,9 @@ def apply_custom_theme():
                 border: 2px solid #00C853;
                 color: #FFFFFF;
                 font-weight: 800;
-                padding: 12px 24px;
-                border-radius: 16px;
-                font-size: 0.85rem;
+                padding: 14px 26px;
+                border-radius: 18px;
+                font-size: 0.9rem;
                 text-transform: uppercase;
                 letter-spacing: 0.8px;
                 box-shadow: 0 8px 24px rgba(0, 200, 83, 0.25);
@@ -169,7 +173,7 @@ def apply_custom_theme():
                 border: 1px solid #E5E7EB;
                 border-radius: 20px;
                 padding: 8px 20px;
-                font-size: 0.9rem;
+                font-size: 0.92rem;
                 font-weight: 700;
                 color: #1E88E5;
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
@@ -183,7 +187,7 @@ def apply_custom_theme():
                 box-shadow: 0 8px 20px rgba(30, 136, 229, 0.12);
             }
 
-            /* PREMIUM KPI METRIC CARDS (20px radius, white background, top accent border) */
+            /* PREMIUM KPI METRIC CARDS */
             .metric-card-premium {
                 background: #FFFFFF;
                 border: 1px solid #E5E7EB;
@@ -201,7 +205,7 @@ def apply_custom_theme():
             }
 
             .metric-card-premium .value {
-                font-size: 2.6rem;
+                font-size: 2.7rem;
                 font-weight: 900;
                 color: #1E88E5;
                 line-height: 1;
@@ -216,7 +220,6 @@ def apply_custom_theme():
                 margin-top: 10px;
             }
 
-            /* Backward compatibility alias for metric-card */
             .metric-card {
                 background: #FFFFFF;
                 border: 1px solid #E5E7EB;
@@ -227,7 +230,7 @@ def apply_custom_theme():
                 box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
             }
             .metric-card .value {
-                font-size: 2.6rem;
+                font-size: 2.7rem;
                 font-weight: 900;
                 color: #1E88E5;
                 line-height: 1;
@@ -283,7 +286,7 @@ def apply_custom_theme():
                 font-weight: 800;
             }
 
-            /* PREMIUM DEEP AVIATION BLUE SIDEBAR */
+            /* SIDEBAR STYLING */
             section[data-testid="stSidebar"] {
                 background: linear-gradient(180deg, #0C4A6E 0%, #0284C7 100%) !important;
                 border-right: 1px solid #0369A1;
@@ -295,7 +298,6 @@ def apply_custom_theme():
                 font-weight: 600 !important;
             }
 
-            /* Sidebar Active Page Pill Highlight */
             div[data-testid="stSidebarNav"] ul li div[aria-selected="true"] {
                 background: rgba(255, 255, 255, 0.25) !important;
                 border-left: 4px solid #38BDF8 !important;
@@ -308,14 +310,14 @@ def render_flightaware_navbar():
     logo_src = get_dark_trail_logo_base64()
     st.markdown(f"""
         <div>
-            <!-- PREMIUM HERO HEADER CARD -->
+            <!-- PREMIUM HERO HEADER CARD WITH EXTRA LARGE SKYMETRICS TITLE -->
             <div class="sky-hero-card">
                 <div class="hero-left">
                     <img src="{logo_src}" class="hero-logo-img" alt="SkyMetrics Logo"/>
                     <div class="hero-title-box">
                         <h1 class="hero-title-main">Sky<span>Metrics</span></h1>
                         <span class="hero-subtitle">Flight Operations Command Center</span>
-                        <span class="hero-description">Real-Time Aviation Intelligence Platform</span>
+                        <span class="hero-description">Real-Time Aviation Intelligence Platform • All-India Sector Radar</span>
                     </div>
                 </div>
                 <div class="live-radar-floating">
