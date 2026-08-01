@@ -48,16 +48,37 @@ def apply_custom_theme():
                 font-weight: 600;
             }
 
-            .signup-btn {
-                background-color: #ffffff;
-                color: #0284c7;
+            /* Glowing Live Radar Badge */
+            .live-radar-badge {
+                background: rgba(15, 23, 42, 0.85);
+                border: 2px solid #22c55e;
+                color: #ffffff;
                 font-weight: 800;
-                padding: 9px 20px;
-                border-radius: 8px;
-                font-size: 0.85rem;
+                padding: 8px 18px;
+                border-radius: 20px;
+                font-size: 0.82rem;
                 text-transform: uppercase;
-                letter-spacing: 0.5px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                letter-spacing: 0.8px;
+                box-shadow: 0 0 12px rgba(34, 197, 94, 0.4);
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .live-dot {
+                height: 10px;
+                width: 10px;
+                background-color: #22c55e;
+                border-radius: 50%;
+                display: inline-block;
+                box-shadow: 0 0 8px #22c55e;
+                animation: pulse-dot 1.8s infinite;
+            }
+
+            @keyframes pulse-dot {
+                0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+                70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+                100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
             }
 
             /* Clean White Container Card */
@@ -150,7 +171,7 @@ def render_flightaware_navbar():
                 <span>ETL Pipelines</span>
                 <span>AI Insights</span>
             </div>
-            <div class="signup-btn">SkyMetrics Pro</div>
+            <div class="live-radar-badge"><span class="live-dot"></span> LIVE RADAR ACTIVE</div>
         </div>
     """, unsafe_allow_html=True)
 
