@@ -1,8 +1,21 @@
 import streamlit as st
 import os
+import base64
+
+def get_plane_logo_base64():
+    logo_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "assets", "plane_logo.png")
+    if os.path.exists(logo_path):
+        try:
+            with open(logo_path, "rb") as f:
+                encoded = base64.b64encode(f.read()).decode("utf-8")
+                return f"data:image/png;base64,{encoded}"
+        except Exception:
+            pass
+    # High-quality fallback airplane icon
+    return "https://img.icons8.com/color/96/000000/airplane.png"
 
 def apply_custom_theme():
-    """Applies vibrant Sky Blue & White Enterprise Theme with larger font sizes & custom airplane logo."""
+    """Applies vibrant Sky Blue & White Enterprise Theme with larger font sizes & high-contrast dark text."""
     st.markdown("""
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
@@ -63,8 +76,14 @@ def apply_custom_theme():
 
             .sky-logo-box {
                 display: flex;
-                flex-direction: column;
-                align-items: flex-start;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .sky-logo-img {
+                height: 52px;
+                width: auto;
+                filter: drop-shadow(0 4px 8px rgba(0,0,0,0.25));
             }
 
             .sky-logo {
@@ -158,37 +177,6 @@ def apply_custom_theme():
                 margin-top: 6px;
             }
 
-            /* Status Badges */
-            .badge-enroute {
-                background-color: #dcfce7;
-                color: #15803d;
-                border: 1.5px solid #86efac;
-                padding: 5px 14px;
-                border-radius: 14px;
-                font-size: 0.85rem;
-                font-weight: 800;
-            }
-
-            .badge-delayed {
-                background-color: #fee2e2;
-                color: #b91c1c;
-                border: 1.5px solid #fca5a5;
-                padding: 5px 14px;
-                border-radius: 14px;
-                font-size: 0.85rem;
-                font-weight: 800;
-            }
-
-            .badge-approach {
-                background-color: #fef3c7;
-                color: #b45309;
-                border: 1.5px solid #fde047;
-                padding: 5px 14px;
-                border-radius: 14px;
-                font-size: 0.85rem;
-                font-weight: 800;
-            }
-
             /* Sidebar Custom Styling with Larger Text */
             section[data-testid="stSidebar"] {
                 background-color: #0369a1 !important;
@@ -203,18 +191,12 @@ def apply_custom_theme():
         </style>
     """, unsafe_allow_html=True)
 
-# Custom SVG Graphic Airplane Icon matching user's uploaded airliner vector (White body, blue underbelly & tail)
-AIRPLANE_SVG_ICON = """<svg width="52" height="42" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M19.5 168.5L52 136L12.5 90.5C10 87.5 12 83 16 83H37.5C40.5 83 43.5 84.5 45.5 87L75 122.5L148.5 97L84.5 29.5C82.5 27.5 84 24 87 24H109.5C112.5 24 115.5 25.5 117.5 28L193.5 106.5C222 106.5 244 122 244 141C244 160 222 175.5 193.5 175.5L127 152.5L95.5 184C93.5 186 90.5 187.5 87.5 187.5H66C62 187.5 60 183 62.5 180L75.5 161L19.5 168.5Z" fill="#FFFFFF" stroke="#000000" stroke-width="12" stroke-linejoin="round"/>
-  <path d="M136 128.5L208.5 152.5C232 152.5 244 145 244 141C244 137 232 128.5 208.5 128.5L136 128.5Z" fill="#0284C7" stroke="#000000" stroke-width="8"/>
-  <path d="M52 136L19.5 168.5L75.5 161L52 136Z" fill="#0284C7" stroke="#000000" stroke-width="8"/>
-</svg>"""
-
 def render_flightaware_navbar():
+    logo_src = get_plane_logo_base64()
     st.markdown(f"""
         <div class="sky-header">
             <div class="sky-logo-box">
-                <div>{AIRPLANE_SVG_ICON}</div>
+                <img src="{logo_src}" class="sky-logo-img" alt="SkyMetrics Logo Icon"/>
                 <div class="sky-logo">Sky<span>Metrics</span></div>
             </div>
             <div class="nav-links">
