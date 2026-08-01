@@ -2,7 +2,7 @@ import streamlit as st
 import os
 
 def apply_custom_theme():
-    """Applies vibrant Sky Blue & White Enterprise Theme to Streamlit app."""
+    """Applies vibrant Sky Blue & White Enterprise Theme with high contrast dark text."""
     st.markdown("""
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
@@ -14,6 +14,34 @@ def apply_custom_theme():
             .stApp {
                 background: linear-gradient(180deg, #e0f2fe 0%, #f0f9ff 50%, #ffffff 100%);
                 color: #0f172a;
+            }
+
+            /* Global Form Label & Text High-Contrast Rules */
+            label, .stMarkdown, .stMarkdown p, .stMarkdown span, .stSlider label, .stTextInput label, .stNumberInput label, .stSelectbox label, .stCheckbox label, div[data-baseweb="input"] label {
+                color: #0f172a !important;
+                font-weight: 700 !important;
+                font-size: 0.92rem !important;
+            }
+
+            /* High Contrast Input Fields */
+            input, select, textarea, div[data-baseweb="select"] > div {
+                background-color: #ffffff !important;
+                color: #0f172a !important;
+                border: 2px solid #0284c7 !important;
+                border-radius: 8px !important;
+                font-weight: 700 !important;
+            }
+
+            /* Slider Value Color & Number Inputs */
+            div[data-testid="stWidgetLabel"] p {
+                color: #0f172a !important;
+                font-weight: 800 !important;
+            }
+
+            .stNumberInput input, .stTextInput input {
+                color: #0f172a !important;
+                background-color: #ffffff !important;
+                font-weight: 800 !important;
             }
 
             /* Sky Blue & White Top Navigation Bar */
@@ -89,6 +117,7 @@ def apply_custom_theme():
                 padding: 24px;
                 margin-bottom: 20px;
                 box-shadow: 0 10px 30px rgba(2, 132, 199, 0.08);
+                color: #0f172a !important;
             }
 
             /* Metric Display Card */
