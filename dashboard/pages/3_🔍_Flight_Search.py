@@ -4,53 +4,54 @@ sys.path.insert(0, os.getcwd())
 
 import streamlit as st
 import pandas as pd
-
 import requests
-import os
 
 from dashboard.components.styles import apply_custom_theme, render_header
 from dashboard.components.api_client import api_client
 
 apply_custom_theme()
 
-render_header("Global Aviation Flight Search", "Lookup live and historical flights by Callsign, Flight Number, ICAO24, IATA, or Airport.")
+render_header("Global Aviation Flight & Airport Search", "Lookup live and historical flights by Callsign, Airport IATA (e.g. SXR, DEL, BOM), Flight Number, or City.")
 
-search_query = st.text_input("🔍 Search Query", placeholder="Enter callsign (e.g., BAW117), IATA (LHR), or airline (Emirates)...")
+search_query = st.text_input("🔍 Search Query", placeholder="Enter callsign (e.g. IGO505), airport (SXR, DEL, BOM, DHM, MAA), or city (Srinagar)...")
 
 if search_query:
-    base_url = os.getenv("BACKEND_API_URL", "http://localhost:8000")
-    try:
-        resp = requests.get(f"{base_url}/api/v1/flights/search", params={"query": search_query}, timeout=4)
-        if resp.status_code == 200:
-            data = resp.json()
-            live_list = data.get("live_flights", [])
-            hist_list = data.get("historical_flights", [])
+    q_str = search_query.strip().upper()
+    
+    # 1. Search Live Flights
+    live_flights = api_client.get_live_flights({"query": q_str})
+    if not live_flights:
+        # Fallback local list match
+        all_live = api_client.get_live_flights()
+        live_flights = [
+            f for f in all_live 
+            if q_str in f.get("callsign", "").upper() 
+            or q_str in (f.get("origin_iata") or "").upper() 
+            or q_str in (f.get("destination_iata") or "").upper()
+            or q_str in (f.get("origin_country") or "").upper()
+        ]
 
-            st.markdown(f"### Results for `{search_query}`")
+    # 2. Search Airports
+    matching_airports = api_client.get_airports(q_str)
 
-            col_a, col_b = st.columns(2)
+    st.markdown(f"### Results for `{search_query}`")
 
-            with col_a:
-                st.subheader(f"Active Live Flights ({len(live_list)})")
-                if live_list:
-                    df_live = pd.DataFrame(live_list)[["callsign", "origin_country", "origin_iata", "destination_iata", "altitude_m", "status"]]
-                    st.dataframe(df_live, use_container_width=True, hide_index=True)
-                else:
-                    st.info("No active live flights matched query.")
+    col_a, col_b = st.columns(2)
 
-            with col_b:
-                st.subheader(f"Historical Flight Records ({len(hist_list)})")
-                if hist_list:
-                    df_hist = pd.DataFrame(hist_list)[["flight_number", "airline", "origin_iata", "destination_iata", "delay_minutes", "is_delayed"]]
-                    st.dataframe(df_hist, use_container_width=True, hide_index=True)
-                else:
-                    st.info("No historical records matched query.")
+    with col_a:
+        st.subheader(f"Active Live Flights ({len(live_flights)})")
+        if live_flights:
+            df_live = pd.DataFrame(live_flights)[["callsign", "origin_country", "origin_iata", "destination_iata", "altitude_m", "velocity_mps", "status"]]
+            st.dataframe(df_live, use_container_width=True, hide_index=True)
         else:
-            st.error("Error executing search API query.")
-    except Exception as e:
-        st.warning("Offline search mode active.")
-        flights = api_client.get_live_flights()
-        filtered = [f for f in flights if search_query.upper() in f.get("callsign", "") or search_query.upper() in (f.get("origin_iata") or "")]
-        st.dataframe(pd.DataFrame(filtered), use_container_width=True)
+            st.info(f"No active live flights matched '{search_query}'.")
+
+    with col_b:
+        st.subheader(f"Matching Airport Hubs ({len(matching_airports)})")
+        if matching_airports:
+            df_ap = pd.DataFrame(matching_airports)[["iata", "name", "city", "country", "latitude", "longitude"]]
+            st.dataframe(df_ap, use_container_width=True, hide_index=True)
+        else:
+            st.info(f"No airport hubs matched '{search_query}'.")
 else:
-    st.info("Type a callsign (e.g. BAW117), airport IATA (e.g. LHR, DEL, JFK), or flight number above to initiate search.")
+    st.info("Type a callsign (e.g. IGO505), airport IATA (e.g. SXR, DEL, BOM, DHM, ATQ, TRZ), or city above to initiate search.")
