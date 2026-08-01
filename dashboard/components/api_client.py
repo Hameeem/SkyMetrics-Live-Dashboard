@@ -129,8 +129,16 @@ class APIClient:
             {"id": 2, "iata": "BOM", "icao": "VABB", "name": "Chhatrapati Shivaji Maharaj Int'l", "city": "Mumbai", "country": "India", "latitude": 19.0896, "longitude": 72.8656, "altitude_ft": 37.0, "runways_count": 2},
             {"id": 3, "iata": "BLR", "icao": "VOBL", "name": "Kempegowda International Airport", "city": "Bengaluru", "country": "India", "latitude": 13.1986, "longitude": 77.7066, "altitude_ft": 3000.0, "runways_count": 2},
             {"id": 4, "iata": "MAA", "icao": "VOMM", "name": "Chennai International Airport", "city": "Chennai", "country": "India", "latitude": 12.9941, "longitude": 80.1709, "altitude_ft": 52.0, "runways_count": 2},
-            {"id": 5, "iata": "LHR", "icao": "EGLL", "name": "London Heathrow Airport", "city": "London", "country": "United Kingdom", "latitude": 51.4700, "longitude": -0.4543, "altitude_ft": 83.0, "runways_count": 2}
+            {"id": 5, "iata": "SXR", "icao": "VISR", "name": "Sheikh ul-Alam International Airport", "city": "Srinagar", "country": "India", "latitude": 33.9872, "longitude": 74.7741, "altitude_ft": 5458.0, "runways_count": 1},
+            {"id": 6, "iata": "DHM", "icao": "VIGG", "name": "Kangra Gaggal Airport", "city": "Dharamshala", "country": "India", "latitude": 32.1651, "longitude": 76.2634, "altitude_ft": 2525.0, "runways_count": 1},
+            {"id": 7, "iata": "ATQ", "icao": "VIAR", "name": "Sri Guru Ram Dass Jee Int'l", "city": "Amritsar", "country": "India", "latitude": 31.7096, "longitude": 74.7973, "altitude_ft": 756.0, "runways_count": 1},
+            {"id": 8, "iata": "IXC", "icao": "VICG", "name": "Shaheed Bhagat Singh Int'l", "city": "Chandigarh", "country": "India", "latitude": 30.6735, "longitude": 76.7885, "altitude_ft": 1012.0, "runways_count": 1},
+            {"id": 9, "iata": "TRZ", "icao": "VOTR", "name": "Tiruchirappalli International Airport", "city": "Tiruchirappalli", "country": "India", "latitude": 10.7654, "longitude": 78.7097, "altitude_ft": 288.0, "runways_count": 1},
+            {"id": 10, "iata": "CJB", "icao": "VOCB", "name": "Coimbatore International Airport", "city": "Coimbatore", "country": "India", "latitude": 11.0300, "longitude": 77.0434, "altitude_ft": 1319.0, "runways_count": 1},
+            {"id": 11, "iata": "IXM", "icao": "VOMD", "name": "Madurai Airport", "city": "Madurai", "country": "India", "latitude": 9.8345, "longitude": 78.0934, "altitude_ft": 463.0, "runways_count": 1},
+            {"id": 12, "iata": "LHR", "icao": "EGLL", "name": "London Heathrow Airport", "city": "London", "country": "United Kingdom", "latitude": 51.4700, "longitude": -0.4543, "altitude_ft": 83.0, "runways_count": 2}
         ]
+
 
     def get_kpis(self) -> Dict[str, Any]:
         try:
