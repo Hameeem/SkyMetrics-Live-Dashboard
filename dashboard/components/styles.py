@@ -14,7 +14,7 @@ def get_flight_trail_logo_base64():
     return "https://img.icons8.com/color/96/000000/airplane.png"
 
 def apply_custom_theme():
-    """Applies vibrant Sky Blue & White Enterprise Theme aligned with reference mock layout."""
+    """Applies vibrant Sky Blue & White Enterprise Theme with 2-row layout and zero text overlap."""
     st.markdown("""
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
@@ -44,33 +44,32 @@ def apply_custom_theme():
                 font-weight: 700 !important;
             }
 
-            /* Sky Blue Header Bar with Clean Layout & No Overlaps */
-            .sky-header {
+            /* TOP BRANDING BAR (Row 1) - Isolated Logo & Name */
+            .sky-top-bar {
                 background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-                border-bottom: 4px solid #38bdf8;
                 padding: 16px 28px;
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                border-radius: 14px;
-                margin-bottom: 24px;
-                box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.3);
+                border-radius: 14px 14px 0 0;
+                box-shadow: 0 4px 15px rgba(2, 132, 199, 0.2);
             }
 
-            .sky-logo-container {
+            .sky-branding {
                 display: flex;
                 align-items: center;
-                gap: 14px;
+                gap: 16px;
             }
 
-            .trail-logo-img {
-                height: 48px;
+            /* Bigger Airplane Logo Icon */
+            .trail-logo-large {
+                height: 68px;
                 width: auto;
-                filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+                filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
             }
 
-            .sky-logo-text {
-                font-size: 2.2rem;
+            .sky-brand-name {
+                font-size: 2.6rem;
                 font-weight: 900;
                 color: #ffffff;
                 letter-spacing: -0.5px;
@@ -78,24 +77,9 @@ def apply_custom_theme():
                 line-height: 1;
             }
 
-            .sky-logo-text span {
+            .sky-brand-name span {
                 color: #0f172a;
                 font-weight: 900;
-            }
-
-            .nav-menu {
-                display: flex;
-                align-items: center;
-                gap: 22px;
-            }
-
-            .nav-item {
-                color: #ffffff;
-                font-size: 0.95rem;
-                font-weight: 700;
-                text-decoration: none;
-                text-align: center;
-                line-height: 1.2;
             }
 
             /* Glowing Live Radar Badge */
@@ -131,7 +115,33 @@ def apply_custom_theme():
                 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
             }
 
-            /* Metric Display Card - Aligned with reference photo */
+            /* CATEGORY NAVIGATION SUB-BAR (Row 2) - Clean Horizontal Links */
+            .sky-sub-nav {
+                background: #0369a1;
+                border-top: 2px solid #38bdf8;
+                border-bottom: 4px solid #0284c7;
+                padding: 10px 28px;
+                display: flex;
+                align-items: center;
+                justify-content: space-around;
+                border-radius: 0 0 14px 14px;
+                margin-bottom: 24px;
+                box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.3);
+            }
+
+            .sub-nav-pill {
+                color: #ffffff;
+                font-size: 0.95rem;
+                font-weight: 700;
+                background: rgba(255, 255, 255, 0.12);
+                border: 1px solid rgba(255, 255, 255, 0.25);
+                padding: 6px 16px;
+                border-radius: 20px;
+                text-decoration: none;
+                white-space: nowrap;
+            }
+
+            /* Metric Display Card */
             .metric-card {
                 background: #ffffff;
                 border: 2px solid #e0f2fe;
@@ -186,19 +196,23 @@ def apply_custom_theme():
 def render_flightaware_navbar():
     logo_src = get_flight_trail_logo_base64()
     st.markdown(f"""
-        <div class="sky-header">
-            <div class="sky-logo-container">
-                <img src="{logo_src}" class="trail-logo-img" alt="Flight Trail Logo"/>
-                <div class="sky-logo-text">Sky<span>Metrics</span></div>
+        <div>
+            <!-- ROW 1: TOP BRANDING BAR WITH BIGGER LOGO & NAME -->
+            <div class="sky-top-bar">
+                <div class="sky-branding">
+                    <img src="{logo_src}" class="trail-logo-large" alt="Flight Trail Logo"/>
+                    <h1 class="sky-brand-name">Sky<span>Metrics</span></h1>
+                </div>
+                <div class="live-radar-badge"><span class="live-dot"></span> LIVE RADAR ACTIVE</div>
             </div>
-            <div class="nav-menu">
-                <div class="nav-item">Flight<br/>Tracking</div>
-                <div class="nav-item">Airports<br/>& Weather</div>
-                <div class="nav-item">ML<br/>Predictions</div>
-                <div class="nav-item">ETL<br/>Pipelines</div>
-                <div class="nav-item">AI<br/>Insights</div>
+            <!-- ROW 2: CATEGORY NAVIGATION SUB-BAR -->
+            <div class="sky-sub-nav">
+                <div class="sub-nav-pill">✈️ Flight Tracking</div>
+                <div class="sub-nav-pill">🌤️ Airports & Weather</div>
+                <div class="sub-nav-pill">🤖 ML Predictions</div>
+                <div class="sub-nav-pill">⚡ ETL Pipelines</div>
+                <div class="sub-nav-pill">💡 AI Insights</div>
             </div>
-            <div class="live-radar-badge"><span class="live-dot"></span> LIVE RADAR ACTIVE</div>
         </div>
     """, unsafe_allow_html=True)
 
