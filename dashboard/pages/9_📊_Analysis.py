@@ -14,7 +14,7 @@ from dashboard.components.api_client import api_client
 
 apply_custom_theme()
 
-render_header("Airport & Airline Operations Analysis Dashboard", "Filter live and historical operational analytics by Airport Hub, Time Horizon (Today, Week, Month, Year), Airline On-Time %, Takeoffs/Landings, and Delay Breakdown.")
+render_header("Airport & Airline Operations Analysis Dashboard", "Filter live and historical operational analytics by Airport Hub, Time Horizon (Today, Week, Month, Year), Airline On-Time %, Takeoffs/Landings, and Route Density.")
 
 # Top Controls: Airport Selector & Timeframe Filter
 c_ctrl1, c_ctrl2 = st.columns([6, 4])
@@ -56,33 +56,51 @@ landings = int(base_takeoffs * 0.96) * mult
 delayed = int(base_takeoffs * 0.12) * mult
 ontime_rate = 88.5 if code == "BLR" else (87.2 if code == "DEL" else (84.1 if code == "SXR" else 86.4))
 
-# Executive KPI Dashboard Row (Matching Reference Image Layout)
+# Executive KPI Dashboard Row (Sky Blue, White & Black Theme)
 k1, k2, k3, k4 = st.columns(4)
+
+dates = ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"]
 
 with k1:
     st.metric("🛫 Takeoffs / Departures", f"{takeoffs:,}", f"+{int(mult*4.2)} vs prev {timeframe.split()[1]}")
-    # 7-day sparkline trend
-    dates = ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"]
-    y_vals = [base_takeoffs - 5, base_takeoffs + 8, base_takeoffs - 2, base_takeoffs + 12, base_takeoffs - 4, base_takeoffs + 6, base_takeoffs]
-    fig_k1 = px.line(x=dates, y=y_vals, height=120)
-    fig_k1.update_layout(margin=dict(l=0,r=0,t=0,b=0), xaxis=dict(visible=False), yaxis=dict(visible=False), paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
+    df_sp1 = pd.DataFrame({"Date": dates, "Departures": [base_takeoffs - 5, base_takeoffs + 8, base_takeoffs - 2, base_takeoffs + 12, base_takeoffs - 4, base_takeoffs + 6, base_takeoffs]})
+    fig_k1 = px.line(df_sp1, x="Date", y="Departures", height=130)
     fig_k1.update_traces(line_color="#1E88E5", line_width=3)
+    fig_k1.update_layout(
+        margin=dict(l=5, r=5, t=5, b=5),
+        paper_bgcolor="#FFFFFF",
+        plot_bgcolor="#FFFFFF",
+        xaxis=dict(showgrid=False, showticklabels=False),
+        yaxis=dict(showgrid=False, showticklabels=False)
+    )
     st.plotly_chart(fig_k1, use_container_width=True)
 
 with k2:
     st.metric("🛬 Landings / Arrivals", f"{landings:,}", f"+{int(mult*3.8)} vs prev {timeframe.split()[1]}")
-    y_vals2 = [base_takeoffs - 6, base_takeoffs + 5, base_takeoffs - 4, base_takeoffs + 10, base_takeoffs - 2, base_takeoffs + 4, base_takeoffs - 2]
-    fig_k2 = px.line(x=dates, y=y_vals2, height=120)
-    fig_k2.update_layout(margin=dict(l=0,r=0,t=0,b=0), xaxis=dict(visible=False), yaxis=dict(visible=False), paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
-    fig_k2.update_traces(line_color="#00C853", line_width=3)
+    df_sp2 = pd.DataFrame({"Date": dates, "Arrivals": [base_takeoffs - 6, base_takeoffs + 5, base_takeoffs - 4, base_takeoffs + 10, base_takeoffs - 2, base_takeoffs + 4, base_takeoffs - 2]})
+    fig_k2 = px.line(df_sp2, x="Date", y="Arrivals", height=130)
+    fig_k2.update_traces(line_color="#0284C7", line_width=3)
+    fig_k2.update_layout(
+        margin=dict(l=5, r=5, t=5, b=5),
+        paper_bgcolor="#FFFFFF",
+        plot_bgcolor="#FFFFFF",
+        xaxis=dict(showgrid=False, showticklabels=False),
+        yaxis=dict(showgrid=False, showticklabels=False)
+    )
     st.plotly_chart(fig_k2, use_container_width=True)
 
 with k3:
     st.metric("🛑 Delayed Flights (>15m)", f"{delayed:,}", f"-{int(mult*1.1)} vs prev", delta_color="inverse")
-    y_vals3 = [int(base_takeoffs*0.18), int(base_takeoffs*0.14), int(base_takeoffs*0.15), int(base_takeoffs*0.11), int(base_takeoffs*0.13), int(base_takeoffs*0.10), int(base_takeoffs*0.12)]
-    fig_k3 = px.line(x=dates, y=y_vals3, height=120)
-    fig_k3.update_layout(margin=dict(l=0,r=0,t=0,b=0), xaxis=dict(visible=False), yaxis=dict(visible=False), paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
-    fig_k3.update_traces(line_color="#E53935", line_width=3)
+    df_sp3 = pd.DataFrame({"Date": dates, "Delays": [int(base_takeoffs*0.18), int(base_takeoffs*0.14), int(base_takeoffs*0.15), int(base_takeoffs*0.11), int(base_takeoffs*0.13), int(base_takeoffs*0.10), int(base_takeoffs*0.12)]})
+    fig_k3 = px.line(df_sp3, x="Date", y="Delays", height=130)
+    fig_k3.update_traces(line_color="#0F172A", line_width=3)
+    fig_k3.update_layout(
+        margin=dict(l=5, r=5, t=5, b=5),
+        paper_bgcolor="#FFFFFF",
+        plot_bgcolor="#FFFFFF",
+        xaxis=dict(showgrid=False, showticklabels=False),
+        yaxis=dict(showgrid=False, showticklabels=False)
+    )
     st.plotly_chart(fig_k3, use_container_width=True)
 
 with k4:
@@ -91,16 +109,21 @@ with k4:
         mode="gauge+number",
         value=ontime_rate,
         gauge={
-            'axis': {'range': [0, 100]},
-            'bar': {'color': "#00C853"},
+            'axis': {'range': [0, 100], 'tickcolor': "#0F172A"},
+            'bar': {'color': "#1E88E5"},
             'steps': [
-                {'range': [0, 75], 'color': "#FFEBEE"},
-                {'range': [75, 85], 'color': "#FFF8E1"},
-                {'range': [85, 100], 'color': "#E8F5E9"}
+                {'range': [0, 75], 'color': "#F8FAFC"},
+                {'range': [75, 85], 'color': "#E2E8F0"},
+                {'range': [85, 100], 'color': "#BAE6FD"}
             ]
         }
     ))
-    fig_gauge.update_layout(height=140, margin=dict(l=10, r=10, t=10, b=10), paper_bgcolor="rgba(0,0,0,0)")
+    fig_gauge.update_layout(
+        height=130, 
+        margin=dict(l=10, r=10, t=10, b=10), 
+        paper_bgcolor="#FFFFFF",
+        font=dict(color="#0F172A", family="Plus Jakarta Sans")
+    )
     st.plotly_chart(fig_gauge, use_container_width=True)
 
 st.markdown("<br/>", unsafe_allow_html=True)
@@ -113,11 +136,11 @@ with col_left:
     st.markdown("On-time arrival rate % and average delay duration grouped by carrier:")
     
     df_airlines = pd.DataFrame([
-        {"Airline": "IndiGo", "Total Flights": int(takeoffs*0.48), "On-Time %": "91.4%", "Avg Delay": "11.2 min", "Status": "🟢 EXCELLENT"},
-        {"Airline": "Air India", "Total Flights": int(takeoffs*0.26), "On-Time %": "84.8%", "Avg Delay": "22.5 min", "Status": "🟡 NOMINAL"},
-        {"Airline": "Vistara", "Total Flights": int(takeoffs*0.14), "On-Time %": "89.2%", "Avg Delay": "14.1 min", "Status": "🟢 GOOD"},
-        {"Airline": "Akasa Air", "Total Flights": int(takeoffs*0.07), "On-Time %": "88.6%", "Avg Delay": "15.0 min", "Status": "🟢 GOOD"},
-        {"Airline": "SpiceJet", "Total Flights": int(takeoffs*0.05), "On-Time %": "81.2%", "Avg Delay": "26.8 min", "Status": "🔴 ATTENTION"}
+        {"Airline": "IndiGo", "Total Flights": int(takeoffs*0.48), "On-Time %": "91.4%", "Avg Delay": "11.2 min", "Status": "OPTIMAL"},
+        {"Airline": "Air India", "Total Flights": int(takeoffs*0.26), "On-Time %": "84.8%", "Avg Delay": "22.5 min", "Status": "NOMINAL"},
+        {"Airline": "Vistara", "Total Flights": int(takeoffs*0.14), "On-Time %": "89.2%", "Avg Delay": "14.1 min", "Status": "GOOD"},
+        {"Airline": "Akasa Air", "Total Flights": int(takeoffs*0.07), "On-Time %": "88.6%", "Avg Delay": "15.0 min", "Status": "GOOD"},
+        {"Airline": "SpiceJet", "Total Flights": int(takeoffs*0.05), "On-Time %": "81.2%", "Avg Delay": "26.8 min", "Status": "ATTENTION"}
     ])
     st.dataframe(df_airlines, use_container_width=True, hide_index=True)
 
@@ -138,10 +161,9 @@ with col_right:
     st.subheader("🛰️ Hub Sector Airspace Map")
     m_hub = folium.Map(location=[22.0, 78.0], zoom_start=4, tiles="CartoDB positron")
     
-    # Hub center
     folium.Marker([28.5562, 77.1000], popup="Delhi DEL Hub", icon=folium.Icon(color="blue", icon="plane")).add_to(m_hub)
-    folium.CircleMarker([33.9872, 74.7741], radius=7, color="#E53935", fill=True, popup="Srinagar SXR Hub").add_to(m_hub)
-    folium.CircleMarker([19.0896, 72.8656], radius=7, color="#00C853", fill=True, popup="Mumbai BOM Hub").add_to(m_hub)
-    folium.CircleMarker([13.1986, 77.7066], radius=7, color="#00C853", fill=True, popup="Bengaluru BLR Hub").add_to(m_hub)
+    folium.CircleMarker([33.9872, 74.7741], radius=7, color="#0F172A", fill=True, fill_color="#1E88E5", popup="Srinagar SXR Hub").add_to(m_hub)
+    folium.CircleMarker([19.0896, 72.8656], radius=7, color="#0F172A", fill=True, fill_color="#0284C7", popup="Mumbai BOM Hub").add_to(m_hub)
+    folium.CircleMarker([13.1986, 77.7066], radius=7, color="#0F172A", fill=True, fill_color="#38BDF8", popup="Bengaluru BLR Hub").add_to(m_hub)
     
     st_folium(m_hub, width=320, height=280)

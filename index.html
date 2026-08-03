@@ -40,17 +40,17 @@ import streamlit.components.v1 as components
 
 st.set_page_config(page_title="SkyMetrics | Enterprise Aviation Command Center", page_icon="✈️", layout="wide", initial_sidebar_state="expanded")
 
-# Custom Enterprise UI Theme
+# Custom Sky Blue, White & Black Enterprise Theme
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
     html, body, [class*="css"] { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .stApp { background-color: #F8FAFC !important; color: #111827 !important; }
+    .stApp { background-color: #F8FAFC !important; color: #0F172A !important; }
     
     /* Hero Header Card */
     .hero-card {
         background: #FFFFFF;
-        border: 1px solid #E5E7EB;
+        border: 1px solid #E2E8F0;
         border-radius: 20px;
         padding: 24px 32px;
         margin-bottom: 24px;
@@ -59,15 +59,15 @@ st.markdown("""
         align-items: center;
         justify-content: space-between;
     }
-    .brand-title { font-size: 3.2rem; font-weight: 900; color: #111827; margin: 0; line-height: 1; letter-spacing: -1px; }
+    .brand-title { font-size: 3.2rem; font-weight: 900; color: #0F172A; margin: 0; line-height: 1; letter-spacing: -1px; }
     .brand-title span { color: #1E88E5; font-weight: 900; }
     .brand-sub { font-size: 1.1rem; font-weight: 800; color: #1E88E5; margin-top: 4px; }
-    .brand-desc { font-size: 0.92rem; color: #6B7280; margin-top: 2px; }
+    .brand-desc { font-size: 0.92rem; color: #64748B; margin-top: 2px; }
 
     /* Live Radar Badge */
     .radar-badge {
         background: #0F172A;
-        border: 2px solid #00C853;
+        border: 2px solid #1E88E5;
         color: #FFFFFF;
         font-weight: 800;
         padding: 10px 22px;
@@ -75,17 +75,17 @@ st.markdown("""
         font-size: 0.85rem;
         text-transform: uppercase;
         letter-spacing: 0.8px;
-        box-shadow: 0 0 14px rgba(0, 200, 83, 0.3);
+        box-shadow: 0 0 14px rgba(30, 136, 229, 0.3);
         display: flex;
         align-items: center;
         gap: 8px;
     }
-    .green-dot { height: 10px; width: 10px; background-color: #00C853; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px #00C853; }
+    .green-dot { height: 10px; width: 10px; background-color: #1E88E5; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px #1E88E5; }
 
     /* Premium Metric Card */
     .metric-card-premium {
         background: #FFFFFF;
-        border: 1px solid #E5E7EB;
+        border: 1px solid #E2E8F0;
         border-top: 4px solid #1E88E5;
         border-radius: 20px;
         padding: 22px 14px;
@@ -93,12 +93,12 @@ st.markdown("""
         box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
     }
     .metric-val { font-size: 2.6rem; font-weight: 900; color: #1E88E5; line-height: 1; }
-    .metric-lbl { font-size: 0.8rem; color: #6B7280; text-transform: uppercase; font-weight: 800; margin-top: 8px; }
+    .metric-lbl { font-size: 0.8rem; color: #64748B; text-transform: uppercase; font-weight: 800; margin-top: 8px; }
 
     /* White Content Container Card */
     .glass-card {
         background: #FFFFFF !important;
-        border: 1px solid #E5E7EB !important;
+        border: 1px solid #E2E8F0 !important;
         border-radius: 20px !important;
         padding: 24px !important;
         margin-bottom: 24px !important;
@@ -107,7 +107,7 @@ st.markdown("""
 
     /* Sidebar Styling */
     section[data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #0C4A6E 0%, #0284C7 100%) !important;
+        background: linear-gradient(180deg, #0F172A 0%, #1E88E5 100%) !important;
     }
     section[data-testid="stSidebar"] * {
         color: #FFFFFF !important;
@@ -143,9 +143,9 @@ module = st.sidebar.radio(
 st.sidebar.markdown("<hr style='border-color: rgba(255,255,255,0.2);'/>", unsafe_allow_html=True)
 st.sidebar.markdown("""
 <div style="font-size:0.8rem; color:#e0f2fe; text-align:center;">
-    <b>Backend Status:</b> <span style="color:#4ade80;">HEALTHY</span><br/>
-    <b>ML Predictor:</b> <span style="color:#4ade80;">ACTIVE (94.3%)</span><br/>
-    <b>Airspace Radar:</b> <span style="color:#4ade80;">ALL-INDIA CONNECTED</span>
+    <b>Backend Status:</b> <span style="color:#38bdf8;">HEALTHY</span><br/>
+    <b>ML Predictor:</b> <span style="color:#38bdf8;">ACTIVE (94.3%)</span><br/>
+    <b>Airspace Radar:</b> <span style="color:#38bdf8;">ALL-INDIA CONNECTED</span>
 </div>
 """, unsafe_allow_html=True)
 
@@ -214,17 +214,17 @@ st.markdown("""
 if module == "🏠 Home":
     c1, c2, c3, c4, c5 = st.columns(5)
     c1.markdown('<div class="metric-card-premium"><div class="metric-val">48</div><div class="metric-lbl">✈️ LIVE FLIGHTS</div></div>', unsafe_allow_html=True)
-    c2.markdown('<div class="metric-card-premium" style="border-top-color:#00C853;"><div class="metric-val" style="color:#00C853;">42</div><div class="metric-lbl">✅ ON SCHEDULE</div></div>', unsafe_allow_html=True)
-    c3.markdown('<div class="metric-card-premium" style="border-top-color:#E53935;"><div class="metric-val" style="color:#E53935;">6</div><div class="metric-lbl">🛑 DELAYED</div></div>', unsafe_allow_html=True)
-    c4.markdown('<div class="metric-card-premium" style="border-top-color:#FB8C00;"><div class="metric-val" style="color:#FB8C00;">38.8m</div><div class="metric-lbl">⏱️ AVG DELAY</div></div>', unsafe_allow_html=True)
-    c5.markdown('<div class="metric-card-premium" style="border-top-color:#1E88E5;"><div class="metric-val" style="color:#1E88E5;">94.3%</div><div class="metric-lbl">🤖 ML ACCURACY</div></div>', unsafe_allow_html=True)
+    c2.markdown('<div class="metric-card-premium"><div class="metric-val">42</div><div class="metric-lbl">✅ ON SCHEDULE</div></div>', unsafe_allow_html=True)
+    c3.markdown('<div class="metric-card-premium"><div class="metric-val" style="color:#0F172A;">6</div><div class="metric-lbl">🛑 DELAYED</div></div>', unsafe_allow_html=True)
+    c4.markdown('<div class="metric-card-premium"><div class="metric-val" style="color:#0284C7;">38.8m</div><div class="metric-lbl">⏱️ AVG DELAY</div></div>', unsafe_allow_html=True)
+    c5.markdown('<div class="metric-card-premium"><div class="metric-val">94.3%</div><div class="metric-lbl">🤖 ML ACCURACY</div></div>', unsafe_allow_html=True)
 
     st.markdown("<br/>", unsafe_allow_html=True)
     col_l, col_r = st.columns([6, 4])
     with col_l:
         st.subheader("📊 Operational Status Breakdown")
-        fig = go.Figure(data=[go.Pie(labels=["ON-TIME (En Route)", "ON-APPROACH (Holding)", "DELAYED (>15 mins)"], values=[42, 5, 6], hole=.4, marker_colors=["#00C853", "#FB8C00", "#E53935"])])
-        fig.update_layout(margin=dict(t=20, b=20, l=20, r=20), paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
+        fig = go.Figure(data=[go.Pie(labels=["ON-TIME (En Route)", "ON-APPROACH (Holding)", "DELAYED (>15 mins)"], values=[42, 5, 6], hole=.4, marker_colors=["#1E88E5", "#0284C7", "#0F172A"])])
+        fig.update_layout(margin=dict(t=20, b=20, l=20, r=20), paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#0F172A"))
         st.plotly_chart(fig, use_container_width=True)
 
     with col_r:
@@ -232,12 +232,12 @@ if module == "🏠 Home":
         st.markdown("""
         <div class="glass-card">
             <h4 style="color:#1E88E5; margin-top:0; font-weight:800;">AI Operational Assessment</h4>
-            <p style="font-size:0.95rem; line-height:1.6; color:#374151;">
+            <p style="font-size:0.95rem; line-height:1.6; color:#0F172A;">
                 All-India domestic and international flight corridors (DEL-BOM, BLR-MAA, DEL-SXR) are operating at nominal capacity. Brief holding patterns observed near Srinagar (SXR) and Dharamshala (DHM).
             </p>
-            <hr style="border-color:#E5E7EB;"/>
-            <b style="color:#FB8C00;">Dispatcher Action Items:</b>
-            <ul style="font-size:0.9rem; color:#4B5563; padding-left:20px;">
+            <hr style="border-color:#E2E8F0;"/>
+            <b style="color:#1E88E5;">Dispatcher Action Items:</b>
+            <ul style="font-size:0.9rem; color:#475569; padding-left:20px;">
                 <li>Monitor SXR and DHM weather METAR holding patterns.</li>
                 <li>Maintain optimal spacing for high-density DEL-BOM routes.</li>
                 <li>Deploy XGBoost ML delay risk predictions for evening departures.</li>
@@ -256,23 +256,23 @@ elif module == "✈️ Live Tracking":
         folium.CircleMarker(
             location=[ap["lat"], ap["lon"]],
             radius=6,
-            color="#0284c7",
+            color="#0F172A",
             fill=True,
-            fill_color="#38bdf8",
+            fill_color="#1E88E5",
             popup=ap_txt,
             tooltip=ap_txt
         ).add_to(m)
 
     for f in flights_data:
-        color = "#00C853" if f["status"] == "EN_ROUTE" else ("#FB8C00" if f["status"] == "ON_APPROACH" else "#E53935")
-        st_text = "🟢 ON-TIME (EN ROUTE)" if f["status"] == "EN_ROUTE" else ("🟡 ON APPROACH" if f["status"] == "ON_APPROACH" else "🔴 DELAYED (>15 mins)")
+        color = "#1E88E5" if f["status"] == "EN_ROUTE" else ("#0284C7" if f["status"] == "ON_APPROACH" else "#0F172A")
+        st_text = "ON-TIME (EN ROUTE)" if f["status"] == "EN_ROUTE" else ("ON APPROACH" if f["status"] == "ON_APPROACH" else "DELAYED (>15 mins)")
         hdg = f.get("heading", 0)
 
         plane_html = f'<div style="font-size: 18pt; color: {color}; transform: rotate({hdg}deg); text-shadow: 0 0 3px #ffffff, 0 0 2px #000000; cursor: pointer;">✈️</div>'
 
         hover_info = f"Flight {f['callsign']} ({f['airline']}) | Route: {f['origin_iata']} -> {f['destination_iata']} | Altitude: {f['altitude_m']}m | Speed: {f['velocity_mps']}m/s"
 
-        popup_html = f'<div style="font-family: Arial, sans-serif; min-width: 200px; padding: 8px; color: #111827;"><b style="color: #1E88E5; font-size: 1.1rem;">✈️ Callsign: {f["callsign"]}</b><br/><b>Airline:</b> {f["airline"]}<br/><b>Route:</b> {f["origin_iata"]} ➔ {f["destination_iata"]}<br/><b>Altitude:</b> {f["altitude_m"]} meters<br/><b>Speed:</b> {f["velocity_mps"]} m/s<br/><b>Status:</b> <span style="color:{color}; font-weight:800;">{st_text}</span></div>'
+        popup_html = f'<div style="font-family: Arial, sans-serif; min-width: 200px; padding: 8px; color: #0F172A;"><b style="color: #1E88E5; font-size: 1.1rem;">✈️ Callsign: {f["callsign"]}</b><br/><b>Airline:</b> {f["airline"]}<br/><b>Route:</b> {f["origin_iata"]} ➔ {f["destination_iata"]}<br/><b>Altitude:</b> {f["altitude_m"]} meters<br/><b>Speed:</b> {f["velocity_mps"]} m/s<br/><b>Status:</b> <span style="color:{color}; font-weight:800;">{st_text}</span></div>'
 
         folium.map.Marker(
             [f["latitude"], f["longitude"]],
@@ -322,32 +322,37 @@ elif module == "📊 Analysis":
     n_delayed = int(base_tf * 0.12) * m_fact
     r_ontime = 88.5 if ap_code == "BLR" else (87.2 if ap_code == "DEL" else (84.1 if ap_code == "SXR" else 86.4))
 
+    dates = ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"]
+
     ak1, ak2, ak3, ak4 = st.columns(4)
     with ak1:
         st.metric("🛫 Takeoffs / Departures", f"{n_takeoffs:,}", f"+{int(m_fact*4.2)} vs prev")
-        fig_a1 = px.line(x=["D1","D2","D3","D4","D5","D6","D7"], y=[base_tf-5, base_tf+8, base_tf-2, base_tf+12, base_tf-4, base_tf+6, base_tf], height=110)
-        fig_a1.update_layout(margin=dict(l=0,r=0,t=0,b=0), xaxis=dict(visible=False), yaxis=dict(visible=False), paper_bgcolor="rgba(0,0,0,0)")
+        df_a1 = pd.DataFrame({"Date": dates, "Val": [base_tf-5, base_tf+8, base_tf-2, base_tf+12, base_tf-4, base_tf+6, base_tf]})
+        fig_a1 = px.line(df_a1, x="Date", y="Val", height=130)
         fig_a1.update_traces(line_color="#1E88E5", line_width=3)
+        fig_a1.update_layout(margin=dict(l=5,r=5,t=5,b=5), paper_bgcolor="#FFFFFF", plot_bgcolor="#FFFFFF", xaxis=dict(visible=False), yaxis=dict(visible=False))
         st.plotly_chart(fig_a1, use_container_width=True)
 
     with ak2:
         st.metric("🛬 Landings / Arrivals", f"{n_landings:,}", f"+{int(m_fact*3.8)} vs prev")
-        fig_a2 = px.line(x=["D1","D2","D3","D4","D5","D6","D7"], y=[base_tf-6, base_tf+5, base_tf-4, base_tf+10, base_tf-2, base_tf+4, base_tf-2], height=110)
-        fig_a2.update_layout(margin=dict(l=0,r=0,t=0,b=0), xaxis=dict(visible=False), yaxis=dict(visible=False), paper_bgcolor="rgba(0,0,0,0)")
-        fig_a2.update_traces(line_color="#00C853", line_width=3)
+        df_a2 = pd.DataFrame({"Date": dates, "Val": [base_tf-6, base_tf+5, base_tf-4, base_tf+10, base_tf-2, base_tf+4, base_tf-2]})
+        fig_a2 = px.line(df_a2, x="Date", y="Val", height=130)
+        fig_a2.update_traces(line_color="#0284C7", line_width=3)
+        fig_a2.update_layout(margin=dict(l=5,r=5,t=5,b=5), paper_bgcolor="#FFFFFF", plot_bgcolor="#FFFFFF", xaxis=dict(visible=False), yaxis=dict(visible=False))
         st.plotly_chart(fig_a2, use_container_width=True)
 
     with ak3:
         st.metric("🛑 Delayed Flights (>15m)", f"{n_delayed:,}", f"-{int(m_fact*1.1)} vs prev", delta_color="inverse")
-        fig_a3 = px.line(x=["D1","D2","D3","D4","D5","D6","D7"], y=[int(base_tf*0.18), int(base_tf*0.14), int(base_tf*0.15), int(base_tf*0.11), int(base_tf*0.13), int(base_tf*0.10), int(base_tf*0.12)], height=110)
-        fig_a3.update_layout(margin=dict(l=0,r=0,t=0,b=0), xaxis=dict(visible=False), yaxis=dict(visible=False), paper_bgcolor="rgba(0,0,0,0)")
-        fig_a3.update_traces(line_color="#E53935", line_width=3)
+        df_a3 = pd.DataFrame({"Date": dates, "Val": [int(base_tf*0.18), int(base_tf*0.14), int(base_tf*0.15), int(base_tf*0.11), int(base_tf*0.13), int(base_tf*0.10), int(base_tf*0.12)]})
+        fig_a3 = px.line(df_a3, x="Date", y="Val", height=130)
+        fig_a3.update_traces(line_color="#0F172A", line_width=3)
+        fig_a3.update_layout(margin=dict(l=5,r=5,t=5,b=5), paper_bgcolor="#FFFFFF", plot_bgcolor="#FFFFFF", xaxis=dict(visible=False), yaxis=dict(visible=False))
         st.plotly_chart(fig_a3, use_container_width=True)
 
     with ak4:
         st.metric("🎯 On-Time Arrival Rate", f"{r_ontime:.1f}%", "+1.4% Target")
-        fig_a4 = go.Figure(go.Indicator(mode="gauge+number", value=r_ontime, gauge={'axis': {'range': [0, 100]}, 'bar': {'color': "#00C853"}}))
-        fig_a4.update_layout(height=130, margin=dict(l=10, r=10, t=10, b=10), paper_bgcolor="rgba(0,0,0,0)")
+        fig_a4 = go.Figure(go.Indicator(mode="gauge+number", value=r_ontime, gauge={'axis': {'range': [0, 100], 'tickcolor': "#0F172A"}, 'bar': {'color': "#1E88E5"}, 'steps': [{'range': [0, 75], 'color': "#F8FAFC"}, {'range': [75, 85], 'color': "#E2E8F0"}, {'range': [85, 100], 'color': "#BAE6FD"}]}))
+        fig_a4.update_layout(height=130, margin=dict(l=10, r=10, t=10, b=10), paper_bgcolor="#FFFFFF", font=dict(color="#0F172A"))
         st.plotly_chart(fig_a4, use_container_width=True)
 
     st.markdown("<br/>", unsafe_allow_html=True)
@@ -355,11 +360,11 @@ elif module == "📊 Analysis":
     with c_l1:
         st.subheader("✈️ Airline On-Time Performance & Delays")
         df_air = pd.DataFrame([
-            {"Airline": "IndiGo", "Total Flights": int(n_takeoffs*0.48), "On-Time %": "91.4%", "Avg Delay": "11.2 min", "Status": "🟢 EXCELLENT"},
-            {"Airline": "Air India", "Total Flights": int(n_takeoffs*0.26), "On-Time %": "84.8%", "Avg Delay": "22.5 min", "Status": "🟡 NOMINAL"},
-            {"Airline": "Vistara", "Total Flights": int(n_takeoffs*0.14), "On-Time %": "89.2%", "Avg Delay": "14.1 min", "Status": "🟢 GOOD"},
-            {"Airline": "Akasa Air", "Total Flights": int(n_takeoffs*0.07), "On-Time %": "88.6%", "Avg Delay": "15.0 min", "Status": "🟢 GOOD"},
-            {"Airline": "SpiceJet", "Total Flights": int(n_takeoffs*0.05), "On-Time %": "81.2%", "Avg Delay": "26.8 min", "Status": "🔴 ATTENTION"}
+            {"Airline": "IndiGo", "Total Flights": int(n_takeoffs*0.48), "On-Time %": "91.4%", "Avg Delay": "11.2 min", "Status": "OPTIMAL"},
+            {"Airline": "Air India", "Total Flights": int(n_takeoffs*0.26), "On-Time %": "84.8%", "Avg Delay": "22.5 min", "Status": "NOMINAL"},
+            {"Airline": "Vistara", "Total Flights": int(n_takeoffs*0.14), "On-Time %": "89.2%", "Avg Delay": "14.1 min", "Status": "GOOD"},
+            {"Airline": "Akasa Air", "Total Flights": int(n_takeoffs*0.07), "On-Time %": "88.6%", "Avg Delay": "15.0 min", "Status": "GOOD"},
+            {"Airline": "SpiceJet", "Total Flights": int(n_takeoffs*0.05), "On-Time %": "81.2%", "Avg Delay": "26.8 min", "Status": "ATTENTION"}
         ])
         st.dataframe(df_air, use_container_width=True, hide_index=True)
 
@@ -395,9 +400,9 @@ elif module == "🤖 Delay Prediction":
     with col_res1:
         st.markdown(f"""
         <div class="glass-card" style="text-align:center;">
-            <h3 style="color:#111827; margin:0;">AI Delay Probability Risk</h3>
-            <div style="font-size:3.5rem; font-weight:900; color:{'#E53935' if risk_score > 50 else '#00C853'};">{risk_score:.1f}%</div>
-            <b style="color:{'#E53935' if risk_score > 50 else '#00C853'}; font-size:1.1rem;">{'HIGH RISK (>15 mins)' if risk_score > 50 else 'LOW RISK (ON-TIME)'}</b>
+            <h3 style="color:#0F172A; margin:0;">AI Delay Probability Risk</h3>
+            <div style="font-size:3.5rem; font-weight:900; color:{'#0F172A' if risk_score > 50 else '#1E88E5'};">{risk_score:.1f}%</div>
+            <b style="color:{'#0F172A' if risk_score > 50 else '#1E88E5'}; font-size:1.1rem;">{'HIGH RISK (>15 mins)' if risk_score > 50 else 'LOW RISK (ON-TIME)'}</b>
         </div>
         """, unsafe_allow_html=True)
 
@@ -406,10 +411,10 @@ elif module == "🤖 Delay Prediction":
         <div class="glass-card">
             <h4 style="color:#1E88E5; margin-top:0;">SHAP Feature Impact Breakdown</h4>
             <table style="width:100%; font-size:0.9rem;">
-                <tr><td><b>Wind Velocity (+24 kts):</b></td><td style="color:#E53935;">+18.4% Risk</td></tr>
-                <tr><td><b>Low Visibility (3.5 km):</b></td><td style="color:#E53935;">+12.1% Risk</td></tr>
-                <tr><td><b>Peak Morning Rush:</b></td><td style="color:#FB8C00;">+6.2% Risk</td></tr>
-                <tr><td><b>Favorable Altitude Vector:</b></td><td style="color:#00C853;">-4.5% Risk</td></tr>
+                <tr><td><b>Wind Velocity (+24 kts):</b></td><td style="color:#0F172A;">+18.4% Risk</td></tr>
+                <tr><td><b>Low Visibility (3.5 km):</b></td><td style="color:#0F172A;">+12.1% Risk</td></tr>
+                <tr><td><b>Peak Morning Rush:</b></td><td style="color:#0284C7;">+6.2% Risk</td></tr>
+                <tr><td><b>Favorable Altitude Vector:</b></td><td style="color:#1E88E5;">-4.5% Risk</td></tr>
             </table>
         </div>
         """, unsafe_allow_html=True)
@@ -482,20 +487,21 @@ elif module == "📈 Historical Trends":
     with c_h1:
         st.subheader("✈️ Indian Aviation Airline Market Share")
         fig_tree = px.treemap(fleet_df, path=["Region", "Airline"], values="Fleet Size", color="Share %", color_continuous_scale="Blues")
-        fig_tree.update_layout(margin=dict(t=20, l=10, r=10, b=10))
+        fig_tree.update_layout(margin=dict(t=20, l=10, r=10, b=10), paper_bgcolor="#FFFFFF")
         st.plotly_chart(fig_tree, use_container_width=True)
 
     with c_h2:
         st.subheader("⚡ Velocity vs Altitude Telemetry Distribution")
-        fig_scat = px.scatter(df_flights, x="altitude_m", y="velocity_mps", color="status", hover_name="callsign", color_discrete_map={"EN_ROUTE": "#00C853", "ON_APPROACH": "#FB8C00", "DELAYED": "#E53935"})
-        fig_scat.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
+        fig_scat = px.scatter(df_flights, x="altitude_m", y="velocity_mps", color="status", hover_name="callsign", color_discrete_map={"EN_ROUTE": "#1E88E5", "ON_APPROACH": "#0284C7", "DELAYED": "#0F172A"})
+        fig_scat.update_layout(paper_bgcolor="#FFFFFF", plot_bgcolor="#FFFFFF")
         st.plotly_chart(fig_scat, use_container_width=True)
 
     st.markdown("<br/>", unsafe_allow_html=True)
     c_h3, c_h4 = st.columns(2)
     with c_h3:
         st.subheader("📈 Monthly Flight Operations Volume")
-        fig_line = px.bar(monthly_traffic, x="Month", y="Flights (Thousands)", text="Flights (Thousands)", color="On-Time %", color_continuous_scale="Viridis")
+        fig_line = px.bar(monthly_traffic, x="Month", y="Flights (Thousands)", text="Flights (Thousands)", color="On-Time %", color_continuous_scale="Blues")
+        fig_line.update_layout(paper_bgcolor="#FFFFFF", plot_bgcolor="#FFFFFF")
         st.plotly_chart(fig_line, use_container_width=True)
 
     with c_h4:
@@ -506,8 +512,8 @@ elif module == "📈 Historical Trends":
             {"Category": "Moderate Delay (30-60m)", "Count": 1850},
             {"Category": "Severe Delay (>60m)", "Count": 620}
         ])
-        fig_bar = px.bar(delay_dist, x="Category", y="Count", color="Category", color_discrete_sequence=["#00C853", "#FB8C00", "#FF7043", "#E53935"])
-        fig_bar.update_layout(showlegend=False, paper_bgcolor="rgba(0,0,0,0)")
+        fig_bar = px.bar(delay_dist, x="Category", y="Count", color="Category", color_discrete_sequence=["#1E88E5", "#0284C7", "#38BDF8", "#0F172A"])
+        fig_bar.update_layout(showlegend=False, paper_bgcolor="#FFFFFF", plot_bgcolor="#FFFFFF")
         st.plotly_chart(fig_bar, use_container_width=True)
 
 elif module == "💡 AI Insights":
@@ -515,10 +521,10 @@ elif module == "💡 AI Insights":
     st.markdown("""
     <div class="glass-card">
         <h3 style="color:#1E88E5; margin-top:0;">Automated Air Traffic Controller Diagnostics</h3>
-        <p style="font-size:1rem; line-height:1.6; color:#374151;">
+        <p style="font-size:1rem; line-height:1.6; color:#0F172A;">
             <b>Airspace Summary:</b> All-India airspace corridors are performing with a 94.3% model prediction accuracy. High traffic density expected between DEL-BOM and MAA-TRZ sectors.
         </p>
-        <b style="color:#FB8C00;">Actionable Recommendations:</b>
+        <b style="color:#1E88E5;">Actionable Recommendations:</b>
         <ul>
             <li>Reroute Srinagar (SXR) holding patterns to clear runway 13.</li>
             <li>Maintain minimum 5-nautical-mile separation for DEL departures.</li>
