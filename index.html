@@ -170,23 +170,64 @@ st.sidebar.markdown("""
 """, unsafe_allow_html=True)
 
 all_airports_master = [
-    {"iata": "ALL", "name": "ALL - All Indian Airspace Hubs", "city": "All Cities", "takeoffs": 420},
-    {"iata": "DEL", "name": "DEL - Indira Gandhi Int'l (Delhi)", "city": "New Delhi", "takeoffs": 142},
-    {"iata": "BOM", "name": "BOM - Chhatrapati Shivaji Maharaj Int'l (Mumbai)", "city": "Mumbai", "takeoffs": 98},
-    {"iata": "BLR", "name": "BLR - Kempegowda Int'l (Bengaluru)", "city": "Bengaluru", "takeoffs": 75},
-    {"iata": "MAA", "name": "MAA - Chennai Int'l (Chennai)", "city": "Chennai", "takeoffs": 62},
-    {"iata": "HYD", "name": "HYD - Rajiv Gandhi Int'l (Hyderabad)", "city": "Hyderabad", "takeoffs": 54},
-    {"iata": "CCU", "name": "CCU - Netaji Subhash Chandra Bose Int'l (Kolkata)", "city": "Kolkata", "takeoffs": 48},
-    {"iata": "SXR", "name": "SXR - Sheikh ul-Alam Int'l (Srinagar)", "city": "Srinagar", "takeoffs": 28},
-    {"iata": "DHM", "name": "DHM - Kangra Gaggal Airport (Dharamshala)", "city": "Dharamshala", "takeoffs": 14},
-    {"iata": "ATQ", "name": "ATQ - Sri Guru Ram Dass Jee Int'l (Amritsar)", "city": "Amritsar", "takeoffs": 22},
-    {"iata": "IXC", "name": "IXC - Shaheed Bhagat Singh Int'l (Chandigarh)", "city": "Chandigarh", "takeoffs": 25},
-    {"iata": "TRZ", "name": "TRZ - Tiruchirappalli Int'l (Trichy)", "city": "Trichy", "takeoffs": 18},
-    {"iata": "CJB", "name": "CJB - Coimbatore Int'l", "city": "Coimbatore", "takeoffs": 19},
-    {"iata": "IXM", "name": "IXM - Madurai Airport", "city": "Madurai", "takeoffs": 16},
-    {"iata": "AMD", "name": "AMD - Sardar Vallabhbhai Patel Int'l", "city": "Ahmedabad", "takeoffs": 42},
-    {"iata": "DXB", "name": "DXB - Dubai International Airport", "city": "Dubai", "takeoffs": 185},
-    {"iata": "LHR", "name": "LHR - London Heathrow Airport", "city": "London", "takeoffs": 160}
+    {"iata": "ALL", "name": "ALL - All Indian Airspace Hubs", "city": "All Cities", "country": "India", "takeoffs": 420},
+    {"iata": "DEL", "name": "DEL - Indira Gandhi Int'l (Delhi)", "city": "New Delhi", "country": "India", "takeoffs": 142},
+    {"iata": "BOM", "name": "BOM - Chhatrapati Shivaji Maharaj Int'l (Mumbai)", "city": "Mumbai", "country": "India", "takeoffs": 98},
+    {"iata": "BLR", "name": "BLR - Kempegowda Int'l (Bengaluru)", "city": "Bengaluru", "country": "India", "takeoffs": 75},
+    {"iata": "MAA", "name": "MAA - Chennai Int'l (Chennai)", "city": "Chennai", "country": "India", "takeoffs": 62},
+    {"iata": "HYD", "name": "HYD - Rajiv Gandhi Int'l (Hyderabad)", "city": "Hyderabad", "country": "India", "takeoffs": 54},
+    {"iata": "CCU", "name": "CCU - Netaji Subhash Chandra Bose Int'l (Kolkata)", "city": "Kolkata", "country": "India", "takeoffs": 48},
+    {"iata": "AMD", "name": "AMD - Sardar Vallabhbhai Patel Int'l (Ahmedabad)", "city": "Ahmedabad", "country": "India", "takeoffs": 42},
+    {"iata": "COK", "name": "COK - Cochin Int'l (Kochi)", "city": "Kochi", "country": "India", "takeoffs": 40},
+    {"iata": "GOI", "name": "GOI - Dabolim Airport (Goa)", "city": "Goa", "country": "India", "takeoffs": 38},
+    {"iata": "GOX", "name": "GOX - Manohar Int'l (Mopa, Goa)", "city": "Mopa Goa", "country": "India", "takeoffs": 28},
+    {"iata": "PNQ", "name": "PNQ - Pune Airport (Pune)", "city": "Pune", "country": "India", "takeoffs": 35},
+    {"iata": "LKO", "name": "LKO - Chaudhary Charan Singh Int'l (Lucknow)", "city": "Lucknow", "country": "India", "takeoffs": 32},
+    {"iata": "JAI", "name": "JAI - Jaipur Int'l (Jaipur)", "city": "Jaipur", "country": "India", "takeoffs": 30},
+    {"iata": "SXR", "name": "SXR - Sheikh ul-Alam Int'l (Srinagar)", "city": "Srinagar", "country": "India", "takeoffs": 28},
+    {"iata": "GAU", "name": "GAU - Lokpriya Gopinath Bordoloi Int'l (Guwahati)", "city": "Guwahati", "country": "India", "takeoffs": 26},
+    {"iata": "IXC", "name": "IXC - Shaheed Bhagat Singh Int'l (Chandigarh)", "city": "Chandigarh", "country": "India", "takeoffs": 25},
+    {"iata": "PAT", "name": "PAT - Jayprakash Narayan Airport (Patna)", "city": "Patna", "country": "India", "takeoffs": 24},
+    {"iata": "BBI", "name": "BBI - Biju Patnaik Int'l (Bhubaneswar)", "city": "Bhubaneswar", "country": "India", "takeoffs": 23},
+    {"iata": "ATQ", "name": "ATQ - Sri Guru Ram Dass Jee Int'l (Amritsar)", "city": "Amritsar", "country": "India", "takeoffs": 22},
+    {"iata": "VTZ", "name": "VTZ - Visakhapatnam Int'l (Visakhapatnam)", "city": "Visakhapatnam", "country": "India", "takeoffs": 21},
+    {"iata": "TRV", "name": "TRV - Trivandrum Int'l (Thiruvananthapuram)", "city": "Thiruvananthapuram", "country": "India", "takeoffs": 20},
+    {"iata": "CJB", "name": "CJB - Coimbatore Int'l (Coimbatore)", "city": "Coimbatore", "country": "India", "takeoffs": 19},
+    {"iata": "TRZ", "name": "TRZ - Tiruchirappalli Int'l (Trichy)", "city": "Trichy", "country": "India", "takeoffs": 18},
+    {"iata": "IXM", "name": "IXM - Madurai Airport (Madurai)", "city": "Madurai", "country": "India", "takeoffs": 16},
+    {"iata": "IXB", "name": "IXB - Bagdogra Airport (Siliguri/Darjeeling)", "city": "Bagdogra", "country": "India", "takeoffs": 18},
+    {"iata": "VNS", "name": "VNS - Lal Bahadur Shastri Int'l (Varanasi)", "city": "Varanasi", "country": "India", "takeoffs": 19},
+    {"iata": "IDR", "name": "IDR - Devi Ahilya Bai Holkar Airport (Indore)", "city": "Indore", "country": "India", "takeoffs": 21},
+    {"iata": "DHM", "name": "DHM - Kangra Gaggal Airport (Dharamshala)", "city": "Dharamshala", "country": "India", "takeoffs": 14},
+    {"iata": "IXJ", "name": "IXJ - Jammu Airport (Jammu)", "city": "Jammu", "country": "India", "takeoffs": 18},
+    {"iata": "LEH", "name": "LEH - Kushok Bakula Rimpochee Airport (Leh)", "city": "Leh", "country": "India", "takeoffs": 12},
+
+    {"iata": "DXB", "name": "DXB - Dubai International (United Arab Emirates)", "city": "Dubai", "country": "UAE", "takeoffs": 185},
+    {"iata": "LHR", "name": "LHR - London Heathrow Airport (United Kingdom)", "city": "London", "country": "UK", "takeoffs": 160},
+    {"iata": "JFK", "name": "JFK - John F. Kennedy Int'l (United States)", "city": "New York", "country": "USA", "takeoffs": 175},
+    {"iata": "LAX", "name": "LAX - Los Angeles International (United States)", "city": "Los Angeles", "country": "USA", "takeoffs": 165},
+    {"iata": "SIN", "name": "SIN - Singapore Changi Airport (Singapore)", "city": "Singapore", "country": "Singapore", "takeoffs": 150},
+    {"iata": "HND", "name": "HND - Tokyo Haneda Airport (Japan)", "city": "Tokyo", "country": "Japan", "takeoffs": 170},
+    {"iata": "CDG", "name": "CDG - Paris Charles de Gaulle (France)", "city": "Paris", "country": "France", "takeoffs": 155},
+    {"iata": "FRA", "name": "FRA - Frankfurt Airport (Germany)", "city": "Frankfurt", "country": "Germany", "takeoffs": 148},
+    {"iata": "AMS", "name": "AMS - Amsterdam Schiphol (Netherlands)", "city": "Amsterdam", "country": "Netherlands", "takeoffs": 145},
+    {"iata": "DOH", "name": "DOH - Hamad International Airport (Qatar)", "city": "Doha", "country": "Qatar", "takeoffs": 162},
+    {"iata": "SYD", "name": "SYD - Sydney Kingsford Smith (Australia)", "city": "Sydney", "country": "Australia", "takeoffs": 130},
+    {"iata": "YYZ", "name": "YYZ - Toronto Pearson Int'l (Canada)", "city": "Toronto", "country": "Canada", "takeoffs": 138},
+    {"iata": "BKK", "name": "BKK - Suvarnabhumi Airport (Thailand)", "city": "Bangkok", "country": "Thailand", "takeoffs": 142},
+    {"iata": "KUL", "name": "KUL - Kuala Lumpur Int'l (Malaysia)", "city": "Kuala Lumpur", "country": "Malaysia", "takeoffs": 125},
+    {"iata": "PEK", "name": "PEK - Beijing Capital Int'l (China)", "city": "Beijing", "country": "China", "takeoffs": 180},
+    {"iata": "HKG", "name": "HKG - Hong Kong International (Hong Kong)", "city": "Hong Kong", "country": "Hong Kong", "takeoffs": 140},
+    {"iata": "IST", "name": "IST - Istanbul Airport (Turkey)", "city": "Istanbul", "country": "Turkey", "takeoffs": 168},
+    {"iata": "JED", "name": "JED - King Abdulaziz Int'l (Saudi Arabia)", "city": "Jeddah", "country": "Saudi Arabia", "takeoffs": 135},
+    {"iata": "MAD", "name": "MAD - Madrid-Barajas Airport (Spain)", "city": "Madrid", "country": "Spain", "takeoffs": 132},
+    {"iata": "FCO", "name": "FCO - Rome Leonardo da Vinci (Italy)", "city": "Rome", "country": "Italy", "takeoffs": 128},
+    {"iata": "ICN", "name": "ICN - Incheon International (South Korea)", "city": "Seoul", "country": "South Korea", "takeoffs": 152},
+    {"iata": "CGK", "name": "CGK - Soekarno-Hatta Int'l (Indonesia)", "city": "Jakarta", "country": "Indonesia", "takeoffs": 120},
+    {"iata": "JNB", "name": "JNB - O.R. Tambo Int'l (South Africa)", "city": "Johannesburg", "country": "South Africa", "takeoffs": 95},
+    {"iata": "GRU", "name": "GRU - São Paulo/Guarulhos Int'l (Brazil)", "city": "São Paulo", "country": "Brazil", "takeoffs": 110},
+    {"iata": "MEX", "name": "MEX - Mexico City International (Mexico)", "city": "Mexico City", "country": "Mexico", "takeoffs": 115},
+    {"iata": "CAI", "name": "CAI - Cairo International Airport (Egypt)", "city": "Cairo", "country": "Egypt", "takeoffs": 90}
 ]
 
 flights_data = [
@@ -204,22 +245,24 @@ flights_data = [
 df_flights = pd.DataFrame(flights_data)
 
 weather_db = [
-    {"iata": "DEL", "airport": "Indira Gandhi Int'l", "city": "New Delhi", "temp": 34.0, "wind_kts": 18, "vis_km": 4.5, "condition": "MODERATE FOG", "risk": "MEDIUM"},
-    {"iata": "BOM", "airport": "Chhatrapati Shivaji Maharaj Int'l", "city": "Mumbai", "temp": 29.5, "wind_kts": 12, "vis_km": 8.0, "condition": "CLEAR", "risk": "LOW"},
-    {"iata": "BLR", "airport": "Kempegowda Int'l", "city": "Bengaluru", "temp": 26.0, "wind_kts": 8, "vis_km": 10.0, "condition": "PARTLY CLOUDY", "risk": "LOW"},
-    {"iata": "MAA", "airport": "Chennai Int'l", "city": "Chennai", "temp": 31.0, "wind_kts": 14, "vis_km": 7.0, "condition": "HUMID / CLEAR", "risk": "LOW"},
-    {"iata": "HYD", "airport": "Rajiv Gandhi Int'l", "city": "Hyderabad", "temp": 30.0, "wind_kts": 10, "vis_km": 9.0, "condition": "CLEAR", "risk": "LOW"},
-    {"iata": "CCU", "airport": "Netaji Subhash Chandra Bose Int'l", "city": "Kolkata", "temp": 32.5, "wind_kts": 16, "vis_km": 5.5, "condition": "HAZE", "risk": "LOW"},
-    {"iata": "SXR", "airport": "Sheikh ul-Alam Int'l", "city": "Srinagar", "temp": 18.0, "wind_kts": 24, "vis_km": 2.8, "condition": "DENSE FOG / HAZE", "risk": "HIGH"},
-    {"iata": "DHM", "airport": "Kangra Gaggal Airport", "city": "Dharamshala", "temp": 21.0, "wind_kts": 19, "vis_km": 4.0, "condition": "LIGHT RAIN / MIST", "risk": "MEDIUM"},
-    {"iata": "ATQ", "airport": "Sri Guru Ram Dass Jee Int'l", "city": "Amritsar", "temp": 33.0, "wind_kts": 15, "vis_km": 5.0, "condition": "DUST HAZE", "risk": "MEDIUM"},
-    {"iata": "IXC", "airport": "Shaheed Bhagat Singh Int'l", "city": "Chandigarh", "temp": 32.0, "wind_kts": 11, "vis_km": 7.5, "condition": "PARTLY CLOUDY", "risk": "LOW"},
-    {"iata": "TRZ", "airport": "Tiruchirappalli Int'l", "city": "Trichy", "temp": 33.5, "wind_kts": 13, "vis_km": 8.5, "condition": "SUNNY", "risk": "LOW"},
-    {"iata": "CJB", "airport": "Coimbatore Int'l", "city": "Coimbatore", "temp": 28.0, "wind_kts": 9, "vis_km": 10.0, "condition": "CLEAR", "risk": "LOW"},
-    {"iata": "IXM", "airport": "Madurai Airport", "city": "Madurai", "temp": 34.0, "wind_kts": 12, "vis_km": 9.0, "condition": "CLEAR", "risk": "LOW"},
-    {"iata": "AMD", "airport": "Sardar Vallabhbhai Patel Int'l", "city": "Ahmedabad", "temp": 36.0, "wind_kts": 14, "vis_km": 6.0, "condition": "SUNNY", "risk": "LOW"},
-    {"iata": "DXB", "airport": "Dubai International Airport", "city": "Dubai", "temp": 41.0, "wind_kts": 22, "vis_km": 6.0, "condition": "HOT / DUST", "risk": "MEDIUM"},
-    {"iata": "LHR", "airport": "London Heathrow Airport", "city": "London", "temp": 16.5, "wind_kts": 25, "vis_km": 3.5, "condition": "OVERCAST / RAIN", "risk": "HIGH"}
+    {"iata": "DEL", "airport": "Indira Gandhi Int'l", "city": "New Delhi", "country": "India", "temp": 34.0, "wind_kts": 18, "vis_km": 4.5, "condition": "MODERATE FOG", "risk": "MEDIUM"},
+    {"iata": "BOM", "airport": "Chhatrapati Shivaji Maharaj Int'l", "city": "Mumbai", "country": "India", "temp": 29.5, "wind_kts": 12, "vis_km": 8.0, "condition": "CLEAR", "risk": "LOW"},
+    {"iata": "BLR", "airport": "Kempegowda Int'l", "city": "Bengaluru", "country": "India", "temp": 26.0, "wind_kts": 8, "vis_km": 10.0, "condition": "PARTLY CLOUDY", "risk": "LOW"},
+    {"iata": "MAA", "airport": "Chennai Int'l", "city": "Chennai", "country": "India", "temp": 31.0, "wind_kts": 14, "vis_km": 7.0, "condition": "HUMID / CLEAR", "risk": "LOW"},
+    {"iata": "HYD", "airport": "Rajiv Gandhi Int'l", "city": "Hyderabad", "country": "India", "temp": 30.0, "wind_kts": 10, "vis_km": 9.0, "condition": "CLEAR", "risk": "LOW"},
+    {"iata": "CCU", "airport": "Netaji Subhash Chandra Bose Int'l", "city": "Kolkata", "country": "India", "temp": 32.5, "wind_kts": 16, "vis_km": 5.5, "condition": "HAZE", "risk": "LOW"},
+    {"iata": "SXR", "airport": "Sheikh ul-Alam Int'l", "city": "Srinagar", "country": "India", "temp": 18.0, "wind_kts": 24, "vis_km": 2.8, "condition": "DENSE FOG / HAZE", "risk": "HIGH"},
+    {"iata": "DHM", "airport": "Kangra Gaggal Airport", "city": "Dharamshala", "country": "India", "temp": 21.0, "wind_kts": 19, "vis_km": 4.0, "condition": "LIGHT RAIN / MIST", "risk": "MEDIUM"},
+    {"iata": "GOI", "airport": "Dabolim Airport", "city": "Goa", "country": "India", "temp": 29.0, "wind_kts": 10, "vis_km": 9.5, "condition": "HUMID / CLEAR", "risk": "LOW"},
+
+    {"iata": "DXB", "airport": "Dubai International Airport", "city": "Dubai", "country": "UAE", "temp": 41.0, "wind_kts": 22, "vis_km": 6.0, "condition": "HOT / DUST", "risk": "MEDIUM"},
+    {"iata": "LHR", "airport": "London Heathrow Airport", "city": "London", "country": "UK", "temp": 16.5, "wind_kts": 25, "vis_km": 3.5, "condition": "OVERCAST / RAIN", "risk": "HIGH"},
+    {"iata": "JFK", "airport": "John F. Kennedy Int'l", "city": "New York", "country": "USA", "temp": 24.0, "wind_kts": 16, "vis_km": 9.0, "condition": "PARTLY CLOUDY", "risk": "LOW"},
+    {"iata": "LAX", "airport": "Los Angeles International", "city": "Los Angeles", "country": "USA", "temp": 22.5, "wind_kts": 10, "vis_km": 10.0, "condition": "SUNNY", "risk": "LOW"},
+    {"iata": "SIN", "airport": "Singapore Changi Airport", "city": "Singapore", "country": "Singapore", "temp": 30.0, "wind_kts": 11, "vis_km": 8.5, "condition": "TROPICAL SHOWERS", "risk": "MEDIUM"},
+    {"iata": "HND", "airport": "Tokyo Haneda Airport", "city": "Tokyo", "country": "Japan", "temp": 26.0, "wind_kts": 14, "vis_km": 9.5, "condition": "CLEAR", "risk": "LOW"},
+    {"iata": "CDG", "airport": "Paris Charles de Gaulle", "city": "Paris", "country": "France", "temp": 19.0, "wind_kts": 15, "vis_km": 7.0, "condition": "CLOUDY", "risk": "LOW"},
+    {"iata": "FRA", "airport": "Frankfurt Airport", "city": "Frankfurt", "country": "Germany", "temp": 18.0, "wind_kts": 17, "vis_km": 8.0, "condition": "MILD RAIN", "risk": "LOW"}
 ]
 
 st.markdown("""
@@ -362,7 +405,7 @@ elif module == "🔍 Flight Search":
     search_q = st.text_input("🔍 Enter Callsign or Airport Code", placeholder="Type SXR, DEL, BOM, DHM, IGO505...").upper()
     if search_q:
         matched_f = df_flights[df_flights.apply(lambda r: search_q in r['callsign'].upper() or search_q in r['origin_iata'].upper() or search_q in r['destination_iata'].upper() or search_q in r['airline'].upper(), axis=1)]
-        matched_ap = pd.DataFrame([ap for ap in all_airports_master if search_q in ap['iata'] or search_q in ap['name'].upper() or search_q in ap['city'].upper()])
+        matched_ap = pd.DataFrame([ap for ap in all_airports_master if search_q in ap['iata'] or search_q in ap['name'].upper() or search_q in ap['city'].upper() or search_q in ap['country'].upper()])
         
         c1, c2 = st.columns(2)
         with c1:
@@ -380,9 +423,9 @@ elif module == "📊 Analysis":
 
     c_srch1, c_srch2, c_srch3 = st.columns([5, 4, 3])
     with c_srch1:
-        s_term = st.text_input("🔍 Search Airport (by Code, City, or Name)", placeholder="Type SXR, DHM, Delhi, Srinagar, Dubai, London...").strip().upper()
+        s_term = st.text_input("🔍 Search Airport (by Code, City, or Country)", placeholder="Type SXR, DHM, Delhi, Srinagar, Goa, Tokyo, Dubai, London, New York...").strip().upper()
 
-    m_airports = [ap["name"] for ap in all_airports_master if not s_term or s_term in ap["iata"] or s_term in ap["name"].upper() or s_term in ap["city"].upper()]
+    m_airports = [ap["name"] for ap in all_airports_master if not s_term or s_term in ap["iata"] or s_term in ap["name"].upper() or s_term in ap["city"].upper() or s_term in ap["country"].upper()]
     if not m_airports:
         m_airports = [ap["name"] for ap in all_airports_master]
 
@@ -557,7 +600,7 @@ elif module == "🌤️ Weather Impact":
     wx_q = st.text_input("🌤️ Search Airport Weather (Code or City Name)", placeholder="Type SXR, DHM, DEL, BOM, Srinagar, Dubai, London...").strip().upper()
     
     if wx_q:
-        filtered = [w for w in weather_db if wx_q in w['iata'] or wx_q in w['airport'].upper() or wx_q in w['city'].upper()]
+        filtered = [w for w in weather_db if wx_q in w['iata'] or wx_q in w['airport'].upper() or wx_q in w['city'].upper() or wx_q in w['country'].upper()]
         st.markdown(f"### Matching Weather Stations ({len(filtered)})")
     else:
         filtered = weather_db
@@ -573,8 +616,8 @@ elif module == "🌤️ Weather Impact":
             c4.metric("🚨 Weather Risk", w_top['risk'])
             st.markdown("<br/>", unsafe_allow_html=True)
             
-        df_wx_show = pd.DataFrame(filtered)[["iata", "city", "airport", "temp", "wind_kts", "vis_km", "condition", "risk"]]
-        df_wx_show.columns = ["IATA", "City", "Airport Name", "Temp (°C)", "Wind (kts)", "Visibility (km)", "METAR Condition", "Operational Risk"]
+        df_wx_show = pd.DataFrame(filtered)[["iata", "city", "country", "airport", "temp", "wind_kts", "vis_km", "condition", "risk"]]
+        df_wx_show.columns = ["IATA", "City", "Country", "Airport Name", "Temp (°C)", "Wind (kts)", "Visibility (km)", "METAR Condition", "Operational Risk"]
         st.dataframe(df_wx_show, use_container_width=True, hide_index=True)
     else:
         st.info("No matching weather station found. Try searching SXR, DHM, DEL, BOM, BLR, MAA, or DXB.")

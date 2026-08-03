@@ -9,7 +9,6 @@ import folium
 from streamlit_folium import st_folium
 
 from dashboard.components.styles import apply_custom_theme, render_header
-from dashboard.components.api_client import api_client
 
 apply_custom_theme()
 
@@ -22,48 +21,87 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-render_header("Airport & Airline Operations Analysis Dashboard", "Filter live operational analytics by Airport Hub, Time Horizon (Today, Week, Month, Year), Airline On-Time %, Takeoffs/Landings, and Side-by-Side Airport Comparison.")
+render_header("Airport & Airline Operations Analysis Dashboard", "Filter live operational analytics by Airport Hub, Time Horizon (Today, Week, Month, Year), Airline On-Time %, Takeoffs/Landings, and Side-by-Side Airport Comparison across Indian and Global Hubs.")
 
-# Complete Master Airport Database for Search & Comparison
+# Master Dataset: All Major Indian Airports + Famous International Airport per Country
 all_airports_master = [
-    {"iata": "ALL", "name": "ALL - All Indian Airspace Hubs", "city": "All Cities", "takeoffs": 420},
-    {"iata": "DEL", "name": "DEL - Indira Gandhi Int'l (Delhi)", "city": "New Delhi", "takeoffs": 142},
-    {"iata": "BOM", "name": "BOM - Chhatrapati Shivaji Maharaj Int'l (Mumbai)", "city": "Mumbai", "takeoffs": 98},
-    {"iata": "BLR", "name": "BLR - Kempegowda Int'l (Bengaluru)", "city": "Bengaluru", "takeoffs": 75},
-    {"iata": "MAA", "name": "MAA - Chennai Int'l (Chennai)", "city": "Chennai", "takeoffs": 62},
-    {"iata": "HYD", "name": "HYD - Rajiv Gandhi Int'l (Hyderabad)", "city": "Hyderabad", "takeoffs": 54},
-    {"iata": "CCU", "name": "CCU - Netaji Subhash Chandra Bose Int'l (Kolkata)", "city": "Kolkata", "takeoffs": 48},
-    {"iata": "SXR", "name": "SXR - Sheikh ul-Alam Int'l (Srinagar)", "city": "Srinagar", "takeoffs": 28},
-    {"iata": "DHM", "name": "DHM - Kangra Gaggal Airport (Dharamshala)", "city": "Dharamshala", "takeoffs": 14},
-    {"iata": "ATQ", "name": "ATQ - Sri Guru Ram Dass Jee Int'l (Amritsar)", "city": "Amritsar", "takeoffs": 22},
-    {"iata": "IXC", "name": "IXC - Shaheed Bhagat Singh Int'l (Chandigarh)", "city": "Chandigarh", "takeoffs": 25},
-    {"iata": "TRZ", "name": "TRZ - Tiruchirappalli Int'l (Trichy)", "city": "Trichy", "takeoffs": 18},
-    {"iata": "CJB", "name": "CJB - Coimbatore Int'l", "city": "Coimbatore", "takeoffs": 19},
-    {"iata": "IXM", "name": "IXM - Madurai Airport", "city": "Madurai", "takeoffs": 16},
-    {"iata": "AMD", "name": "AMD - Sardar Vallabhbhai Patel Int'l", "city": "Ahmedabad", "takeoffs": 42},
-    {"iata": "GOI", "name": "GOI - Dabolim Airport", "city": "Goa", "takeoffs": 38},
-    {"iata": "PNQ", "name": "PNQ - Pune Airport", "city": "Pune", "takeoffs": 35},
-    {"iata": "COK", "name": "COK - Cochin Int'l", "city": "Kochi", "takeoffs": 40},
-    {"iata": "GAU", "name": "GAU - Lokpriya Gopinath Bordoloi Int'l", "city": "Guwahati", "takeoffs": 26},
-    {"iata": "PAT", "name": "PAT - Jayprakash Narayan Airport", "city": "Patna", "takeoffs": 24},
-    {"iata": "JAI", "name": "JAI - Jaipur Int'l", "city": "Jaipur", "takeoffs": 30},
-    {"iata": "VTZ", "name": "VTZ - Visakhapatnam Int'l", "city": "Visakhapatnam", "takeoffs": 21},
-    {"iata": "BBI", "name": "BBI - Biju Patnaik Int'l", "city": "Bhubaneswar", "takeoffs": 23},
-    {"iata": "LKO", "name": "LKO - Chaudhary Charan Singh Int'l", "city": "Lucknow", "takeoffs": 32},
-    {"iata": "DXB", "name": "DXB - Dubai International Airport", "city": "Dubai", "takeoffs": 185},
-    {"iata": "LHR", "name": "LHR - London Heathrow Airport", "city": "London", "takeoffs": 160},
-    {"iata": "SIN", "name": "SIN - Singapore Changi Airport", "city": "Singapore", "takeoffs": 150},
-    {"iata": "JFK", "name": "JFK - John F. Kennedy Int'l", "city": "New York", "takeoffs": 175}
+    # --- ALL HUB OVERVIEW ---
+    {"iata": "ALL", "name": "ALL - All Indian Airspace Hubs", "city": "All Cities", "country": "India", "takeoffs": 420},
+    
+    # --- INDIA (ALL MAJOR & REGIONAL AIRPORTS) ---
+    {"iata": "DEL", "name": "DEL - Indira Gandhi Int'l (Delhi)", "city": "New Delhi", "country": "India", "takeoffs": 142},
+    {"iata": "BOM", "name": "BOM - Chhatrapati Shivaji Maharaj Int'l (Mumbai)", "city": "Mumbai", "country": "India", "takeoffs": 98},
+    {"iata": "BLR", "name": "BLR - Kempegowda Int'l (Bengaluru)", "city": "Bengaluru", "country": "India", "takeoffs": 75},
+    {"iata": "MAA", "name": "MAA - Chennai Int'l (Chennai)", "city": "Chennai", "country": "India", "takeoffs": 62},
+    {"iata": "HYD", "name": "HYD - Rajiv Gandhi Int'l (Hyderabad)", "city": "Hyderabad", "country": "India", "takeoffs": 54},
+    {"iata": "CCU", "name": "CCU - Netaji Subhash Chandra Bose Int'l (Kolkata)", "city": "Kolkata", "country": "India", "takeoffs": 48},
+    {"iata": "AMD", "name": "AMD - Sardar Vallabhbhai Patel Int'l (Ahmedabad)", "city": "Ahmedabad", "country": "India", "takeoffs": 42},
+    {"iata": "COK", "name": "COK - Cochin Int'l (Kochi)", "city": "Kochi", "country": "India", "takeoffs": 40},
+    {"iata": "GOI", "name": "GOI - Dabolim Airport (Goa)", "city": "Goa", "country": "India", "takeoffs": 38},
+    {"iata": "GOX", "name": "GOX - Manohar Int'l (Mopa, Goa)", "city": "Mopa Goa", "country": "India", "takeoffs": 28},
+    {"iata": "PNQ", "name": "PNQ - Pune Airport (Pune)", "city": "Pune", "country": "India", "takeoffs": 35},
+    {"iata": "LKO", "name": "LKO - Chaudhary Charan Singh Int'l (Lucknow)", "city": "Lucknow", "country": "India", "takeoffs": 32},
+    {"iata": "JAI", "name": "JAI - Jaipur Int'l (Jaipur)", "city": "Jaipur", "country": "India", "takeoffs": 30},
+    {"iata": "SXR", "name": "SXR - Sheikh ul-Alam Int'l (Srinagar)", "city": "Srinagar", "country": "India", "takeoffs": 28},
+    {"iata": "GAU", "name": "GAU - Lokpriya Gopinath Bordoloi Int'l (Guwahati)", "city": "Guwahati", "country": "India", "takeoffs": 26},
+    {"iata": "IXC", "name": "IXC - Shaheed Bhagat Singh Int'l (Chandigarh)", "city": "Chandigarh", "country": "India", "takeoffs": 25},
+    {"iata": "PAT", "name": "PAT - Jayprakash Narayan Airport (Patna)", "city": "Patna", "country": "India", "takeoffs": 24},
+    {"iata": "BBI", "name": "BBI - Biju Patnaik Int'l (Bhubaneswar)", "city": "Bhubaneswar", "country": "India", "takeoffs": 23},
+    {"iata": "ATQ", "name": "ATQ - Sri Guru Ram Dass Jee Int'l (Amritsar)", "city": "Amritsar", "country": "India", "takeoffs": 22},
+    {"iata": "VTZ", "name": "VTZ - Visakhapatnam Int'l (Visakhapatnam)", "city": "Visakhapatnam", "country": "India", "takeoffs": 21},
+    {"iata": "TRV", "name": "TRV - Trivandrum Int'l (Thiruvananthapuram)", "city": "Thiruvananthapuram", "country": "India", "takeoffs": 20},
+    {"iata": "CJB", "name": "CJB - Coimbatore Int'l (Coimbatore)", "city": "Coimbatore", "country": "India", "takeoffs": 19},
+    {"iata": "TRZ", "name": "TRZ - Tiruchirappalli Int'l (Trichy)", "city": "Trichy", "country": "India", "takeoffs": 18},
+    {"iata": "IXM", "name": "IXM - Madurai Airport (Madurai)", "city": "Madurai", "country": "India", "takeoffs": 16},
+    {"iata": "IXB", "name": "IXB - Bagdogra Airport (Siliguri/Darjeeling)", "city": "Bagdogra", "country": "India", "takeoffs": 18},
+    {"iata": "VNS", "name": "VNS - Lal Bahadur Shastri Int'l (Varanasi)", "city": "Varanasi", "country": "India", "takeoffs": 19},
+    {"iata": "IDR", "name": "IDR - Devi Ahilya Bai Holkar Airport (Indore)", "city": "Indore", "country": "India", "takeoffs": 21},
+    {"iata": "BHO", "name": "BHO - Raja Bhoj Airport (Bhopal)", "city": "Bhopal", "country": "India", "takeoffs": 15},
+    {"iata": "IXR", "name": "IXR - Birsa Munda Airport (Ranchi)", "city": "Ranchi", "country": "India", "takeoffs": 17},
+    {"iata": "RPR", "name": "RPR - Swami Vivekananda Airport (Raipur)", "city": "Raipur", "country": "India", "takeoffs": 16},
+    {"iata": "DHM", "name": "DHM - Kangra Gaggal Airport (Dharamshala)", "city": "Dharamshala", "country": "India", "takeoffs": 14},
+    {"iata": "IXJ", "name": "IXJ - Jammu Airport (Jammu)", "city": "Jammu", "country": "India", "takeoffs": 18},
+    {"iata": "LEH", "name": "LEH - Kushok Bakula Rimpochee Airport (Leh)", "city": "Leh", "country": "India", "takeoffs": 12},
+    {"iata": "IXA", "name": "IXA - Maharaja Bir Bikram Airport (Agartala)", "city": "Agartala", "country": "India", "takeoffs": 14},
+    {"iata": "IMF", "name": "IMF - Imphal International Airport (Imphal)", "city": "Imphal", "country": "India", "takeoffs": 13},
+
+    # --- FAMOUS INTERNATIONAL AIRPORTS (PER COUNTRY WORLDWIDE) ---
+    {"iata": "DXB", "name": "DXB - Dubai International (United Arab Emirates)", "city": "Dubai", "country": "UAE", "takeoffs": 185},
+    {"iata": "LHR", "name": "LHR - London Heathrow Airport (United Kingdom)", "city": "London", "country": "UK", "takeoffs": 160},
+    {"iata": "JFK", "name": "JFK - John F. Kennedy Int'l (United States)", "city": "New York", "country": "USA", "takeoffs": 175},
+    {"iata": "LAX", "name": "LAX - Los Angeles International (United States)", "city": "Los Angeles", "country": "USA", "takeoffs": 165},
+    {"iata": "SIN", "name": "SIN - Singapore Changi Airport (Singapore)", "city": "Singapore", "country": "Singapore", "takeoffs": 150},
+    {"iata": "HND", "name": "HND - Tokyo Haneda Airport (Japan)", "city": "Tokyo", "country": "Japan", "takeoffs": 170},
+    {"iata": "CDG", "name": "CDG - Paris Charles de Gaulle (France)", "city": "Paris", "country": "France", "takeoffs": 155},
+    {"iata": "FRA", "name": "FRA - Frankfurt Airport (Germany)", "city": "Frankfurt", "country": "Germany", "takeoffs": 148},
+    {"iata": "AMS", "name": "AMS - Amsterdam Schiphol (Netherlands)", "city": "Amsterdam", "country": "Netherlands", "takeoffs": 145},
+    {"iata": "DOH", "name": "DOH - Hamad International Airport (Qatar)", "city": "Doha", "country": "Qatar", "takeoffs": 162},
+    {"iata": "SYD", "name": "SYD - Sydney Kingsford Smith (Australia)", "city": "Sydney", "country": "Australia", "takeoffs": 130},
+    {"iata": "YYZ", "name": "YYZ - Toronto Pearson Int'l (Canada)", "city": "Toronto", "country": "Canada", "takeoffs": 138},
+    {"iata": "BKK", "name": "BKK - Suvarnabhumi Airport (Thailand)", "city": "Bangkok", "country": "Thailand", "takeoffs": 142},
+    {"iata": "KUL", "name": "KUL - Kuala Lumpur Int'l (Malaysia)", "city": "Kuala Lumpur", "country": "Malaysia", "takeoffs": 125},
+    {"iata": "PEK", "name": "PEK - Beijing Capital Int'l (China)", "city": "Beijing", "country": "China", "takeoffs": 180},
+    {"iata": "HKG", "name": "HKG - Hong Kong International (Hong Kong)", "city": "Hong Kong", "country": "Hong Kong", "takeoffs": 140},
+    {"iata": "IST", "name": "IST - Istanbul Airport (Turkey)", "city": "Istanbul", "country": "Turkey", "takeoffs": 168},
+    {"iata": "JED", "name": "JED - King Abdulaziz Int'l (Saudi Arabia)", "city": "Jeddah", "country": "Saudi Arabia", "takeoffs": 135},
+    {"iata": "MAD", "name": "MAD - Madrid-Barajas Airport (Spain)", "city": "Madrid", "country": "Spain", "takeoffs": 132},
+    {"iata": "FCO", "name": "FCO - Rome Leonardo da Vinci (Italy)", "city": "Rome", "country": "Italy", "takeoffs": 128},
+    {"iata": "ICN", "name": "ICN - Incheon International (South Korea)", "city": "Seoul", "country": "South Korea", "takeoffs": 152},
+    {"iata": "CGK", "name": "CGK - Soekarno-Hatta Int'l (Indonesia)", "city": "Jakarta", "country": "Indonesia", "takeoffs": 120},
+    {"iata": "JNB", "name": "JNB - O.R. Tambo Int'l (South Africa)", "city": "Johannesburg", "country": "South Africa", "takeoffs": 95},
+    {"iata": "GRU", "name": "GRU - São Paulo/Guarulhos Int'l (Brazil)", "city": "São Paulo", "country": "Brazil", "takeoffs": 110},
+    {"iata": "MEX", "name": "MEX - Mexico City International (Mexico)", "city": "Mexico City", "country": "Mexico", "takeoffs": 115},
+    {"iata": "CAI", "name": "CAI - Cairo International Airport (Egypt)", "city": "Cairo", "country": "Egypt", "takeoffs": 90}
 ]
 
 # Airport Search Box & Filter System
-st.markdown("### 🔍 Search & Filter Airport Analytics")
+st.markdown("### 🔍 Global & Indian Airport Operations Search Engine")
 c_srch1, c_srch2, c_srch3 = st.columns([5, 4, 3])
 
 with c_srch1:
-    search_term = st.text_input("🔍 Search Airport (by Code, City, or Name)", placeholder="Type SXR, DHM, Delhi, Srinagar, Dubai, London...").strip().upper()
+    search_term = st.text_input("🔍 Search Airport (by Code, City, or Country)", placeholder="Type SXR, DHM, Delhi, Srinagar, Goa, Tokyo, Dubai, London, New York...").strip().upper()
 
-matching_airports = [ap["name"] for ap in all_airports_master if not search_term or search_term in ap["iata"] or search_term in ap["name"].upper() or search_term in ap["city"].upper()]
+matching_airports = [ap["name"] for ap in all_airports_master if not search_term or search_term in ap["iata"] or search_term in ap["name"].upper() or search_term in ap["city"].upper() or search_term in ap["country"].upper()]
 
 if not matching_airports:
     matching_airports = [ap["name"] for ap in all_airports_master]
@@ -190,7 +228,7 @@ with col_left:
     st.dataframe(df_airlines, use_container_width=True, hide_index=True)
 
 with col_mid:
-    st.subheader("📍 Top Route Flight Traffic Share")
+    st.subheader("📍 Top Route Corridor Traffic Density")
     df_routes = pd.DataFrame([
         {"Route Corridor": f"{p_stats['code']} ➔ BOM (Mumbai)", "Daily Flights": int(p_stats['takeoffs']*0.22), "Share %": "22.0%"},
         {"Route Corridor": f"{p_stats['code']} ➔ BLR (Bengaluru)", "Daily Flights": int(p_stats['takeoffs']*0.18), "Share %": "18.0%"},
