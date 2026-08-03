@@ -27,13 +27,13 @@
   <script src="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.58.0/build/stlite.js"></script>
   <script>
     stlite.mount({
-      requirements: ["streamlit", "pandas", "plotly", "requests", "folium", "streamlit-folium"],
+      requirements: ["streamlit", "pandas", "plotly"],
       entrypoint: "app.py",
       files: {
         "app.py": `
 import streamlit as st
 import pandas as pd
-import plotly.express as px
+import plotly.graph_objects as go
 
 st.set_page_config(page_title="SkyMetrics | Enterprise Command Center", page_icon="✈️", layout="wide")
 
@@ -59,22 +59,36 @@ st.markdown("<br/>", unsafe_allow_html=True)
 st.subheader("🛰️ Indian Airspace Radar Feed (DEL, BOM, BLR, MAA, HYD, CCU, SXR, DHM)")
 
 flights_data = [
-    {"Callsign": "AIC101", "Airline": "Air India", "Origin": "DEL", "Destination": "BOM", "Altitude (m)": 10500, "Speed (m/s)": 240, "Status": "🟢 ON-TIME"},
-    {"Callsign": "IGO505", "Airline": "IndiGo", "Origin": "DEL", "Destination": "SXR", "Altitude (m)": 9800, "Speed (m/s)": 220, "Status": "🟢 ON-TIME"},
-    {"Callsign": "VTI811", "Airline": "Vistara", "Origin": "BOM", "Destination": "ATQ", "Altitude (m)": 11200, "Speed (m/s)": 250, "Status": "🟢 ON-TIME"},
-    {"Callsign": "SEJ404", "Airline": "SpiceJet", "Origin": "DEL", "Destination": "DHM", "Altitude (m)": 6500, "Speed (m/s)": 180, "Status": "🟢 ON-TIME"},
-    {"Callsign": "AKJ202", "Airline": "Akasa Air", "Origin": "BLR", "Destination": "MAA", "Altitude (m)": 7500, "Speed (m/s)": 210, "Status": "🟢 ON-TIME"},
-    {"Callsign": "IGO612", "Airline": "IndiGo", "Origin": "MAA", "Destination": "TRZ", "Altitude (m)": 5500, "Speed (m/s)": 190, "Status": "🟢 ON-TIME"},
-    {"Callsign": "AIC441", "Airline": "Air India", "Origin": "DEL", "Destination": "IXC", "Altitude (m)": 4800, "Speed (m/s)": 175, "Status": "🟡 ON-APPROACH"},
-    {"Callsign": "AIC121", "Airline": "Air India", "Origin": "DEL", "Destination": "LHR", "Altitude (m)": 11500, "Speed (m/s)": 260, "Status": "🔴 DELAYED (35m)"}
+    {"Callsign": "AIC101", "Airline": "Air India", "Origin": "DEL", "Destination": "BOM", "Altitude_m": 10500, "Speed_mps": 240, "Status": "🟢 ON-TIME"},
+    {"Callsign": "IGO505", "Airline": "IndiGo", "Origin": "DEL", "Destination": "SXR", "Altitude_m": 9800, "Speed_mps": 220, "Status": "🟢 ON-TIME"},
+    {"Callsign": "VTI811", "Airline": "Vistara", "Origin": "BOM", "Destination": "ATQ", "Altitude_m": 11200, "Speed_mps": 250, "Status": "🟢 ON-TIME"},
+    {"Callsign": "SEJ404", "Airline": "SpiceJet", "Origin": "DEL", "Destination": "DHM", "Altitude_m": 6500, "Speed_mps": 180, "Status": "🟢 ON-TIME"},
+    {"Callsign": "AKJ202", "Airline": "Akasa Air", "Origin": "BLR", "Destination": "MAA", "Altitude_m": 7500, "Speed_mps": 210, "Status": "🟢 ON-TIME"},
+    {"Callsign": "IGO612", "Airline": "IndiGo", "Origin": "MAA", "Destination": "TRZ", "Altitude_m": 5500, "Speed_mps": 190, "Status": "🟢 ON-TIME"},
+    {"Callsign": "AIC441", "Airline": "Air India", "Origin": "DEL", "Destination": "IXC", "Altitude_m": 4800, "Speed_mps": 175, "Status": "🟡 ON-APPROACH"},
+    {"Callsign": "AIC121", "Airline": "Air India", "Origin": "DEL", "Destination": "LHR", "Altitude_m": 11500, "Speed_mps": 260, "Status": "🔴 DELAYED (35m)"}
 ]
 
 df = pd.DataFrame(flights_data)
 st.dataframe(df, use_container_width=True, hide_index=True)
 
-# Chart
+st.markdown("<br/>", unsafe_allow_html=True)
+
+# Status Chart using Graph Objects (Zero pyarrow dependency)
 st.subheader("📊 Operational Status Breakdown")
-fig = px.pie(df, names="Status", title="Active Flights by Status Category", color_discrete_sequence=["#00C853", "#FB8C00", "#E53935"])
+
+fig = go.Figure(data=[go.Pie(
+    labels=["ON-TIME (En Route)", "ON-APPROACH (Holding)", "DELAYED (>15 mins)"],
+    values=[42, 5, 6],
+    hole=.4,
+    marker_colors=["#00C853", "#FB8C00", "#E53935"]
+)])
+fig.update_layout(
+    margin=dict(t=30, b=30, l=30, r=30),
+    paper_bgcolor="rgba(0,0,0,0)",
+    plot_bgcolor="rgba(0,0,0,0)",
+    font=dict(color="#111827", size=14)
+)
 st.plotly_chart(fig, use_container_width=True)
         `
       }
