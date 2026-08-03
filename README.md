@@ -11,6 +11,17 @@
 
 ---
 
+## 🌐 Live Multi-Cloud Deployments
+
+Access the live production dashboard across all deployed endpoints:
+
+- 🚀 **GitHub Pages (stlite WebAssembly)**: [https://hameeem.github.io/SkyMetrics-Live-Dashboard](https://hameeem.github.io/SkyMetrics-Live-Dashboard)
+- ☁️ **Microsoft Azure App Service**: [https://skymetrics-live-dashboard-e5bzb4aagcdag6a0.centralindia-01.azurewebsites.net](https://skymetrics-live-dashboard-e5bzb4aagcdag6a0.centralindia-01.azurewebsites.net)
+- ❄️ **Streamlit Community Cloud**: [https://skymetrics-live-dashboard.streamlit.app](https://skymetrics-live-dashboard.streamlit.app)
+- 📄 **Project Architecture & Feature Guide**: [PROJECT_EXPLANATION_GUIDE.md](PROJECT_EXPLANATION_GUIDE.md)
+
+---
+
 ## ✈️ System Architecture Overview
 
 ```
@@ -43,9 +54,10 @@
 
 ## 🚀 Key Features
 
-- 🛰️ **Live Flight Tracking**: Interactive PyDeck 3D & Folium world maps displaying real-time aircraft positions, telemetry, velocity vectors, altitude layers, and flight status.
+- 🛰️ **Live Flight Tracking**: Interactive PyDeck 3D & Folium world maps displaying real-time aircraft positions, telemetry, velocity vectors, altitude layers, and flight status with hover tooltips.
+- 📊 **Airport & Airline Operations Analysis**: Executive dashboard with airport search engine (`SXR`, `DHM`, `DEL`, `BOM`, `DXB`, `LHR`), timeframe filters (`Today`, `Week`, `Month`, `Year`), 7-day sparkline trends, and side-by-side airport comparison.
 - 🤖 **Machine Learning Delay Predictor**: XGBoost model computing delay probability %, estimated delay minutes, risk categories, feature importances, and SHAP explainability breakdowns.
-- 🌤️ **Weather Disruption Analytics**: Ingests airport temperature, wind speed, visibility, and humidity to correlate atmospheric conditions with delay risks.
+- 🌤️ **Weather Disruption Analytics**: METAR search engine ingesting airport temperature, wind speed, visibility, and weather phenomena for 35+ major airport hubs.
 - ⚡ **Automated ETL Pipelines**: Airflow DAGs and APScheduler background runners for 10-min flight updates, 15-min weather refreshes, hourly ML predictions, and nightly cleanup with full `etl_logs` auditing.
 - 💡 **AI Operational Insights**: Pluggable natural language briefing layer generating operational diagnostics and dispatcher recommendations.
 - 🔒 **Enterprise JWT Security**: Role-Based Access Control (`admin`, `analyst`, `viewer`), password hashing with Bcrypt, and audit logging.
@@ -72,8 +84,8 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/SkyMetrics.git
-cd SkyMetrics
+git clone https://github.com/Hameeem/SkyMetrics-Live-Dashboard.git
+cd SkyMetrics-Live-Dashboard
 
 # Create and activate Python virtual environment
 python -m venv venv
