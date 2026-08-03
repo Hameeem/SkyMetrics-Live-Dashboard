@@ -178,6 +178,25 @@ flights_data = [
 ]
 df_flights = pd.DataFrame(flights_data)
 
+weather_db = [
+    {"iata": "DEL", "airport": "Indira Gandhi Int'l", "city": "New Delhi", "temp": 34.0, "wind_kts": 18, "vis_km": 4.5, "condition": "MODERATE FOG", "risk": "MEDIUM"},
+    {"iata": "BOM", "airport": "Chhatrapati Shivaji Maharaj Int'l", "city": "Mumbai", "temp": 29.5, "wind_kts": 12, "vis_km": 8.0, "condition": "CLEAR", "risk": "LOW"},
+    {"iata": "BLR", "airport": "Kempegowda Int'l", "city": "Bengaluru", "temp": 26.0, "wind_kts": 8, "vis_km": 10.0, "condition": "PARTLY CLOUDY", "risk": "LOW"},
+    {"iata": "MAA", "airport": "Chennai Int'l", "city": "Chennai", "temp": 31.0, "wind_kts": 14, "vis_km": 7.0, "condition": "HUMID / CLEAR", "risk": "LOW"},
+    {"iata": "HYD", "airport": "Rajiv Gandhi Int'l", "city": "Hyderabad", "temp": 30.0, "wind_kts": 10, "vis_km": 9.0, "condition": "CLEAR", "risk": "LOW"},
+    {"iata": "CCU", "airport": "Netaji Subhash Chandra Bose Int'l", "city": "Kolkata", "temp": 32.5, "wind_kts": 16, "vis_km": 5.5, "condition": "HAZE", "risk": "LOW"},
+    {"iata": "SXR", "airport": "Sheikh ul-Alam Int'l", "city": "Srinagar", "temp": 18.0, "wind_kts": 24, "vis_km": 2.8, "condition": "DENSE FOG / HAZE", "risk": "HIGH"},
+    {"iata": "DHM", "airport": "Kangra Gaggal Airport", "city": "Dharamshala", "temp": 21.0, "wind_kts": 19, "vis_km": 4.0, "condition": "LIGHT RAIN / MIST", "risk": "MEDIUM"},
+    {"iata": "ATQ", "airport": "Sri Guru Ram Dass Jee Int'l", "city": "Amritsar", "temp": 33.0, "wind_kts": 15, "vis_km": 5.0, "condition": "DUST HAZE", "risk": "MEDIUM"},
+    {"iata": "IXC", "airport": "Shaheed Bhagat Singh Int'l", "city": "Chandigarh", "temp": 32.0, "wind_kts": 11, "vis_km": 7.5, "condition": "PARTLY CLOUDY", "risk": "LOW"},
+    {"iata": "TRZ", "airport": "Tiruchirappalli Int'l", "city": "Trichy", "temp": 33.5, "wind_kts": 13, "vis_km": 8.5, "condition": "SUNNY", "risk": "LOW"},
+    {"iata": "CJB", "airport": "Coimbatore Int'l", "city": "Coimbatore", "temp": 28.0, "wind_kts": 9, "vis_km": 10.0, "condition": "CLEAR", "risk": "LOW"},
+    {"iata": "IXM", "airport": "Madurai Airport", "city": "Madurai", "temp": 34.0, "wind_kts": 12, "vis_km": 9.0, "condition": "CLEAR", "risk": "LOW"},
+    {"iata": "AMD", "airport": "Sardar Vallabhbhai Patel Int'l", "city": "Ahmedabad", "temp": 36.0, "wind_kts": 14, "vis_km": 6.0, "condition": "SUNNY", "risk": "LOW"},
+    {"iata": "DXB", "airport": "Dubai International Airport", "city": "Dubai", "temp": 41.0, "wind_kts": 22, "vis_km": 6.0, "condition": "HOT / DUST", "risk": "MEDIUM"},
+    {"iata": "LHR", "airport": "London Heathrow Airport", "city": "London", "temp": 16.5, "wind_kts": 25, "vis_km": 3.5, "condition": "OVERCAST / RAIN", "risk": "HIGH"}
+]
+
 st.markdown("""
 <div class="hero-card">
     <div>
@@ -338,17 +357,33 @@ elif module == "🏬 Airport Analytics":
     st.dataframe(df_hubs, use_container_width=True, hide_index=True)
 
 elif module == "🌤️ Weather Impact":
-    st.subheader("🌤️ Airport Weather METAR Monitoring")
-    st.markdown("Live weather observation telemetry and delay risk correlation matrix.")
+    st.subheader("🌤️ Airport Weather Telemetry & METAR Search")
+    st.markdown("Search live weather observations, visibility, wind velocity, and operational risk for any airport (e.g. SXR, DHM, DEL, BOM, DXB, LHR).")
     
-    df_wx = pd.DataFrame([
-        {"IATA": "DEL", "Temp (°C)": 34.0, "Wind (kts)": 18, "Vis (km)": 4.5, "Condition": "MODERATE FOG"},
-        {"IATA": "BOM", "Temp (°C)": 29.5, "Wind (kts)": 12, "Vis (km)": 8.0, "Condition": "CLEAR"},
-        {"IATA": "BLR", "Temp (°C)": 26.0, "Wind (kts)": 8, "Vis (km)": 10.0, "Condition": "PARTLY CLOUDY"},
-        {"IATA": "SXR", "Temp (°C)": 18.0, "Wind (kts)": 22, "Vis (km)": 3.0, "Condition": "HAZE / FOG"},
-        {"IATA": "DHM", "Temp (°C)": 22.0, "Wind (kts)": 15, "Vis (km)": 5.0, "Condition": "LIGHT RAIN"}
-    ])
-    st.dataframe(df_wx, use_container_width=True, hide_index=True)
+    wx_q = st.text_input("🌤️ Search Airport Weather (Code or City Name)", placeholder="Type SXR, DHM, DEL, BOM, Srinagar, Dubai, London...").strip().upper()
+    
+    if wx_q:
+        filtered = [w for w in weather_db if wx_q in w['iata'] or wx_q in w['airport'].upper() or wx_q in w['city'].upper()]
+        st.markdown(f"### Matching Weather Stations ({len(filtered)})")
+    else:
+        filtered = weather_db
+        st.markdown("### All Monitored Airport Weather Stations")
+
+    if filtered:
+        if len(filtered) == 1:
+            w_top = filtered[0]
+            c1, c2, c3, c4 = st.columns(4)
+            c1.metric("🌡️ Temperature", f"{w_top['temp']} °C")
+            c2.metric("💨 Wind Velocity", f"{w_top['wind_kts']} kts")
+            c3.metric("👁️ Visibility", f"{w_top['vis_km']} km")
+            c4.metric("🚨 Weather Risk", w_top['risk'])
+            st.markdown("<br/>", unsafe_allow_html=True)
+            
+        df_wx_show = pd.DataFrame(filtered)[["iata", "city", "airport", "temp", "wind_kts", "vis_km", "condition", "risk"]]
+        df_wx_show.columns = ["IATA", "City", "Airport Name", "Temp (°C)", "Wind (kts)", "Visibility (km)", "METAR Condition", "Operational Risk"]
+        st.dataframe(df_wx_show, use_container_width=True, hide_index=True)
+    else:
+        st.info("No matching weather station found. Try searching SXR, DHM, DEL, BOM, BLR, MAA, or DXB.")
 
 elif module == "📈 Historical Trends":
     st.subheader("📈 Historical Airspace Telemetry & Fleet Analytics")
