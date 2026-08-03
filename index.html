@@ -34,6 +34,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
+import plotly.express as px
 import folium
 import streamlit.components.v1 as components
 
@@ -280,7 +281,6 @@ elif module == "✈️ Live Tracking":
             tooltip=folium.Tooltip(hover_info)
         ).add_to(m)
 
-    # Render HTML Map Component cleanly
     components.html(m._repr_html_(), height=560)
     st.dataframe(df_flights[["callsign", "airline", "origin_iata", "destination_iata", "altitude_m", "velocity_mps", "status"]], use_container_width=True, hide_index=True)
 
@@ -386,11 +386,58 @@ elif module == "🌤️ Weather Impact":
         st.info("No matching weather station found. Try searching SXR, DHM, DEL, BOM, BLR, MAA, or DXB.")
 
 elif module == "📈 Historical Trends":
-    st.subheader("📈 Historical Airspace Telemetry & Fleet Analytics")
-    st.markdown("Fleet distribution and historical altitude vs velocity scatters.")
-    fig = go.Figure(data=go.Scatter(x=df_flights["altitude_m"], y=df_flights["velocity_mps"], mode='markers+text', text=df_flights["callsign"], marker=dict(size=14, color='#1E88E5')))
-    fig.update_layout(title="Altitude (m) vs Velocity (m/s) Scatter", xaxis_title="Altitude (m)", yaxis_title="Speed (m/s)", paper_bgcolor="rgba(0,0,0,0)")
-    st.plotly_chart(fig, use_container_width=True)
+    st.subheader("📈 Historical Operational Analytics & Fleet Trends")
+    st.markdown("Multi-dimensional historical delay distributions, airline market share, operational timelines, and telemetry scatter analysis.")
+
+    fleet_df = pd.DataFrame([
+        {"Airline": "IndiGo", "Fleet Size": 340, "Share %": 61.2, "Region": "Domestic India"},
+        {"Airline": "Air India Group", "Fleet Size": 140, "Share %": 24.5, "Region": "Domestic & Int'l"},
+        {"Airline": "Vistara", "Fleet Size": 70, "Share %": 8.8, "Region": "Full Service"},
+        {"Airline": "Akasa Air", "Fleet Size": 24, "Share %": 4.1, "Region": "Low Cost"},
+        {"Airline": "SpiceJet", "Fleet Size": 38, "Share %": 1.4, "Region": "Regional"}
+    ])
+
+    monthly_traffic = pd.DataFrame([
+        {"Month": "Jan", "Flights (Thousands)": 142.5, "On-Time %": 88.2},
+        {"Month": "Feb", "Flights (Thousands)": 138.2, "On-Time %": 89.5},
+        {"Month": "Mar", "Flights (Thousands)": 150.1, "On-Time %": 87.1},
+        {"Month": "Apr", "Flights (Thousands)": 154.8, "On-Time %": 86.4},
+        {"Month": "May", "Flights (Thousands)": 162.3, "On-Time %": 84.8},
+        {"Month": "Jun", "Flights (Thousands)": 168.0, "On-Time %": 83.2},
+        {"Month": "Jul", "Flights (Thousands)": 164.5, "On-Time %": 85.9}
+    ])
+
+    c_h1, c_h2 = st.columns(2)
+    with c_h1:
+        st.subheader("✈️ Indian Aviation Airline Market Share")
+        fig_tree = px.treemap(fleet_df, path=["Region", "Airline"], values="Fleet Size", color="Share %", color_continuous_scale="Blues")
+        fig_tree.update_layout(margin=dict(t=20, l=10, r=10, b=10))
+        st.plotly_chart(fig_tree, use_container_width=True)
+
+    with c_h2:
+        st.subheader("⚡ Velocity vs Altitude Telemetry Distribution")
+        fig_scat = px.scatter(df_flights, x="altitude_m", y="velocity_mps", color="status", hover_name="callsign", color_discrete_map={"EN_ROUTE": "#00C853", "ON_APPROACH": "#FB8C00", "DELAYED": "#E53935"})
+        fig_scat.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
+        st.plotly_chart(fig_scat, use_container_width=True)
+
+    st.markdown("<br/>", unsafe_allow_html=True)
+    c_h3, c_h4 = st.columns(2)
+    with c_h3:
+        st.subheader("📈 Monthly Flight Operations Volume")
+        fig_line = px.bar(monthly_traffic, x="Month", y="Flights (Thousands)", text="Flights (Thousands)", color="On-Time %", color_continuous_scale="Viridis")
+        st.plotly_chart(fig_line, use_container_width=True)
+
+    with c_h4:
+        st.subheader("📊 Annual Delay Severity Distribution")
+        delay_dist = pd.DataFrame([
+            {"Category": "On-Time (<15m)", "Count": 38400},
+            {"Category": "Minor Delay (15-30m)", "Count": 4200},
+            {"Category": "Moderate Delay (30-60m)", "Count": 1850},
+            {"Category": "Severe Delay (>60m)", "Count": 620}
+        ])
+        fig_bar = px.bar(delay_dist, x="Category", y="Count", color="Category", color_discrete_sequence=["#00C853", "#FB8C00", "#FF7043", "#E53935"])
+        fig_bar.update_layout(showlegend=False, paper_bgcolor="rgba(0,0,0,0)")
+        st.plotly_chart(fig_bar, use_container_width=True)
 
 elif module == "💡 AI Insights":
     st.subheader("💡 AI Operational Insights & Dispatcher Briefings")
