@@ -27,13 +27,15 @@
   <script src="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.58.0/build/stlite.js"></script>
   <script>
     stlite.mount({
-      requirements: ["streamlit", "pandas", "plotly", "folium", "streamlit-folium"],
+      requirements: ["streamlit", "pandas", "plotly", "folium"],
       entrypoint: "app.py",
       files: {
         "app.py": `
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
+import folium
+import streamlit.components.v1 as components
 
 st.set_page_config(page_title="SkyMetrics | Enterprise Aviation Command Center", page_icon="✈️", layout="wide", initial_sidebar_state="expanded")
 
@@ -121,7 +123,6 @@ st.sidebar.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# All 10 Sidebar Navigation Modules
 module = st.sidebar.radio(
     "SELECT OPERATIONAL MODULE",
     [
@@ -147,7 +148,6 @@ st.sidebar.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Comprehensive Dataset (All Major Indian Airports & Flights)
 airports_list = [
     {"iata": "DEL", "name": "Indira Gandhi International Airport", "city": "New Delhi", "lat": 28.5562, "lon": 77.1000},
     {"iata": "BOM", "name": "Chhatrapati Shivaji Maharaj Int'l", "city": "Mumbai", "lat": 19.0896, "lon": 72.8656},
@@ -165,20 +165,19 @@ airports_list = [
 ]
 
 flights_data = [
-    {"callsign": "AIC101", "airline": "Air India", "origin_iata": "DEL", "destination_iata": "BOM", "latitude": 24.50, "longitude": 75.20, "altitude_m": 10500, "velocity_mps": 240, "status": "EN_ROUTE"},
-    {"callsign": "IGO505", "airline": "IndiGo", "origin_iata": "DEL", "destination_iata": "SXR", "latitude": 31.20, "longitude": 75.80, "altitude_m": 9800, "velocity_mps": 220, "status": "EN_ROUTE"},
-    {"callsign": "VTI811", "airline": "Vistara", "origin_iata": "BOM", "destination_iata": "ATQ", "latitude": 24.50, "longitude": 73.80, "altitude_m": 11200, "velocity_mps": 250, "status": "EN_ROUTE"},
-    {"callsign": "SEJ404", "airline": "SpiceJet", "origin_iata": "DEL", "destination_iata": "DHM", "latitude": 30.50, "longitude": 76.50, "altitude_m": 6500, "velocity_mps": 180, "status": "EN_ROUTE"},
-    {"callsign": "AKJ202", "airline": "Akasa Air", "origin_iata": "BLR", "destination_iata": "MAA", "latitude": 13.00, "longitude": 78.50, "altitude_m": 7500, "velocity_mps": 210, "status": "EN_ROUTE"},
-    {"callsign": "IGO612", "airline": "IndiGo", "origin_iata": "MAA", "destination_iata": "TRZ", "latitude": 11.80, "longitude": 79.40, "altitude_m": 5500, "velocity_mps": 190, "status": "EN_ROUTE"},
-    {"callsign": "AIC441", "airline": "Air India", "origin_iata": "DEL", "destination_iata": "IXC", "latitude": 29.80, "longitude": 76.90, "altitude_m": 4800, "velocity_mps": 175, "status": "ON_APPROACH"},
-    {"callsign": "SEJ711", "airline": "SpiceJet", "origin_iata": "MAA", "destination_iata": "CJB", "latitude": 12.00, "longitude": 78.60, "altitude_m": 6200, "velocity_mps": 195, "status": "EN_ROUTE"},
-    {"callsign": "IGO309", "airline": "IndiGo", "origin_iata": "MAA", "destination_iata": "IXM", "latitude": 11.00, "longitude": 79.00, "altitude_m": 5800, "velocity_mps": 185, "status": "EN_ROUTE"},
-    {"callsign": "AIC121", "airline": "Air India", "origin_iata": "DEL", "destination_iata": "LHR", "latitude": 35.00, "longitude": 65.00, "altitude_m": 11500, "velocity_mps": 260, "status": "DELAYED"}
+    {"callsign": "AIC101", "airline": "Air India", "origin_iata": "DEL", "destination_iata": "BOM", "latitude": 24.50, "longitude": 75.20, "altitude_m": 10500, "velocity_mps": 240, "status": "EN_ROUTE", "heading": 190},
+    {"callsign": "IGO505", "airline": "IndiGo", "origin_iata": "DEL", "destination_iata": "SXR", "latitude": 31.20, "longitude": 75.80, "altitude_m": 9800, "velocity_mps": 220, "status": "EN_ROUTE", "heading": 340},
+    {"callsign": "VTI811", "airline": "Vistara", "origin_iata": "BOM", "destination_iata": "ATQ", "latitude": 24.50, "longitude": 73.80, "altitude_m": 11200, "velocity_mps": 250, "status": "EN_ROUTE", "heading": 15},
+    {"callsign": "SEJ404", "airline": "SpiceJet", "origin_iata": "DEL", "destination_iata": "DHM", "latitude": 30.50, "longitude": 76.50, "altitude_m": 6500, "velocity_mps": 180, "status": "EN_ROUTE", "heading": 20},
+    {"callsign": "AKJ202", "airline": "Akasa Air", "origin_iata": "BLR", "destination_iata": "MAA", "latitude": 13.00, "longitude": 78.50, "altitude_m": 7500, "velocity_mps": 210, "status": "EN_ROUTE", "heading": 85},
+    {"callsign": "IGO612", "airline": "IndiGo", "origin_iata": "MAA", "destination_iata": "TRZ", "latitude": 11.80, "longitude": 79.40, "altitude_m": 5500, "velocity_mps": 190, "status": "EN_ROUTE", "heading": 210},
+    {"callsign": "AIC441", "airline": "Air India", "origin_iata": "DEL", "destination_iata": "IXC", "latitude": 29.80, "longitude": 76.90, "altitude_m": 4800, "velocity_mps": 175, "status": "ON_APPROACH", "heading": 350},
+    {"callsign": "SEJ711", "airline": "SpiceJet", "origin_iata": "MAA", "destination_iata": "CJB", "latitude": 12.00, "longitude": 78.60, "altitude_m": 6200, "velocity_mps": 195, "status": "EN_ROUTE", "heading": 250},
+    {"callsign": "IGO309", "airline": "IndiGo", "origin_iata": "MAA", "destination_iata": "IXM", "latitude": 11.00, "longitude": 79.00, "altitude_m": 5800, "velocity_mps": 185, "status": "EN_ROUTE", "heading": 200},
+    {"callsign": "AIC121", "airline": "Air India", "origin_iata": "DEL", "destination_iata": "LHR", "latitude": 35.00, "longitude": 65.00, "altitude_m": 11500, "velocity_mps": 260, "status": "DELAYED", "heading": 290}
 ]
 df_flights = pd.DataFrame(flights_data)
 
-# Header Component
 st.markdown("""
 <div class="hero-card">
     <div>
@@ -192,7 +191,6 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Render Selected Module
 if module == "🏠 Home":
     c1, c2, c3, c4, c5 = st.columns(5)
     c1.markdown('<div class="metric-card-premium"><div class="metric-val">48</div><div class="metric-lbl">✈️ LIVE FLIGHTS</div></div>', unsafe_allow_html=True)
@@ -202,7 +200,6 @@ if module == "🏠 Home":
     c5.markdown('<div class="metric-card-premium" style="border-top-color:#1E88E5;"><div class="metric-val" style="color:#1E88E5;">94.3%</div><div class="metric-lbl">🤖 ML ACCURACY</div></div>', unsafe_allow_html=True)
 
     st.markdown("<br/>", unsafe_allow_html=True)
-
     col_l, col_r = st.columns([6, 4])
     with col_l:
         st.subheader("📊 Operational Status Breakdown")
@@ -229,24 +226,56 @@ if module == "🏠 Home":
         """, unsafe_allow_html=True)
 
 elif module == "✈️ Live Tracking":
-    import folium
-    from streamlit_folium import st_folium
-
     st.subheader("🛰️ Live SkyMetrics Airplane Tracking Radar")
-    st.markdown("Sharp vector radar, rotated plane icon markers (✈️), and real-time operational status.")
+    st.markdown("Hover cursor over any airplane icon (✈️) to inspect real-time flight telemetry, altitude, speed, and status.")
 
     m = folium.Map(location=[22.0, 78.0], zoom_start=5, tiles="CartoDB positron")
 
     for ap in airports_list:
-        folium.CircleMarker(location=[ap["lat"], ap["lon"]], radius=6, color="#0284c7", fill=True, fill_color="#38bdf8", popup=f"<b>Airport:</b> {ap['name']} ({ap['iata']})").add_to(m)
+        folium.CircleMarker(
+            location=[ap["lat"], ap["lon"]],
+            radius=6,
+            color="#0284c7",
+            fill=True,
+            fill_color="#38bdf8",
+            popup=f"<b>Airport:</b> {ap['name']} ({ap['iata']})",
+            tooltip=f"Airport Hub: {ap['name']} ({ap['iata']})"
+        ).add_to(m)
 
     for f in flights_data:
         color = "#00C853" if f["status"] == "EN_ROUTE" else ("#FB8C00" if f["status"] == "ON_APPROACH" else "#E53935")
-        plane_html = f'<div style="font-size: 16pt; color: {color};">✈️</div>'
-        folium.map.Marker([f["latitude"], f["longitude"]], icon=folium.DivIcon(html=plane_html), popup=f"<b>{f['callsign']}</b><br/>Route: {f['origin_iata']} ➔ {f['destination_iata']}").add_to(m)
+        st_text = "🟢 ON-TIME (EN ROUTE)" if f["status"] == "EN_ROUTE" else ("🟡 ON APPROACH" if f["status"] == "ON_APPROACH" else "🔴 DELAYED (>15 mins)")
+        hdg = f.get("heading", 0)
 
-    st_folium(m, width=1200, height=540)
-    st.dataframe(df_flights, use_container_width=True, hide_index=True)
+        plane_html = f'''
+        <div style="font-size: 18pt; color: {color}; transform: rotate({hdg}deg); text-shadow: 0 0 3px #ffffff, 0 0 2px #000000; cursor: pointer;">
+            ✈️
+        </div>
+        '''
+
+        hover_info = f"✈️ Callsign: {f['callsign']} ({f['airline']})\nRoute: {f['origin_iata']} -> {f['destination_iata']}\nAltitude: {f['altitude_m']:,} m | Speed: {f['velocity_mps']} m/s\nStatus: {st_text}"
+        
+        popup_html = f'''
+        <div style="font-family: Arial, sans-serif; min-width: 200px; padding: 8px; color: #111827;">
+            <b style="color: #1E88E5; font-size: 1.1rem;">✈️ Callsign: {f['callsign']}</b><br/>
+            <b>Airline:</b> {f['airline']}<br/>
+            <b>Route:</b> {f['origin_iata']} ➔ {f['destination_iata']}<br/>
+            <b>Altitude:</b> {f['altitude_m']:,} meters<br/>
+            <b>Speed:</b> {f['velocity_mps']} m/s<br/>
+            <b>Status:</b> <span style="color:{color}; font-weight:800;">{st_text}</span>
+        </div>
+        '''
+
+        folium.map.Marker(
+            [f["latitude"], f["longitude"]],
+            icon=folium.DivIcon(html=plane_html),
+            popup=folium.Popup(popup_html, max_width=260),
+            tooltip=folium.Tooltip(hover_info)
+        ).add_to(m)
+
+    # Render HTML Map Component cleanly
+    components.html(m._repr_html_(), height=560)
+    st.dataframe(df_flights[["callsign", "airline", "origin_iata", "destination_iata", "altitude_m", "velocity_mps", "status"]], use_container_width=True, hide_index=True)
 
 elif module == "🔍 Flight Search":
     st.subheader("🔍 Global Aviation Flight & Airport Search")
@@ -296,7 +325,6 @@ elif module == "🤖 Delay Prediction":
 
     with col_res2:
         st.markdown("""
-
         <div class="glass-card">
             <h4 style="color:#1E88E5; margin-top:0;">SHAP Feature Impact Breakdown</h4>
             <table style="width:100%; font-size:0.9rem;">
