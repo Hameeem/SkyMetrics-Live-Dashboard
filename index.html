@@ -238,8 +238,8 @@ elif module == "✈️ Live Tracking":
             color="#0284c7",
             fill=True,
             fill_color="#38bdf8",
-            popup=f"<b>Airport:</b> {ap['name']} ({ap['iata']})",
-            tooltip=f"Airport Hub: {ap['name']} ({ap['iata']})"
+            popup="Airport Hub: " + ap["name"] + " (" + ap["iata"] + ")",
+            tooltip="Airport Hub: " + ap["name"] + " (" + ap["iata"] + ")"
         ).add_to(m)
 
     for f in flights_data:
@@ -247,24 +247,11 @@ elif module == "✈️ Live Tracking":
         st_text = "🟢 ON-TIME (EN ROUTE)" if f["status"] == "EN_ROUTE" else ("🟡 ON APPROACH" if f["status"] == "ON_APPROACH" else "🔴 DELAYED (>15 mins)")
         hdg = f.get("heading", 0)
 
-        plane_html = f'''
-        <div style="font-size: 18pt; color: {color}; transform: rotate({hdg}deg); text-shadow: 0 0 3px #ffffff, 0 0 2px #000000; cursor: pointer;">
-            ✈️
-        </div>
-        '''
+        plane_html = '<div style="font-size: 18pt; color: ' + color + '; transform: rotate(' + str(hdg) + 'deg); text-shadow: 0 0 3px #ffffff, 0 0 2px #000000; cursor: pointer;">✈️</div>'
 
-        hover_info = f"✈️ Callsign: {f['callsign']} ({f['airline']})\nRoute: {f['origin_iata']} -> {f['destination_iata']}\nAltitude: {f['altitude_m']:,} m | Speed: {f['velocity_mps']} m/s\nStatus: {st_text}"
-        
-        popup_html = f'''
-        <div style="font-family: Arial, sans-serif; min-width: 200px; padding: 8px; color: #111827;">
-            <b style="color: #1E88E5; font-size: 1.1rem;">✈️ Callsign: {f['callsign']}</b><br/>
-            <b>Airline:</b> {f['airline']}<br/>
-            <b>Route:</b> {f['origin_iata']} ➔ {f['destination_iata']}<br/>
-            <b>Altitude:</b> {f['altitude_m']:,} meters<br/>
-            <b>Speed:</b> {f['velocity_mps']} m/s<br/>
-            <b>Status:</b> <span style="color:{color}; font-weight:800;">{st_text}</span>
-        </div>
-        '''
+        hover_info = "✈️ Callsign: " + f['callsign'] + " (" + f['airline'] + ")\nRoute: " + f['origin_iata'] + " -> " + f['destination_iata'] + "\nAltitude: " + str(f['altitude_m']) + " m | Speed: " + str(f['velocity_mps']) + " m/s\nStatus: " + st_text
+
+        popup_html = '<div style="font-family: Arial, sans-serif; min-width: 200px; padding: 8px; color: #111827;"><b style="color: #1E88E5; font-size: 1.1rem;">✈️ Callsign: ' + f['callsign'] + '</b><br/><b>Airline:</b> ' + f['airline'] + '<br/><b>Route:</b> ' + f['origin_iata'] + ' ➔ ' + f['destination_iata'] + '<br/><b>Altitude:</b> ' + str(f['altitude_m']) + ' meters<br/><b>Speed:</b> ' + str(f['velocity_mps']) + ' m/s<br/><b>Status:</b> <span style="color:' + color + '; font-weight:800;">' + st_text + '</span></div>'
 
         folium.map.Marker(
             [f["latitude"], f["longitude"]],
