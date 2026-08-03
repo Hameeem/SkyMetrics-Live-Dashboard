@@ -6,115 +6,100 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-
 from dashboard.components.styles import apply_custom_theme, render_header
 from dashboard.components.api_client import api_client
 
 apply_custom_theme()
 
-render_header("Historical Operational Analytics & Fleet Trends", "Multi-dimensional historical delay distributions, airline market share, operational timelines, and telemetry scatter analysis.")
+st.markdown("""
+<style>
+    div[data-testid="stMetricLabel"] *, label[data-testid="stWidgetLabel"] * {
+        color: #0F172A !important;
+        font-weight: 800 !important;
+    }
+</style>
+""", unsafe_allow_html=True)
 
-# Fallback Historical Fleet & Traffic Datasets
-fleet_data = pd.DataFrame([
-    {"Airline": "IndiGo", "Fleet Size": 340, "Share %": 61.2, "Region": "Domestic India"},
-    {"Airline": "Air India Group", "Fleet Size": 140, "Share %": 24.5, "Region": "Domestic & Int'l"},
-    {"Airline": "Vistara", "Fleet Size": 70, "Share %": 8.8, "Region": "Full Service"},
-    {"Airline": "Akasa Air", "Fleet Size": 24, "Share %": 4.1, "Region": "Low Cost"},
-    {"Airline": "SpiceJet", "Fleet Size": 38, "Share %": 1.4, "Region": "Regional"}
+render_header("Historical Trends & Operational Analytics", "Multi-dimensional historical operational analytics, fleet distribution, scatter telemetry, and delay severity histograms.")
+
+# Sample historical flight telemetry
+flights_hist = pd.DataFrame([
+    {"callsign": "AIC101", "airline": "Air India", "origin_iata": "DEL", "destination_iata": "BOM", "altitude_m": 10500, "velocity_mps": 240, "status": "EN_ROUTE"},
+    {"callsign": "IGO505", "airline": "IndiGo", "origin_iata": "DEL", "destination_iata": "SXR", "altitude_m": 9800, "velocity_mps": 220, "status": "EN_ROUTE"},
+    {"callsign": "VTI811", "airline": "Vistara", "origin_iata": "BOM", "destination_iata": "ATQ", "altitude_m": 11200, "velocity_mps": 250, "status": "EN_ROUTE"},
+    {"callsign": "SEJ404", "airline": "SpiceJet", "origin_iata": "DEL", "destination_iata": "DHM", "altitude_m": 6500, "velocity_mps": 180, "status": "EN_ROUTE"},
+    {"callsign": "AKJ202", "airline": "Akasa Air", "origin_iata": "BLR", "destination_iata": "MAA", "altitude_m": 7500, "velocity_mps": 210, "status": "EN_ROUTE"},
+    {"callsign": "IGO612", "airline": "IndiGo", "origin_iata": "MAA", "destination_iata": "TRZ", "altitude_m": 5500, "velocity_mps": 190, "status": "EN_ROUTE"},
+    {"callsign": "AIC441", "airline": "Air India", "origin_iata": "DEL", "destination_iata": "IXC", "altitude_m": 4800, "velocity_mps": 175, "status": "ON_APPROACH"},
+    {"callsign": "SEJ711", "airline": "SpiceJet", "origin_iata": "MAA", "destination_iata": "CJB", "altitude_m": 6200, "velocity_mps": 195, "status": "EN_ROUTE"},
+    {"callsign": "IGO309", "airline": "IndiGo", "origin_iata": "MAA", "destination_iata": "IXM", "altitude_m": 5800, "velocity_mps": 185, "status": "EN_ROUTE"},
+    {"callsign": "AIC121", "airline": "Air India", "origin_iata": "DEL", "destination_iata": "LHR", "altitude_m": 11500, "velocity_mps": 260, "status": "DELAYED"}
 ])
 
-monthly_traffic = pd.DataFrame([
-    {"Month": "Jan", "Flights (Thousands)": 142.5, "On-Time %": 88.2},
-    {"Month": "Feb", "Flights (Thousands)": 138.2, "On-Time %": 89.5},
-    {"Month": "Mar", "Flights (Thousands)": 150.1, "On-Time %": 87.1},
-    {"Month": "Apr", "Flights (Thousands)": 154.8, "On-Time %": 86.4},
-    {"Month": "May", "Flights (Thousands)": 162.3, "On-Time %": 84.8},
-    {"Month": "Jun", "Flights (Thousands)": 168.0, "On-Time %": 83.2},
-    {"Month": "Jul", "Flights (Thousands)": 164.5, "On-Time %": 85.9}
-])
+c_h1, c_h2 = st.columns(2)
 
-telemetry_data = pd.DataFrame([
-    {"Callsign": "AIC101", "Airline": "Air India", "Altitude_m": 10500, "Velocity_mps": 240, "Status": "ON-TIME"},
-    {"Callsign": "IGO505", "Airline": "IndiGo", "Altitude_m": 9800, "Velocity_mps": 220, "Status": "ON-TIME"},
-    {"Callsign": "VTI811", "Airline": "Vistara", "Altitude_m": 11200, "Velocity_mps": 250, "Status": "ON-TIME"},
-    {"Callsign": "SEJ404", "Airline": "SpiceJet", "Altitude_m": 6500, "Velocity_mps": 180, "Status": "ON-TIME"},
-    {"Callsign": "AKJ202", "Airline": "Akasa Air", "Altitude_m": 7500, "Velocity_mps": 210, "Status": "ON-TIME"},
-    {"Callsign": "IGO612", "Airline": "IndiGo", "Altitude_m": 5500, "Velocity_mps": 190, "Status": "ON-TIME"},
-    {"Callsign": "AIC441", "Airline": "Air India", "Altitude_m": 4800, "Velocity_mps": 175, "Status": "ON APPROACH"},
-    {"Callsign": "AIC121", "Airline": "Air India", "Altitude_m": 11500, "Velocity_mps": 260, "Status": "DELAYED"}
-])
-
-# Attempt live data fetch with safe fallback
-try:
-    live_flights = api_client.get_live_flights()
-    if live_flights and len(live_flights) > 0:
-        df_live = pd.DataFrame(live_flights)
-        if "altitude_m" in df_live.columns and "velocity_mps" in df_live.columns:
-            telemetry_data = df_live
-except Exception:
-    pass
-
-c1, c2 = st.columns(2)
-
-with c1:
+with c_h1:
     st.subheader("✈️ Indian Aviation Airline Market Share")
-    fig_tree = px.treemap(
-        fleet_data, 
-        path=["Region", "Airline"], 
-        values="Fleet Size", 
-        color="Share %",
-        color_continuous_scale="Blues",
-        title="Fleet Market Share Distribution by Airline Carrier"
-    )
-    fig_tree.update_layout(margin=dict(t=30, l=10, r=10, b=10))
+    fig_tree = go.Figure(go.Treemap(
+        labels=["Domestic India", "Domestic & Int'l", "Full Service", "Low Cost", "Regional", "IndiGo", "Air India", "Vistara", "Akasa Air", "SpiceJet"],
+        parents=["", "", "", "", "", "Domestic India", "Domestic & Int'l", "Full Service", "Low Cost", "Regional"],
+        values=[340, 140, 70, 24, 38, 340, 140, 70, 24, 38],
+        marker_colors=["#1E88E5", "#0284C7", "#38BDF8", "#0F172A", "#64748B"]
+    ))
+    fig_tree.update_layout(margin=dict(t=20, l=10, r=10, b=10), paper_bgcolor="#FFFFFF")
     st.plotly_chart(fig_tree, use_container_width=True)
 
-with c2:
+with c_h2:
     st.subheader("⚡ Velocity vs Altitude Telemetry Distribution")
-    fig_scat = px.scatter(
-        telemetry_data,
-        x="Altitude_m" if "Altitude_m" in telemetry_data.columns else "altitude_m",
-        y="Velocity_mps" if "Velocity_mps" in telemetry_data.columns else "velocity_mps",
-        color="Status" if "Status" in telemetry_data.columns else "status",
-        hover_name="Callsign" if "Callsign" in telemetry_data.columns else "callsign",
-        size_max=15,
-        color_discrete_map={"ON-TIME": "#00C853", "ON APPROACH": "#FB8C00", "DELAYED": "#E53935", "EN_ROUTE": "#00C853"},
-        title="Airspeed (m/s) vs Cruising Altitude (m)"
+    fig_scat = go.Figure(data=go.Scatter(
+        x=flights_hist["altitude_m"].tolist(),
+        y=flights_hist["velocity_mps"].tolist(),
+        mode='markers+text',
+        text=flights_hist["callsign"].tolist(),
+        textposition="top center",
+        marker=dict(size=14, color='#1E88E5')
+    ))
+    fig_scat.update_layout(
+        paper_bgcolor="#FFFFFF",
+        plot_bgcolor="#FFFFFF",
+        xaxis=dict(title="Cruising Altitude (meters)", color="#0F172A"),
+        yaxis=dict(title="Airspeed Velocity (m/s)", color="#0F172A"),
+        font=dict(color="#0F172A")
     )
-    fig_scat.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
     st.plotly_chart(fig_scat, use_container_width=True)
 
 st.markdown("<br/>", unsafe_allow_html=True)
-c3, c4 = st.columns(2)
+c_h3, c_h4 = st.columns(2)
 
-with c3:
-    st.subheader("📈 Monthly Flight Volume Timeline")
-    fig_line = px.bar(
-        monthly_traffic,
-        x="Month",
-        y="Flights (Thousands)",
-        text="Flights (Thousands)",
-        color="On-Time %",
-        color_continuous_scale="Viridis",
-        title="Monthly Operations (Thousands of Flights)"
+with c_h3:
+    st.subheader("📈 Monthly Flight Operations Volume")
+    fig_line = go.Figure(data=go.Bar(
+        x=["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+        y=[142.5, 138.2, 150.1, 154.8, 162.3, 168.0, 164.5],
+        marker_color="#1E88E5"
+    ))
+    fig_line.update_layout(
+        paper_bgcolor="#FFFFFF", 
+        plot_bgcolor="#FFFFFF", 
+        yaxis=dict(title="Flights (Thousands)", color="#0F172A"),
+        xaxis=dict(color="#0F172A"),
+        font=dict(color="#0F172A")
     )
     st.plotly_chart(fig_line, use_container_width=True)
 
-with c4:
-    st.subheader("📊 Historical Delay Duration Breakdown")
-    delay_dist = pd.DataFrame([
-        {"Category": "On-Time (<15m)", "Count": 38400, "Color": "#00C853"},
-        {"Category": "Minor Delay (15-30m)", "Count": 4200, "Color": "#FB8C00"},
-        {"Category": "Moderate Delay (30-60m)", "Count": 1850, "Color": "#FF7043"},
-        {"Category": "Severe Delay (>60m)", "Count": 620, "Color": "#E53935"}
-    ])
-    fig_bar = px.bar(
-        delay_dist,
-        x="Category",
-        y="Count",
-        color="Category",
-        color_discrete_sequence=["#00C853", "#FB8C00", "#FF7043", "#E53935"],
-        title="Annual Delay Severity Count"
+with c_h4:
+    st.subheader("📊 Annual Delay Severity Distribution")
+    fig_bar = go.Figure(data=go.Bar(
+        x=["On-Time (<15m)", "Minor (15-30m)", "Moderate (30-60m)", "Severe (>60m)"],
+        y=[38400, 4200, 1850, 620],
+        marker_color=["#1E88E5", "#0284C7", "#38BDF8", "#0F172A"]
+    ))
+    fig_bar.update_layout(
+        showlegend=False, 
+        paper_bgcolor="#FFFFFF", 
+        plot_bgcolor="#FFFFFF", 
+        yaxis=dict(title="Flight Count", color="#0F172A"),
+        xaxis=dict(color="#0F172A"),
+        font=dict(color="#0F172A")
     )
-    fig_bar.update_layout(showlegend=False, paper_bgcolor="rgba(0,0,0,0)")
     st.plotly_chart(fig_bar, use_container_width=True)

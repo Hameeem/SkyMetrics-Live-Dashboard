@@ -168,20 +168,24 @@ st.sidebar.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-airports_list = [
-    {"iata": "DEL", "name": "Indira Gandhi International Airport", "city": "New Delhi", "lat": 28.5562, "lon": 77.1000},
-    {"iata": "BOM", "name": "Chhatrapati Shivaji Maharaj Int'l", "city": "Mumbai", "lat": 19.0896, "lon": 72.8656},
-    {"iata": "BLR", "name": "Kempegowda International Airport", "city": "Bengaluru", "lat": 13.1986, "lon": 77.7066},
-    {"iata": "MAA", "name": "Chennai International Airport", "city": "Chennai", "lat": 12.9941, "lon": 80.1709},
-    {"iata": "HYD", "name": "Rajiv Gandhi International Airport", "city": "Hyderabad", "lat": 17.2403, "lon": 78.4294},
-    {"iata": "CCU", "name": "Netaji Subhash Chandra Bose Int'l", "city": "Kolkata", "lat": 22.6547, "lon": 88.4467},
-    {"iata": "SXR", "name": "Sheikh ul-Alam International Airport", "city": "Srinagar", "lat": 33.9872, "lon": 74.7741},
-    {"iata": "DHM", "name": "Kangra Gaggal Airport", "city": "Dharamshala", "lat": 32.1651, "lon": 76.2634},
-    {"iata": "ATQ", "name": "Sri Guru Ram Dass Jee Int'l", "city": "Amritsar", "lat": 31.7096, "lon": 74.7973},
-    {"iata": "IXC", "name": "Shaheed Bhagat Singh Int'l", "city": "Chandigarh", "lat": 30.6735, "lon": 76.7885},
-    {"iata": "TRZ", "name": "Tiruchirappalli International Airport", "city": "Trichy", "lat": 10.7654, "lon": 78.7097},
-    {"iata": "CJB", "name": "Coimbatore International Airport", "city": "Coimbatore", "lat": 11.0300, "lon": 77.0434},
-    {"iata": "IXM", "name": "Madurai Airport", "city": "Madurai", "lat": 9.8345, "lon": 78.0934}
+all_airports_master = [
+    {"iata": "ALL", "name": "ALL - All Indian Airspace Hubs", "city": "All Cities", "takeoffs": 420},
+    {"iata": "DEL", "name": "DEL - Indira Gandhi Int'l (Delhi)", "city": "New Delhi", "takeoffs": 142},
+    {"iata": "BOM", "name": "BOM - Chhatrapati Shivaji Maharaj Int'l (Mumbai)", "city": "Mumbai", "takeoffs": 98},
+    {"iata": "BLR", "name": "BLR - Kempegowda Int'l (Bengaluru)", "city": "Bengaluru", "takeoffs": 75},
+    {"iata": "MAA", "name": "MAA - Chennai Int'l (Chennai)", "city": "Chennai", "takeoffs": 62},
+    {"iata": "HYD", "name": "HYD - Rajiv Gandhi Int'l (Hyderabad)", "city": "Hyderabad", "takeoffs": 54},
+    {"iata": "CCU", "name": "CCU - Netaji Subhash Chandra Bose Int'l (Kolkata)", "city": "Kolkata", "takeoffs": 48},
+    {"iata": "SXR", "name": "SXR - Sheikh ul-Alam Int'l (Srinagar)", "city": "Srinagar", "takeoffs": 28},
+    {"iata": "DHM", "name": "DHM - Kangra Gaggal Airport (Dharamshala)", "city": "Dharamshala", "takeoffs": 14},
+    {"iata": "ATQ", "name": "ATQ - Sri Guru Ram Dass Jee Int'l (Amritsar)", "city": "Amritsar", "takeoffs": 22},
+    {"iata": "IXC", "name": "IXC - Shaheed Bhagat Singh Int'l (Chandigarh)", "city": "Chandigarh", "takeoffs": 25},
+    {"iata": "TRZ", "name": "TRZ - Tiruchirappalli Int'l (Trichy)", "city": "Trichy", "takeoffs": 18},
+    {"iata": "CJB", "name": "CJB - Coimbatore Int'l", "city": "Coimbatore", "takeoffs": 19},
+    {"iata": "IXM", "name": "IXM - Madurai Airport", "city": "Madurai", "takeoffs": 16},
+    {"iata": "AMD", "name": "AMD - Sardar Vallabhbhai Patel Int'l", "city": "Ahmedabad", "takeoffs": 42},
+    {"iata": "DXB", "name": "DXB - Dubai International Airport", "city": "Dubai", "takeoffs": 185},
+    {"iata": "LHR", "name": "LHR - London Heathrow Airport", "city": "London", "takeoffs": 160}
 ]
 
 flights_data = [
@@ -270,17 +274,18 @@ elif module == "✈️ Live Tracking":
 
     m = folium.Map(location=[22.0, 78.0], zoom_start=5, tiles="CartoDB positron")
 
-    for ap in airports_list:
-        ap_txt = "Airport Hub: " + ap["name"] + " (" + ap["iata"] + ")"
-        folium.CircleMarker(
-            location=[ap["lat"], ap["lon"]],
-            radius=6,
-            color="#0F172A",
-            fill=True,
-            fill_color="#1E88E5",
-            popup=ap_txt,
-            tooltip=ap_txt
-        ).add_to(m)
+    for ap in all_airports_master:
+        if ap["iata"] != "ALL":
+            ap_txt = "Airport Hub: " + ap["name"]
+            folium.CircleMarker(
+                location=[28.5562 if ap['iata']=='DEL' else (19.0896 if ap['iata']=='BOM' else (13.1986 if ap['iata']=='BLR' else (33.9872 if ap['iata']=='SXR' else 22.0))), 77.1000 if ap['iata']=='DEL' else (72.8656 if ap['iata']=='BOM' else (77.7066 if ap['iata']=='BLR' else (74.7741 if ap['iata']=='SXR' else 78.0)))],
+                radius=6,
+                color="#0F172A",
+                fill=True,
+                fill_color="#1E88E5",
+                popup=ap_txt,
+                tooltip=ap_txt
+            ).add_to(m)
 
     for f in flights_data:
         color = "#1E88E5" if f["status"] == "EN_ROUTE" else ("#0284C7" if f["status"] == "ON_APPROACH" else "#0F172A")
@@ -310,7 +315,7 @@ elif module == "🔍 Flight Search":
     search_q = st.text_input("🔍 Enter Callsign or Airport Code", placeholder="Type SXR, DEL, BOM, DHM, IGO505...").upper()
     if search_q:
         matched_f = df_flights[df_flights.apply(lambda r: search_q in r['callsign'].upper() or search_q in r['origin_iata'].upper() or search_q in r['destination_iata'].upper() or search_q in r['airline'].upper(), axis=1)]
-        matched_ap = pd.DataFrame([ap for ap in airports_list if search_q in ap['iata'] or search_q in ap['name'].upper() or search_q in ap['city'].upper()])
+        matched_ap = pd.DataFrame([ap for ap in all_airports_master if search_q in ap['iata'] or search_q in ap['name'].upper() or search_q in ap['city'].upper()])
         
         c1, c2 = st.columns(2)
         with c1:
@@ -324,71 +329,124 @@ elif module == "🔍 Flight Search":
 
 elif module == "📊 Analysis":
     st.subheader("📊 Airport & Airline Operations Analysis Dashboard")
-    st.markdown("Filter live operational analytics by Airport Hub, Time Horizon (Today, Week, Month, Year), Airline On-Time %, Takeoffs/Landings, and Route Density.")
+    st.markdown("Filter live operational analytics by Airport Hub, Time Horizon (Today, Week, Month, Year), Airline On-Time %, Takeoffs/Landings, and Side-by-Side Airport Comparison.")
 
-    ca1, ca2 = st.columns([6, 4])
-    with ca1:
-        sel_ap = st.selectbox("📍 Select Airport Hub", ["ALL - All Indian Airspace Hubs", "DEL - Indira Gandhi Int'l (Delhi)", "BOM - Chhatrapati Shivaji Maharaj Int'l (Mumbai)", "BLR - Kempegowda Int'l (Bengaluru)", "MAA - Chennai Int'l (Chennai)", "SXR - Sheikh ul-Alam Int'l (Srinagar)", "DHM - Kangra Gaggal Airport (Dharamshala)"])
-    with ca2:
+    c_srch1, c_srch2, c_srch3 = st.columns([5, 4, 3])
+    with c_srch1:
+        s_term = st.text_input("🔍 Search Airport (by Code, City, or Name)", placeholder="Type SXR, DHM, Delhi, Srinagar, Dubai, London...").strip().upper()
+
+    m_airports = [ap["name"] for ap in all_airports_master if not s_term or s_term in ap["iata"] or s_term in ap["name"].upper() or s_term in ap["city"].upper()]
+    if not m_airports:
+        m_airports = [ap["name"] for ap in all_airports_master]
+
+    with c_srch2:
+        sel_primary = st.selectbox("📍 Select Primary Airport Hub", m_airports, index=0)
+
+    with c_srch3:
         sel_tf = st.selectbox("📅 Timeframe Horizon", ["Today (24 Hours)", "Past 7 Days (Week)", "Past 30 Days (Month)", "Past 365 Days (Year)"])
 
-    m_fact = 1 if "Today" in sel_tf else (7 if "Week" in sel_tf else (30 if "Month" in sel_tf else 365))
-    ap_code = sel_ap.split(" - ")[0]
-    base_tf = 142 if ap_code == "DEL" else (98 if ap_code == "BOM" else (75 if ap_code == "BLR" else (28 if ap_code == "SXR" else (14 if ap_code == "DHM" else 420))))
+    enable_cmp = st.checkbox("⚔️ Enable Side-by-Side Airport Comparison")
+    if enable_cmp:
+        c_c1, c_c2 = st.columns(2)
+        with c_c1:
+            st.info(f"**Primary Target:** {sel_primary}")
+        with c_c2:
+            sel_secondary = st.selectbox("📍 Select Comparison Airport", [ap["name"] for ap in all_airports_master if ap["name"] != sel_primary], index=1)
 
-    n_takeoffs = base_tf * m_fact
-    n_landings = int(base_tf * 0.96) * m_fact
-    n_delayed = int(base_tf * 0.12) * m_fact
-    r_ontime = 88.5 if ap_code == "BLR" else (87.2 if ap_code == "DEL" else (84.1 if ap_code == "SXR" else 86.4))
+    def calc_stats(fullname, tf):
+        m_f = 1 if "Today" in tf else (7 if "Week" in tf else (30 if "Month" in tf else 365))
+        ap_obj = next((ap for ap in all_airports_master if ap["name"] == fullname), all_airports_master[0])
+        cd = ap_obj["iata"]
+        b_t = ap_obj["takeoffs"]
+        return {
+            "code": cd,
+            "name": fullname,
+            "takeoffs": b_t * m_f,
+            "landings": int(b_t * 0.96) * m_f,
+            "delayed": int(b_t * 0.12) * m_f,
+            "ontime_rate": 88.5 if cd == "BLR" else (87.2 if cd == "DEL" else (84.1 if cd == "SXR" else 86.4)),
+            "base_t": b_t,
+            "mult": m_f
+        }
 
+    p_s = calc_stats(sel_primary, sel_tf)
     dates = ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"]
+    b_t = p_s["base_t"]
 
-    ak1, ak2, ak3, ak4 = st.columns(4)
-    with ak1:
-        st.metric("🛫 Takeoffs / Departures", f"{n_takeoffs:,}", f"+{int(m_fact*4.2)} vs prev")
-        fig_a1 = go.Figure(data=go.Scatter(x=dates, y=[base_tf-5, base_tf+8, base_tf-2, base_tf+12, base_tf-4, base_tf+6, base_tf], mode='lines', line=dict(color="#1E88E5", width=3)))
-        fig_a1.update_layout(margin=dict(l=5,r=5,t=5,b=5), paper_bgcolor="#FFFFFF", plot_bgcolor="#FFFFFF", xaxis=dict(visible=False), yaxis=dict(visible=False))
-        st.plotly_chart(fig_a1, use_container_width=True)
+    if not enable_cmp:
+        ak1, ak2, ak3, ak4 = st.columns(4)
+        with ak1:
+            st.metric("🛫 Takeoffs / Departures", f"{p_s['takeoffs']:,}", f"+{int(p_s['mult']*4.2)} vs prev")
+            fig_a1 = go.Figure(data=go.Scatter(x=dates, y=[b_t-5, b_t+8, b_t-2, b_t+12, b_t-4, b_t+6, b_t], mode='lines', line=dict(color="#1E88E5", width=3)))
+            fig_a1.update_layout(margin=dict(l=5,r=5,t=5,b=5), paper_bgcolor="#FFFFFF", plot_bgcolor="#FFFFFF", xaxis=dict(visible=False), yaxis=dict(visible=False))
+            st.plotly_chart(fig_a1, use_container_width=True)
 
-    with ak2:
-        st.metric("🛬 Landings / Arrivals", f"{n_landings:,}", f"+{int(m_fact*3.8)} vs prev")
-        fig_a2 = go.Figure(data=go.Scatter(x=dates, y=[base_tf-6, base_tf+5, base_tf-4, base_tf+10, base_tf-2, base_tf+4, base_tf-2], mode='lines', line=dict(color="#0284C7", width=3)))
-        fig_a2.update_layout(margin=dict(l=5,r=5,t=5,b=5), paper_bgcolor="#FFFFFF", plot_bgcolor="#FFFFFF", xaxis=dict(visible=False), yaxis=dict(visible=False))
-        st.plotly_chart(fig_a2, use_container_width=True)
+        with ak2:
+            st.metric("🛬 Landings / Arrivals", f"{p_s['landings']:,}", f"+{int(p_s['mult']*3.8)} vs prev")
+            fig_a2 = go.Figure(data=go.Scatter(x=dates, y=[b_t-6, b_t+5, b_t-4, b_t+10, b_t-2, b_t+4, b_t-2], mode='lines', line=dict(color="#0284C7", width=3)))
+            fig_a2.update_layout(margin=dict(l=5,r=5,t=5,b=5), paper_bgcolor="#FFFFFF", plot_bgcolor="#FFFFFF", xaxis=dict(visible=False), yaxis=dict(visible=False))
+            st.plotly_chart(fig_a2, use_container_width=True)
 
-    with ak3:
-        st.metric("🛑 Delayed Flights (>15m)", f"{n_delayed:,}", f"-{int(m_fact*1.1)} vs prev", delta_color="inverse")
-        fig_a3 = go.Figure(data=go.Scatter(x=dates, y=[int(base_tf*0.18), int(base_tf*0.14), int(base_tf*0.15), int(base_tf*0.11), int(base_tf*0.13), int(base_tf*0.10), int(base_tf*0.12)], mode='lines', line=dict(color="#0F172A", width=3)))
-        fig_a3.update_layout(margin=dict(l=5,r=5,t=5,b=5), paper_bgcolor="#FFFFFF", plot_bgcolor="#FFFFFF", xaxis=dict(visible=False), yaxis=dict(visible=False))
-        st.plotly_chart(fig_a3, use_container_width=True)
+        with ak3:
+            st.metric("🛑 Delayed Flights (>15m)", f"{p_s['delayed']:,}", f"-{int(p_s['mult']*1.1)} vs prev", delta_color="inverse")
+            fig_a3 = go.Figure(data=go.Scatter(x=dates, y=[int(b_t*0.18), int(b_t*0.14), int(b_t*0.15), int(b_t*0.11), int(b_t*0.13), int(b_t*0.10), int(b_t*0.12)], mode='lines', line=dict(color="#0F172A", width=3)))
+            fig_a3.update_layout(margin=dict(l=5,r=5,t=5,b=5), paper_bgcolor="#FFFFFF", plot_bgcolor="#FFFFFF", xaxis=dict(visible=False), yaxis=dict(visible=False))
+            st.plotly_chart(fig_a3, use_container_width=True)
 
-    with ak4:
-        st.metric("🎯 On-Time Arrival Rate", f"{r_ontime:.1f}%", "+1.4% Target")
-        fig_a4 = go.Figure(go.Indicator(mode="gauge+number", value=r_ontime, gauge={'axis': {'range': [0, 100], 'tickcolor': "#0F172A"}, 'bar': {'color': "#1E88E5"}, 'steps': [{'range': [0, 75], 'color': "#F8FAFC"}, {'range': [75, 85], 'color': "#E2E8F0"}, {'range': [85, 100], 'color': "#BAE6FD"}]}))
-        fig_a4.update_layout(height=130, margin=dict(l=10, r=10, t=10, b=10), paper_bgcolor="#FFFFFF", font=dict(color="#0F172A"))
-        st.plotly_chart(fig_a4, use_container_width=True)
+        with ak4:
+            st.metric("🎯 On-Time Arrival Rate", f"{p_s['ontime_rate']:.1f}%", "+1.4% Target")
+            fig_a4 = go.Figure(go.Indicator(mode="gauge+number", value=p_s['ontime_rate'], gauge={'axis': {'range': [0, 100], 'tickcolor': "#0F172A"}, 'bar': {'color': "#1E88E5"}, 'steps': [{'range': [0, 75], 'color': "#F8FAFC"}, {'range': [75, 85], 'color': "#E2E8F0"}, {'range': [85, 100], 'color': "#BAE6FD"}]}))
+            fig_a4.update_layout(height=130, margin=dict(l=10, r=10, t=10, b=10), paper_bgcolor="#FFFFFF", font=dict(color="#0F172A"))
+            st.plotly_chart(fig_a4, use_container_width=True)
+
+    else:
+        s_s = calc_stats(sel_secondary, sel_tf)
+        st.subheader(f"⚔️ Operational Comparison: {p_s['code']} vs {s_s['code']}")
+        col_ap1, col_ap2 = st.columns(2)
+        with col_ap1:
+            st.markdown(f"### 📍 {p_s['name']}")
+            m1, m2 = st.columns(2)
+            m1.metric("Departures", f"{p_s['takeoffs']:,}")
+            m2.metric("On-Time Rate", f"{p_s['ontime_rate']:.1f}%")
+            st.metric("Delays (>15m)", f"{p_s['delayed']:,}")
+
+        with col_ap2:
+            st.markdown(f"### 📍 {s_s['name']}")
+            m3, m4 = st.columns(2)
+            m3.metric("Departures", f"{s_s['takeoffs']:,}")
+            m4.metric("On-Time Rate", f"{s_s['ontime_rate']:.1f}%")
+            st.metric("Delays (>15m)", f"{s_s['delayed']:,}")
+
+        st.markdown("<br/>", unsafe_allow_html=True)
+        st.subheader("📊 Comparative Departure Volume Bar Chart")
+        fig_cmp_bar = go.Figure(data=[
+            go.Bar(name=p_s['code'], x=["Takeoffs", "Landings", "Delays"], y=[p_s['takeoffs'], p_s['landings'], p_s['delayed']], marker_color="#1E88E5"),
+            go.Bar(name=s_s['code'], x=["Takeoffs", "Landings", "Delays"], y=[s_s['takeoffs'], s_s['landings'], s_s['delayed']], marker_color="#0F172A")
+        ])
+        fig_cmp_bar.update_layout(barmode='group', paper_bgcolor="#FFFFFF", plot_bgcolor="#FFFFFF", font=dict(color="#0F172A"))
+        st.plotly_chart(fig_cmp_bar, use_container_width=True)
 
     st.markdown("<br/>", unsafe_allow_html=True)
     c_l1, c_l2 = st.columns(2)
     with c_l1:
         st.subheader("✈️ Airline On-Time Performance & Delays")
         df_air = pd.DataFrame([
-            {"Airline": "IndiGo", "Total Flights": int(n_takeoffs*0.48), "On-Time %": "91.4%", "Avg Delay": "11.2 min", "Status": "OPTIMAL"},
-            {"Airline": "Air India", "Total Flights": int(n_takeoffs*0.26), "On-Time %": "84.8%", "Avg Delay": "22.5 min", "Status": "NOMINAL"},
-            {"Airline": "Vistara", "Total Flights": int(n_takeoffs*0.14), "On-Time %": "89.2%", "Avg Delay": "14.1 min", "Status": "GOOD"},
-            {"Airline": "Akasa Air", "Total Flights": int(n_takeoffs*0.07), "On-Time %": "88.6%", "Avg Delay": "15.0 min", "Status": "GOOD"},
-            {"Airline": "SpiceJet", "Total Flights": int(n_takeoffs*0.05), "On-Time %": "81.2%", "Avg Delay": "26.8 min", "Status": "ATTENTION"}
+            {"Airline": "IndiGo", "Total Flights": int(p_s['takeoffs']*0.48), "On-Time %": "91.4%", "Avg Delay": "11.2 min", "Status": "OPTIMAL"},
+            {"Airline": "Air India", "Total Flights": int(p_s['takeoffs']*0.26), "On-Time %": "84.8%", "Avg Delay": "22.5 min", "Status": "NOMINAL"},
+            {"Airline": "Vistara", "Total Flights": int(p_s['takeoffs']*0.14), "On-Time %": "89.2%", "Avg Delay": "14.1 min", "Status": "GOOD"},
+            {"Airline": "Akasa Air", "Total Flights": int(p_s['takeoffs']*0.07), "On-Time %": "88.6%", "Avg Delay": "15.0 min", "Status": "GOOD"},
+            {"Airline": "SpiceJet", "Total Flights": int(p_s['takeoffs']*0.05), "On-Time %": "81.2%", "Avg Delay": "26.8 min", "Status": "ATTENTION"}
         ])
         st.dataframe(df_air, use_container_width=True, hide_index=True)
 
     with c_l2:
         st.subheader("📍 Top Route Corridor Traffic Density")
         df_r = pd.DataFrame([
-            {"Route Corridor": f"{ap_code if ap_code != 'ALL' else 'DEL'} ➔ BOM (Mumbai)", "Daily Flights": int(n_takeoffs*0.22), "Traffic Share": "22.0%"},
-            {"Route Corridor": f"{ap_code if ap_code != 'ALL' else 'DEL'} ➔ BLR (Bengaluru)", "Daily Flights": int(n_takeoffs*0.18), "Traffic Share": "18.0%"},
-            {"Route Corridor": f"{ap_code if ap_code != 'ALL' else 'DEL'} ➔ SXR (Srinagar)", "Daily Flights": int(n_takeoffs*0.12), "Traffic Share": "12.0%"},
-            {"Route Corridor": f"{ap_code if ap_code != 'ALL' else 'DEL'} ➔ MAA (Chennai)", "Daily Flights": int(n_takeoffs*0.10), "Traffic Share": "10.0%"},
-            {"Route Corridor": f"{ap_code if ap_code != 'ALL' else 'DEL'} ➔ DHM (Dharamshala)", "Daily Flights": int(n_takeoffs*0.06), "Traffic Share": "6.0%"}
+            {"Route Corridor": f"{p_s['code']} ➔ BOM (Mumbai)", "Daily Flights": int(p_s['takeoffs']*0.22), "Traffic Share": "22.0%"},
+            {"Route Corridor": f"{p_s['code']} ➔ BLR (Bengaluru)", "Daily Flights": int(p_s['takeoffs']*0.18), "Traffic Share": "18.0%"},
+            {"Route Corridor": f"{p_s['code']} ➔ SXR (Srinagar)", "Daily Flights": int(p_s['takeoffs']*0.12), "Traffic Share": "12.0%"},
+            {"Route Corridor": f"{p_s['code']} ➔ MAA (Chennai)", "Daily Flights": int(p_s['takeoffs']*0.10), "Traffic Share": "10.0%"},
+            {"Route Corridor": f"{p_s['code']} ➔ DHM (Dharamshala)", "Daily Flights": int(p_s['takeoffs']*0.06), "Traffic Share": "6.0%"}
         ])
         st.dataframe(df_r, use_container_width=True, hide_index=True)
 
@@ -493,13 +551,20 @@ elif module == "📈 Historical Trends":
     with c_h2:
         st.subheader("⚡ Velocity vs Altitude Telemetry Distribution")
         fig_scat = go.Figure(data=go.Scatter(
-            x=df_flights["altitude_m"],
-            y=df_flights["velocity_mps"],
+            x=df_flights["altitude_m"].tolist(),
+            y=df_flights["velocity_mps"].tolist(),
             mode='markers+text',
-            text=df_flights["callsign"],
+            text=df_flights["callsign"].tolist(),
+            textposition="top center",
             marker=dict(size=14, color='#1E88E5')
         ))
-        fig_scat.update_layout(paper_bgcolor="#FFFFFF", plot_bgcolor="#FFFFFF", xaxis_title="Altitude (m)", yaxis_title="Speed (m/s)")
+        fig_scat.update_layout(
+            paper_bgcolor="#FFFFFF", 
+            plot_bgcolor="#FFFFFF", 
+            xaxis=dict(title="Cruising Altitude (meters)", color="#0F172A"),
+            yaxis=dict(title="Airspeed Velocity (m/s)", color="#0F172A"),
+            font=dict(color="#0F172A")
+        )
         st.plotly_chart(fig_scat, use_container_width=True)
 
     st.markdown("<br/>", unsafe_allow_html=True)
