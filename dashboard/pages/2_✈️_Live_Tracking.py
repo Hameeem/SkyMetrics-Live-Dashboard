@@ -5,7 +5,6 @@ sys.path.insert(0, os.getcwd())
 import streamlit as st
 import pandas as pd
 import json
-import folium
 import streamlit.components.v1 as components
 from dashboard.components.styles import apply_custom_theme, render_header
 
@@ -41,88 +40,86 @@ flights_data = [
 
 flights_json = json.dumps(flights_data)
 
-# Generate Animated Leaflet Map HTML
-map_html = f"""
+anim_map = """
 <!DOCTYPE html>
 <html>
 <head>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
-        #map {{ width: 100%; height: 560px; border-radius: 16px; border: 1px solid #E2E8F0; }}
-        .plane-icon {{
-            font-size: 20pt;
-            transition: all 1.5s linear;
+        #map { width: 100%; height: 550px; border-radius: 16px; border: 1px solid #E2E8F0; }
+        .plane-marker {
+            font-size: 22pt;
+            transition: all 0.8s linear;
             cursor: pointer;
-            text-shadow: 0 0 4px #ffffff, 0 0 2px #000000;
-        }}
+            text-shadow: 0 0 3px #ffffff, 0 0 2px #000000;
+        }
     </style>
 </head>
 <body style="margin:0; padding:0;">
     <div id="map"></div>
     <script>
         var map = L.map('map').setView([22.0, 78.0], 5);
-        L.tileLayer('https://{{s}}.basemaps.cartocdn.com/rastertiles/voyager/{{z}}/{{x}}/{{y}}{{r}}.png', {{
+        L.tileLayer('https://cartodb-basemaps-a.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '© OpenStreetMap © CARTO'
-        }}).addTo(map);
+        }).addTo(map);
 
-        var flights = {flights_json};
+        var flights = """ + flights_json + """;
         var markers = [];
 
-        flights.forEach(function(f, idx) {{
+        flights.forEach(function(f, idx) {
             var color = f.status === 'EN_ROUTE' ? '#1E88E5' : (f.status === 'ON_APPROACH' ? '#0284C7' : '#0F172A');
-            var iconHtml = '<div id="plane-' + idx + '" class="plane-icon" style="color:' + color + '; transform: rotate(' + f.heading + 'deg);">✈️</div>';
+            var iconHtml = '<div id="plane-elem-' + idx + '" class="plane-marker" style="color:' + color + '; transform: rotate(' + f.heading + 'deg);">✈️</div>';
             
-            var customIcon = L.divIcon({{
+            var customIcon = L.divIcon({
                 html: iconHtml,
                 className: '',
-                iconSize: [30, 30],
-                iconAnchor: [15, 15]
-            }});
+                iconSize: [32, 32],
+                iconAnchor: [16, 16]
+            });
 
-            var marker = L.marker([f.lat, f.lon], {{icon: customIcon}}).addTo(map);
+            var marker = L.marker([f.lat, f.lon], {icon: customIcon}).addTo(map);
             
-            var tooltipText = f.callsign + " (" + f.airline + ") | " + f.origin_iata + " -> " + f.destination_iata + " | Alt: " + f.altitude + "m | Speed: " + f.speed + "m/s";
-            marker.bindTooltip(tooltipText);
+            var tooltipTxt = f.callsign + " (" + f.airline + ") | " + f.origin_iata + " -> " + f.destination_iata + " | Alt: " + f.altitude + "m | Speed: " + f.speed + "m/s";
+            marker.bindTooltip(tooltipTxt);
 
-            var popupText = '<div style="font-family:sans-serif; padding:4px;"><b style="color:#1E88E5; font-size:1.1rem;">✈️ ' + f.callsign + '</b><br/><b>Airline:</b> ' + f.airline + '<br/><b>Route:</b> ' + f.origin_iata + ' ➔ ' + f.destination_iata + '<br/><b>Altitude:</b> ' + f.altitude + 'm<br/><b>Speed:</b> ' + f.speed + 'm/s<br/><b>Status:</b> ' + f.status + '</div>';
-            marker.bindPopup(popupText);
+            var popupTxt = '<div style="font-family:sans-serif; padding:4px;"><b style="color:#1E88E5; font-size:1.1rem;">✈️ ' + f.callsign + '</b><br/><b>Airline:</b> ' + f.airline + '<br/><b>Route:</b> ' + f.origin_iata + ' ➔ ' + f.destination_iata + '<br/><b>Altitude:</b> ' + f.altitude + 'm<br/><b>Speed:</b> ' + f.speed + 'm/s<br/><b>Status:</b> ' + f.status + '</div>';
+            marker.bindPopup(popupTxt);
 
-            markers.push({{
+            markers.push({
                 marker: marker,
                 data: f,
-                elementId: 'plane-' + idx
-            }});
-        }});
+                elementId: 'plane-elem-' + idx
+            });
+        });
 
-        // Smooth Continuous Real-Time Flight Motion Loop
-        setInterval(function() {{
-            markers.forEach(function(item) {{
+        // 1-Second Continuous Smooth Flight Motion Loop
+        setInterval(function() {
+            markers.forEach(function(item) {
                 var f = item.data;
                 var rad = f.heading * Math.PI / 180;
-                var speedMult = 0.003;
+                var step = 0.005;
 
-                f.lat += speedMult * Math.cos(rad);
-                f.lon += speedMult * Math.sin(rad);
+                f.lat += step * Math.cos(rad);
+                f.lon += step * Math.sin(rad);
 
-                if (f.lat > 36 || f.lat < 8) f.heading = (f.heading + 180) % 360;
-                if (f.lon > 92 || f.lon < 65) f.heading = (f.heading + 180) % 360;
+                if (f.lat > 35 || f.lat < 8) f.heading = (f.heading + 180) % 360;
+                if (f.lon > 92 || f.lon < 66) f.heading = (f.heading + 180) % 360;
 
                 item.marker.setLatLng([f.lat, f.lon]);
-                
                 var el = document.getElementById(item.elementId);
-                if (el) {{
+                if (el) {
                     el.style.transform = 'rotate(' + f.heading + 'deg)';
-                }}
-            }});
-        }}, 1500);
+                }
+            });
+        }, 800);
     </script>
 </body>
 </html>
 """
 
-components.html(map_html, height=580)
+components.html(anim_map, height=570)
 
 # Active Telemetry Table below map
 df_f = pd.DataFrame(flights_data)[["callsign", "airline", "origin_iata", "destination_iata", "altitude", "speed", "status"]]
