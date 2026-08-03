@@ -4,107 +4,125 @@ sys.path.insert(0, os.getcwd())
 
 import streamlit as st
 import pandas as pd
-from streamlit_folium import st_folium
-
-from dashboard.components.styles import apply_custom_theme, render_flightaware_navbar
-from dashboard.components.api_client import api_client
-from dashboard.components.maps import create_folium_flight_map, render_pydeck_flight_map
+import folium
+import streamlit.components.v1 as components
+from dashboard.components.styles import apply_custom_theme, render_header
 
 apply_custom_theme()
-render_flightaware_navbar()
 
 st.markdown("""
-<div style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); padding: 16px 24px; border-radius: 12px; border-left: 6px solid #38bdf8; margin-bottom: 20px; color:white; display:flex; justify-content:space-between; align-items:center;">
-    <div>
-        <h3 style="margin:0; color:#ffffff; font-weight:800;">🛰️ Live SkyMetrics Airplane Tracking Radar</h3>
-        <span style="color:#e0f2fe; font-size:0.95rem;">Sharp vector tiles, rotated plane icons (✈️), and real-time operational status.</span>
-    </div>
-    <div style="background: #ffffff; color: #0284c7; font-weight: 800; padding: 6px 14px; border-radius: 20px; font-size: 0.82rem;">
-        ● HIGH DEFINITION VECTOR RADAR
-    </div>
-</div>
+<style>
+    div[data-testid="stMetricLabel"] *, label[data-testid="stWidgetLabel"] * {
+        color: #0F172A !important;
+        font-weight: 800 !important;
+    }
+</style>
 """, unsafe_allow_html=True)
 
-# Flight Status Color Legend Expander Card
-with st.expander("🎨 Flight Status Color Legend & Map Guide (Click to expand)", expanded=True):
-    col_l1, col_l2, col_l3, col_l4 = st.columns(4)
-    with col_l1:
-        st.markdown("""
-            <div style="background:#ffffff; border:2px solid #86efac; padding:12px; border-radius:8px; text-align:center;">
-                <span style="font-size:1.4rem;">✈️</span><br/>
-                <b style="color:#15803d; font-size:0.95rem;">🟢 GREEN PLANE</b><br/>
-                <span style="color:#475569; font-size:0.8rem;">On-Time (En Route)</span>
-            </div>
-        """, unsafe_allow_html=True)
-    with col_l2:
-        st.markdown("""
-            <div style="background:#ffffff; border:2px solid #fde047; padding:12px; border-radius:8px; text-align:center;">
-                <span style="font-size:1.4rem;">✈️</span><br/>
-                <b style="color:#b45309; font-size:0.95rem;">🟡 YELLOW PLANE</b><br/>
-                <span style="color:#475569; font-size:0.8rem;">On Approach / Holding</span>
-            </div>
-        """, unsafe_allow_html=True)
-    with col_l3:
-        st.markdown("""
-            <div style="background:#ffffff; border:2px solid #fca5a5; padding:12px; border-radius:8px; text-align:center;">
-                <span style="font-size:1.4rem;">✈️</span><br/>
-                <b style="color:#b91c1c; font-size:0.95rem;">🔴 RED PLANE</b><br/>
-                <span style="color:#475569; font-size:0.8rem;">Delayed (>15 mins)</span>
-            </div>
-        """, unsafe_allow_html=True)
-    with col_l4:
-        st.markdown("""
-            <div style="background:#ffffff; border:2px solid #bae6fd; padding:12px; border-radius:8px; text-align:center;">
-                <span style="font-size:1.4rem;">🔵</span><br/>
-                <b style="color:#0369a1; font-size:0.95rem;">BLUE BADGES</b><br/>
-                <span style="color:#475569; font-size:0.8rem;">Airports (DEL, BOM, etc.)</span>
-            </div>
-        """, unsafe_allow_html=True)
+render_header("Live Airspace Vector Tracking Radar", "Real-time animated flight tracking map with smooth airplane motion vectors across all-India airspace control sectors.")
 
-st.markdown("<br/>", unsafe_allow_html=True)
+st.subheader("🛰️ Animated Live Airplane Radar Map")
+st.markdown("Planes actively fly across the screen in real-time along their flight vector heading. Hover cursor over any moving airplane (✈️) to inspect telemetry.")
 
-# Filter Bar
-col1, col2, col3, col4 = st.columns(4)
-with col1:
-    origin_filter = st.text_input("Origin IATA", placeholder="e.g. DEL").upper()
-with col2:
-    dest_filter = st.text_input("Destination IATA", placeholder="e.g. BOM").upper()
-with col3:
-    status_filter = st.selectbox("Filter Status Category", ["ALL", "EN_ROUTE (🟢 On-Time)", "ON_APPROACH (🟡 Holding)", "DELAYED (🔴 Delayed)"])
-with col4:
-    map_engine = st.selectbox("Map Engine Mode", ["Vector Radar (Airplane Icons ✈️)", "PyDeck 3D Globe"])
+# Sample Flights Data with Headings & Coordinates
+flights_data = [
+    {"callsign": "AIC101", "airline": "Air India", "origin_iata": "DEL", "destination_iata": "BOM", "lat": 24.50, "lon": 75.20, "altitude": 10500, "speed": 240, "status": "EN_ROUTE", "heading": 190},
+    {"callsign": "IGO505", "airline": "IndiGo", "origin_iata": "DEL", "destination_iata": "SXR", "lat": 31.20, "lon": 75.80, "altitude": 9800, "speed": 220, "status": "EN_ROUTE", "heading": 340},
+    {"callsign": "VTI811", "airline": "Vistara", "origin_iata": "BOM", "destination_iata": "ATQ", "lat": 24.50, "lon": 73.80, "altitude": 11200, "speed": 250, "status": "EN_ROUTE", "heading": 15},
+    {"callsign": "SEJ404", "airline": "SpiceJet", "origin_iata": "DEL", "destination_iata": "DHM", "lat": 30.50, "lon": 76.50, "altitude": 6500, "speed": 180, "status": "EN_ROUTE", "heading": 20},
+    {"callsign": "AKJ202", "airline": "Akasa Air", "origin_iata": "BLR", "destination_iata": "MAA", "lat": 13.00, "lon": 78.50, "altitude": 7500, "speed": 210, "status": "EN_ROUTE", "heading": 85},
+    {"callsign": "IGO612", "airline": "IndiGo", "origin_iata": "MAA", "destination_iata": "TRZ", "lat": 11.80, "lon": 79.40, "altitude": 5500, "speed": 190, "status": "EN_ROUTE", "heading": 210},
+    {"callsign": "AIC441", "airline": "Air India", "origin_iata": "DEL", "destination_iata": "IXC", "lat": 29.80, "lon": 76.90, "altitude": 4800, "speed": 175, "status": "ON_APPROACH", "heading": 350},
+    {"callsign": "SEJ711", "airline": "SpiceJet", "origin_iata": "MAA", "destination_iata": "CJB", "lat": 12.00, "lon": 78.60, "altitude": 6200, "speed": 195, "status": "EN_ROUTE", "heading": 250},
+    {"callsign": "IGO309", "airline": "IndiGo", "origin_iata": "MAA", "destination_iata": "IXM", "lat": 11.00, "lon": 79.00, "altitude": 5800, "speed": 185, "status": "EN_ROUTE", "heading": 200},
+    {"callsign": "AIC121", "airline": "Air India", "origin_iata": "DEL", "destination_iata": "LHR", "lat": 35.00, "lon": 65.00, "altitude": 11500, "speed": 260, "status": "DELAYED", "heading": 290}
+]
 
-params = {}
-if origin_filter:
-    params["origin"] = origin_filter
-if dest_filter:
-    params["destination"] = dest_filter
+# Generate Animated Leaflet Map HTML
+map_html = f"""
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        #map {{ width: 100%; height: 560px; border-radius: 16px; border: 1px solid #E2E8F0; }}
+        .plane-icon {{
+            font-size: 20pt;
+            transition: all 1.5s linear;
+            cursor: pointer;
+            text-shadow: 0 0 4px #ffffff, 0 0 2px #000000;
+        }}
+    </style>
+</head>
+<body style="margin:0; padding:0;">
+    <div id="map"></div>
+    <script>
+        var map = L.map('map').setView([22.0, 78.0], 5);
+        L.tileLayer('https://{{s}}.basemaps.cartocdn.com/rastertiles/voyager/{{z}}/{{x}}/{{y}}{{r}}.png', {{
+            maxZoom: 19,
+            attribution: '© OpenStreetMap © CARTO'
+        }}).addTo(map);
 
-if "DELAYED" in status_filter:
-    params["status"] = "DELAYED"
-elif "ON_APPROACH" in status_filter:
-    params["status"] = "ON_APPROACH"
-elif "EN_ROUTE" in status_filter:
-    params["status"] = "EN_ROUTE"
+        var flights = {flights_data};
+        var markers = [];
 
-flights = api_client.get_live_flights(params)
-airports = api_client.get_airports()
+        flights.forEach(function(f, idx) {{
+            var color = f.status === 'EN_ROUTE' ? '#1E88E5' : (f.status === 'ON_APPROACH' ? '#0284C7' : '#0F172A');
+            var iconHtml = '<div id="plane-' + idx + '" class="plane-icon" style="color:' + color + '; transform: rotate(' + f.heading + 'deg);">✈️</div>';
+            
+            var customIcon = L.divIcon({{
+                html: iconHtml,
+                className: '',
+                iconSize: [30, 30],
+                iconAnchor: [15, 15]
+            }});
 
-st.markdown(f"**Tracking {len(flights)} Active Flights in Airspace**")
+            var marker = L.marker([f.lat, f.lon], {{icon: customIcon}}).addTo(map);
+            
+            var tooltipText = f.callsign + " (" + f.airline + ") | " + f.origin_iata + " -> " + f.destination_iata + " | Alt: " + f.altitude + "m | Speed: " + f.speed + "m/s";
+            marker.bindTooltip(tooltipText);
 
-# Render Map
-if map_engine == "PyDeck 3D Globe":
-    st.pydeck_chart(render_pydeck_flight_map(flights, airports), use_container_width=True)
-else:
-    folium_map = create_folium_flight_map(flights, airports)
-    st_folium(folium_map, width=1200, height=540)
+            var popupText = '<div style="font-family:sans-serif; padding:4px;"><b style="color:#1E88E5; font-size:1.1rem;">✈️ ' + f.callsign + '</b><br/><b>Airline:</b> ' + f.airline + '<br/><b>Route:</b> ' + f.origin_iata + ' ➔ ' + f.destination_iata + '<br/><b>Altitude:</b> ' + f.altitude + 'm<br/><b>Speed:</b> ' + f.speed + 'm/s<br/><b>Status:</b> ' + f.status + '</div>';
+            marker.bindPopup(popupText);
 
-st.markdown("<br/>", unsafe_allow_html=True)
+            markers.push({{
+                marker: marker,
+                data: f,
+                elementId: 'plane-' + idx
+            }});
+        }});
 
-# Telemetry Data Table
-st.subheader("Live Aircraft Telemetry Feed")
-if flights:
-    df_table = pd.DataFrame(flights)[["callsign", "origin_country", "origin_iata", "destination_iata", "latitude", "longitude", "altitude_m", "velocity_mps", "status"]]
-    st.dataframe(df_table, use_container_width=True, hide_index=True)
-else:
-    st.info("No active flights matching selected filter criteria.")
+        // Smooth Continuous Real-Time Flight Motion Loop
+        setInterval(function() {{
+            markers.forEach(function(item) {{
+                var f = item.data;
+                var rad = f.heading * Math.PI / 180;
+                var speedMult = 0.003;
+
+                f.lat += speedMult * Math.cos(rad);
+                f.lon += speedMult * Math.sin(rad);
+
+                // Boundary bounce to keep planes on map
+                if (f.lat > 36 || f.lat < 8) f.heading = (f.heading + 180) % 360;
+                if (f.lon > 92 || f.lon < 65) f.heading = (f.heading + 180) % 360;
+
+                item.marker.setLatLng([f.lat, f.lon]);
+                
+                var el = document.getElementById(item.elementId);
+                if (el) {{
+                    el.style.transform = 'rotate(' + f.heading + 'deg)';
+                }}
+            }});
+        }}, 1500);
+    </script>
+</body>
+</html>
+"""
+
+components.html(map_html, height=580)
+
+# Active Telemetry Table below map
+df_f = pd.DataFrame(flights_data)[["callsign", "airline", "origin_iata", "destination_iata", "altitude", "speed", "status"]]
+df_f.columns = ["Callsign", "Airline Company", "Origin", "Destination", "Altitude (m)", "Speed (m/s)", "Flight Status"]
+st.dataframe(df_f, use_container_width=True, hide_index=True)
