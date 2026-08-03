@@ -15,7 +15,7 @@ It aggregates real-time flight telemetry [telemetry: automated transmission of l
 1. **Frontend Dashboard Layer**:
    - **Streamlit**: Python web framework used for rapid, dynamic enterprise UI rendering.
    - **Folium & Leaflet.js**: Open-source interactive map engine rendering rotated airplane markers [vector icons: scalable graphic markers representing aircraft direction and status].
-   - **Plotly**: Interactive data visualization library for treemaps, scatter plots, pie charts, and monthly timeline bars.
+   - **Plotly**: Interactive data visualization library for treemaps, scatter plots, pie charts, gauge meters, and monthly timeline bars.
 
 2. **Backend API & Data Warehouse Layer**:
    - **FastAPI**: Asynchronous high-performance RESTful API [API: Application Programming Interface allowing system communication] backend.
@@ -66,7 +66,18 @@ Below is the technical breakdown of how every feature in the **SkyMetrics** left
 
 ---
 
-### 4. 🤖 Delay Prediction (XGBoost ML Risk Engine)
+### 4. 📊 Analysis (Airport & Airline Deep Operations Dashboard)
+* **What it Does**: Executive operational dashboard providing deep granular analytics on airport takeoffs, landings, delays, on-time arrival % by airline company, and flight route density.
+* **How it Works Under the Hood**:
+  - **Airport Selector Dropdown**: Select any specific airport hub (`DEL`, `BOM`, `BLR`, `MAA`, `HYD`, `CCU`, `SXR`, `DHM`, `ATQ`, `IXC`, `TRZ`) or `ALL Indian Airspace Hubs`.
+  - **Timeframe Horizon Filter**: Toggle between `Today (24 Hours)`, `Past 7 Days (Week)`, `Past 30 Days (Month)`, and `Past 365 Days (Year)`.
+  - **Top KPI Cards with Trend Line Sparklines**: Displays total Takeoffs/Departures (`142`), Landings/Arrivals (`138`), Delayed Flights (`12`), and On-Time Arrival % Gauge (`87.2%`) paired with 7-day trend sparkline graphs.
+  - **Airline Carrier Performance Table**: Compares IndiGo, Air India, Vistara, Akasa Air, and SpiceJet by total flight volume, on-time arrival %, average delay mins, and status rating.
+  - **Route Corridor Traffic Share**: Renders flight volume and % share for top routes originating from the selected airport.
+
+---
+
+### 5. 🤖 Delay Prediction (XGBoost ML Risk Engine)
 * **What it Does**: Allows air traffic managers to input expected weather conditions and flight parameters to calculate the exact probability (%) of a flight delay before takeoff.
 * **How it Works Under the Hood**:
   - **Interactive Sliders**: Users adjust `Wind Speed (knots)` [knots: unit of speed equal to 1 nautical mile per hour], `Visibility (km)`, `Departure Hour (UTC)`, and `Departure Airport`.
@@ -75,14 +86,14 @@ Below is the technical breakdown of how every feature in the **SkyMetrics** left
 
 ---
 
-### 5. 🏬 Airport Analytics (Airspace Movement Rankings)
+### 6. 🏬 Airport Analytics (Airspace Movement Rankings)
 * **What it Does**: Analyzes airport hub capacity, total daily aircraft movements, and active runway counts across Indian airports.
 * **How it Works Under the Hood**:
   - Aggregates origin and destination flight logs from the data warehouse, sorting airport hubs from highest movement volume (e.g. Delhi `DEL` with 1,420 movements/day) to regional hubs (Srinagar `SXR` with 280 movements/day, Dharamshala `DHM` with 140 movements/day).
 
 ---
 
-### 6. 🌤️ Weather Impact (METAR Observation & Weather Search)
+### 7. 🌤️ Weather Impact (METAR Observation & Weather Search)
 * **What it Does**: Displays live METAR [METAR: Meteorological Aerodrome Report standard format for airport weather observations] weather data and allows searching weather conditions for any airport.
 * **How it Works Under the Hood**:
   - **Interactive Search Engine**: Users type any airport code (`SXR`, `DHM`, `DEL`, `BOM`, `DXB`, `LHR`) or city (`Srinagar`, `London`).
@@ -90,7 +101,7 @@ Below is the technical breakdown of how every feature in the **SkyMetrics** left
 
 ---
 
-### 7. 📈 Historical Trends (Fleet Distribution & Multi-Dimensional Analytics)
+### 8. 📈 Historical Trends (Fleet Distribution & Multi-Dimensional Analytics)
 * **What it Does**: Visualizes historical operational trends, airline market share distributions, monthly traffic timelines, and flight speed vs altitude scatter plots.
 * **How it Works Under the Hood**:
   - **Treemap Chart**: Renders an interactive Plotly treemap grouping airlines by market share (IndiGo 61.2%, Air India 24.5%, Vistara 8.8%, Akasa Air 4.1%, SpiceJet 1.4%).
@@ -99,17 +110,10 @@ Below is the technical breakdown of how every feature in the **SkyMetrics** left
 
 ---
 
-### 8. 💡 AI Insights (ATC Operational Diagnostics)
+### 9. 💡 AI Insights (ATC Operational Diagnostics)
 * **What it Does**: Generates natural language operational briefings and automated dispatcher recommendations.
 * **How it Works Under the Hood**:
   - Analyzes active sector congestion, evaluates wind shear warnings at high-altitude airports like Srinagar (`SXR`), and outputs prioritized dispatcher action items.
-
----
-
-### 9. 🚨 Alerts Center (Rule-Based Operational Monitor)
-* **What it Does**: Allows air traffic dispatchers to configure custom threshold alerts for weather advisories or delay warnings.
-* **How it Works Under the Hood**:
-  - Evaluates user-defined rules (e.g. `Wind Speed > 20 knots at Srinagar SXR`) against incoming METAR feeds and triggers visual UI alert banners when limits are breached.
 
 ---
 
@@ -123,5 +127,5 @@ Below is the technical breakdown of how every feature in the **SkyMetrics** left
 
 ## 🏆 Presentation Defense Tips & Key Takeaways
 1. **Explain the Architecture**: Highlight that SkyMetrics separates data ingestion (OpenSky APIs / SQL database), ML prediction (XGBoost / SHAP), and multi-cloud presentation (Azure / Streamlit / GitHub Pages).
-2. **Demonstrate Search Versatility**: Type `SXR` (Srinagar) or `DHM` (Dharamshala) into both **Flight Search** and **Weather Impact** to showcase multi-column database filtering.
+2. **Demonstrate `📊 Analysis` Dashboard**: Select an airport (e.g. `DEL` or `SXR`) and switch timeframes (`Today` vs `Week` vs `Month`) to show executive sparkline trends, airline on-time %, and route traffic density.
 3. **Showcase Interactive Tracking Radar**: Hover your cursor over plane icons on the **Live Tracking** map to demonstrate real-time tooltip telemetry.
