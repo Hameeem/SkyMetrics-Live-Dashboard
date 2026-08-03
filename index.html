@@ -45,6 +45,26 @@ st.markdown("""
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
     html, body, [class*="css"] { font-family: 'Plus Jakarta Sans', sans-serif; }
     .stApp { background-color: #F8FAFC !important; color: #0F172A !important; }
+
+    /* Force all metric labels and widget titles to be crisp dark black */
+    section.main [data-testid="stMetricLabel"] *, 
+    section.main [data-testid="stWidgetLabel"] *, 
+    section.main label, 
+    section.main p, 
+    section.main span, 
+    section.main h1, 
+    section.main h2, 
+    section.main h3, 
+    section.main h4,
+    div[data-testid="stMetricLabel"] {
+        color: #0F172A !important;
+        font-weight: 800 !important;
+    }
+
+    div[data-testid="stMetricValue"] * {
+        color: #0F172A !important;
+        font-weight: 900 !important;
+    }
     
     /* Hero Header Card */
     .hero-card {
@@ -58,16 +78,16 @@ st.markdown("""
         align-items: center;
         justify-content: space-between;
     }
-    .brand-title { font-size: 3.2rem; font-weight: 900; color: #0F172A; margin: 0; line-height: 1; letter-spacing: -1px; }
-    .brand-title span { color: #1E88E5; font-weight: 900; }
-    .brand-sub { font-size: 1.1rem; font-weight: 800; color: #1E88E5; margin-top: 4px; }
-    .brand-desc { font-size: 0.92rem; color: #64748B; margin-top: 2px; }
+    .brand-title { font-size: 3.2rem; font-weight: 900; color: #0F172A !important; margin: 0; line-height: 1; letter-spacing: -1px; }
+    .brand-title span { color: #1E88E5 !important; font-weight: 900; }
+    .brand-sub { font-size: 1.1rem; font-weight: 800; color: #1E88E5 !important; margin-top: 4px; }
+    .brand-desc { font-size: 0.92rem; color: #64748B !important; margin-top: 2px; }
 
     /* Live Radar Badge */
     .radar-badge {
         background: #0F172A;
         border: 2px solid #1E88E5;
-        color: #FFFFFF;
+        color: #FFFFFF !important;
         font-weight: 800;
         padding: 10px 22px;
         border-radius: 16px;
@@ -91,8 +111,8 @@ st.markdown("""
         text-align: center;
         box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
     }
-    .metric-val { font-size: 2.6rem; font-weight: 900; color: #1E88E5; line-height: 1; }
-    .metric-lbl { font-size: 0.8rem; color: #64748B; text-transform: uppercase; font-weight: 800; margin-top: 8px; }
+    .metric-val { font-size: 2.6rem; font-weight: 900; color: #1E88E5 !important; line-height: 1; }
+    .metric-lbl { font-size: 0.8rem; color: #64748B !important; text-transform: uppercase; font-weight: 800; margin-top: 8px; }
 
     /* White Content Container Card */
     .glass-card {
@@ -118,8 +138,8 @@ st.markdown("""
 # Sidebar Header Branding
 st.sidebar.markdown("""
 <div style="text-align: center; padding: 12px 0 20px 0;">
-    <h1 style="color: #ffffff; margin: 0; font-weight: 900; font-size: 1.8rem;">✈️ SkyMetrics</h1>
-    <span style="color: #bae6fd; font-size: 0.82rem; text-transform: uppercase; font-weight: 800;">Enterprise Command Center</span>
+    <h1 style="color: #ffffff !important; margin: 0; font-weight: 900; font-size: 1.8rem;">✈️ SkyMetrics</h1>
+    <span style="color: #bae6fd !important; font-size: 0.82rem; text-transform: uppercase; font-weight: 800;">Enterprise Command Center</span>
 </div>
 """, unsafe_allow_html=True)
 

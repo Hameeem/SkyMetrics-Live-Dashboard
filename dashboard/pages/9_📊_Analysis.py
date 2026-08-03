@@ -14,6 +14,16 @@ from dashboard.components.api_client import api_client
 
 apply_custom_theme()
 
+# Explicit CSS label fix for Analysis page
+st.markdown("""
+<style>
+    div[data-testid="stMetricLabel"] *, label[data-testid="stWidgetLabel"] * {
+        color: #0F172A !important;
+        font-weight: 800 !important;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 render_header("Airport & Airline Operations Analysis Dashboard", "Filter live and historical operational analytics by Airport Hub, Time Horizon (Today, Week, Month, Year), Airline On-Time %, Takeoffs/Landings, and Route Density.")
 
 # Top Controls: Airport Selector & Timeframe Filter
@@ -63,9 +73,7 @@ dates = ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"]
 
 with k1:
     st.metric("🛫 Takeoffs / Departures", f"{takeoffs:,}", f"+{int(mult*4.2)} vs prev {timeframe.split()[1]}")
-    df_sp1 = pd.DataFrame({"Date": dates, "Departures": [base_takeoffs - 5, base_takeoffs + 8, base_takeoffs - 2, base_takeoffs + 12, base_takeoffs - 4, base_takeoffs + 6, base_takeoffs]})
-    fig_k1 = px.line(df_sp1, x="Date", y="Departures", height=130)
-    fig_k1.update_traces(line_color="#1E88E5", line_width=3)
+    fig_k1 = go.Figure(data=go.Scatter(x=dates, y=[base_takeoffs - 5, base_takeoffs + 8, base_takeoffs - 2, base_takeoffs + 12, base_takeoffs - 4, base_takeoffs + 6, base_takeoffs], mode='lines', line=dict(color="#1E88E5", width=3)))
     fig_k1.update_layout(
         margin=dict(l=5, r=5, t=5, b=5),
         paper_bgcolor="#FFFFFF",
@@ -77,9 +85,7 @@ with k1:
 
 with k2:
     st.metric("🛬 Landings / Arrivals", f"{landings:,}", f"+{int(mult*3.8)} vs prev {timeframe.split()[1]}")
-    df_sp2 = pd.DataFrame({"Date": dates, "Arrivals": [base_takeoffs - 6, base_takeoffs + 5, base_takeoffs - 4, base_takeoffs + 10, base_takeoffs - 2, base_takeoffs + 4, base_takeoffs - 2]})
-    fig_k2 = px.line(df_sp2, x="Date", y="Arrivals", height=130)
-    fig_k2.update_traces(line_color="#0284C7", line_width=3)
+    fig_k2 = go.Figure(data=go.Scatter(x=dates, y=[base_takeoffs - 6, base_takeoffs + 5, base_takeoffs - 4, base_takeoffs + 10, base_takeoffs - 2, base_takeoffs + 4, base_takeoffs - 2], mode='lines', line=dict(color="#0284C7", width=3)))
     fig_k2.update_layout(
         margin=dict(l=5, r=5, t=5, b=5),
         paper_bgcolor="#FFFFFF",
@@ -91,9 +97,7 @@ with k2:
 
 with k3:
     st.metric("🛑 Delayed Flights (>15m)", f"{delayed:,}", f"-{int(mult*1.1)} vs prev", delta_color="inverse")
-    df_sp3 = pd.DataFrame({"Date": dates, "Delays": [int(base_takeoffs*0.18), int(base_takeoffs*0.14), int(base_takeoffs*0.15), int(base_takeoffs*0.11), int(base_takeoffs*0.13), int(base_takeoffs*0.10), int(base_takeoffs*0.12)]})
-    fig_k3 = px.line(df_sp3, x="Date", y="Delays", height=130)
-    fig_k3.update_traces(line_color="#0F172A", line_width=3)
+    fig_k3 = go.Figure(data=go.Scatter(x=dates, y=[int(base_takeoffs*0.18), int(base_takeoffs*0.14), int(base_takeoffs*0.15), int(base_takeoffs*0.11), int(base_takeoffs*0.13), int(base_takeoffs*0.10), int(base_takeoffs*0.12)], mode='lines', line=dict(color="#0F172A", width=3)))
     fig_k3.update_layout(
         margin=dict(l=5, r=5, t=5, b=5),
         paper_bgcolor="#FFFFFF",
