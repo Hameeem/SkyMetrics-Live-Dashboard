@@ -4,6 +4,7 @@ sys.path.insert(0, os.getcwd())
 
 import streamlit as st
 import pandas as pd
+import json
 import folium
 import streamlit.components.v1 as components
 from dashboard.components.styles import apply_custom_theme, render_header
@@ -38,6 +39,8 @@ flights_data = [
     {"callsign": "AIC121", "airline": "Air India", "origin_iata": "DEL", "destination_iata": "LHR", "lat": 35.00, "lon": 65.00, "altitude": 11500, "speed": 260, "status": "DELAYED", "heading": 290}
 ]
 
+flights_json = json.dumps(flights_data)
+
 # Generate Animated Leaflet Map HTML
 map_html = f"""
 <!DOCTYPE html>
@@ -64,7 +67,7 @@ map_html = f"""
             attribution: '© OpenStreetMap © CARTO'
         }}).addTo(map);
 
-        var flights = {flights_data};
+        var flights = {flights_json};
         var markers = [];
 
         flights.forEach(function(f, idx) {{
@@ -103,7 +106,6 @@ map_html = f"""
                 f.lat += speedMult * Math.cos(rad);
                 f.lon += speedMult * Math.sin(rad);
 
-                // Boundary bounce to keep planes on map
                 if (f.lat > 36 || f.lat < 8) f.heading = (f.heading + 180) % 360;
                 if (f.lon > 92 || f.lon < 65) f.heading = (f.heading + 180) % 360;
 
