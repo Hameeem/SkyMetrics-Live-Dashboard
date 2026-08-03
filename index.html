@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>SkyMetrics | Enterprise Aviation Command Center</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.58.0/build/stlite.css" />
+  <link rel="icon" href="https://img.icons8.com/color/96/000000/airplane.png" type="image/png" />
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #F8FAFC;
+    }
+    #root {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.58.0/build/stlite.js"></script>
+  <script>
+    stlite.mount({
+      requirements: ["streamlit", "pandas", "plotly", "requests", "folium", "streamlit-folium"],
+      entrypoint: "app.py",
+      files: {
+        "app.py": `
+import streamlit as st
+import pandas as pd
+import plotly.express as px
+
+st.set_page_config(page_title="SkyMetrics | Enterprise Command Center", page_icon="✈️", layout="wide")
+
+st.markdown("""
+<div style="background: #FFFFFF; padding: 24px 30px; border-radius: 16px; border: 1px solid #E5E7EB; border-left: 6px solid #1E88E5; margin-bottom: 24px; box-shadow: 0 8px 20px rgba(0,0,0,0.03);">
+    <h1 style="margin:0; color:#111827; font-weight:900; font-size: 2.8rem;">✈️ Sky<span style="color:#1E88E5;">Metrics</span></h1>
+    <h3 style="margin:4px 0 0 0; color:#1E88E5; font-weight:800;">Flight Operations Command Center</h3>
+    <span style="color:#6B7280; font-size:1rem;">Real-Time Aviation Intelligence Platform • All-India Airspace Radar</span>
+</div>
+""", unsafe_allow_html=True)
+
+# KPI Cards
+col1, col2, col3, col4, col5 = st.columns(5)
+col1.metric("✈️ LIVE FLIGHTS", "48", "+6 today")
+col2.metric("✅ ON SCHEDULE", "42", "87.5%")
+col3.metric("🛑 DELAYED", "6", "-2 vs yesterday")
+col4.metric("⏱️ AVG DELAY", "38.8m", "Nominal")
+col5.metric("🤖 ML ACCURACY", "94.3%", "XGBoost v2")
+
+st.markdown("<br/>", unsafe_allow_html=True)
+
+# Indian Airspace Telemetry Feed
+st.subheader("🛰️ Indian Airspace Radar Feed (DEL, BOM, BLR, MAA, HYD, CCU, SXR, DHM)")
+
+flights_data = [
+    {"Callsign": "AIC101", "Airline": "Air India", "Origin": "DEL", "Destination": "BOM", "Altitude (m)": 10500, "Speed (m/s)": 240, "Status": "🟢 ON-TIME"},
+    {"Callsign": "IGO505", "Airline": "IndiGo", "Origin": "DEL", "Destination": "SXR", "Altitude (m)": 9800, "Speed (m/s)": 220, "Status": "🟢 ON-TIME"},
+    {"Callsign": "VTI811", "Airline": "Vistara", "Origin": "BOM", "Destination": "ATQ", "Altitude (m)": 11200, "Speed (m/s)": 250, "Status": "🟢 ON-TIME"},
+    {"Callsign": "SEJ404", "Airline": "SpiceJet", "Origin": "DEL", "Destination": "DHM", "Altitude (m)": 6500, "Speed (m/s)": 180, "Status": "🟢 ON-TIME"},
+    {"Callsign": "AKJ202", "Airline": "Akasa Air", "Origin": "BLR", "Destination": "MAA", "Altitude (m)": 7500, "Speed (m/s)": 210, "Status": "🟢 ON-TIME"},
+    {"Callsign": "IGO612", "Airline": "IndiGo", "Origin": "MAA", "Destination": "TRZ", "Altitude (m)": 5500, "Speed (m/s)": 190, "Status": "🟢 ON-TIME"},
+    {"Callsign": "AIC441", "Airline": "Air India", "Origin": "DEL", "Destination": "IXC", "Altitude (m)": 4800, "Speed (m/s)": 175, "Status": "🟡 ON-APPROACH"},
+    {"Callsign": "AIC121", "Airline": "Air India", "Origin": "DEL", "Destination": "LHR", "Altitude (m)": 11500, "Speed (m/s)": 260, "Status": "🔴 DELAYED (35m)"}
+]
+
+df = pd.DataFrame(flights_data)
+st.dataframe(df, use_container_width=True, hide_index=True)
+
+# Chart
+st.subheader("📊 Operational Status Breakdown")
+fig = px.pie(df, names="Status", title="Active Flights by Status Category", color_discrete_sequence=["#00C853", "#FB8C00", "#E53935"])
+st.plotly_chart(fig, use_container_width=True)
+        `
+      }
+    }, document.getElementById("root"));
+  </script>
+</body>
+</html>
