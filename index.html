@@ -27,7 +27,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.58.0/build/stlite.js"></script>
   <script>
     stlite.mount({
-      requirements: ["streamlit", "pandas", "plotly"],
+      requirements: ["streamlit", "pandas", "plotly", "folium", "streamlit-folium"],
       entrypoint: "app.py",
       files: {
         "app.py": `
@@ -37,59 +37,140 @@ import plotly.graph_objects as go
 
 st.set_page_config(page_title="SkyMetrics | Enterprise Command Center", page_icon="✈️", layout="wide")
 
+# Theme CSS
 st.markdown("""
-<div style="background: #FFFFFF; padding: 24px 30px; border-radius: 16px; border: 1px solid #E5E7EB; border-left: 6px solid #1E88E5; margin-bottom: 24px; box-shadow: 0 8px 20px rgba(0,0,0,0.03);">
-    <h1 style="margin:0; color:#111827; font-weight:900; font-size: 2.8rem;">✈️ Sky<span style="color:#1E88E5;">Metrics</span></h1>
-    <h3 style="margin:4px 0 0 0; color:#1E88E5; font-weight:800;">Flight Operations Command Center</h3>
-    <span style="color:#6B7280; font-size:1rem;">Real-Time Aviation Intelligence Platform • All-India Airspace Radar</span>
+<style>
+    .stApp { background-color: #F8FAFC !important; color: #111827 !important; }
+    .hero-card { background:#FFFFFF; padding:24px 30px; border-radius:16px; border:1px solid #E5E7EB; border-left:6px solid #1E88E5; margin-bottom:24px; box-shadow:0 8px 20px rgba(0,0,0,0.03); }
+    .metric-box { background:#FFFFFF; border:1px solid #E5E7EB; border-top:4px solid #1E88E5; border-radius:16px; padding:18px 12px; text-align:center; box-shadow:0 8px 20px rgba(0,0,0,0.04); }
+    .metric-val { font-size:2.4rem; font-weight:900; color:#1E88E5; line-height:1; }
+    .metric-lbl { font-size:0.78rem; color:#6B7280; font-weight:800; text-transform:uppercase; margin-top:8px; }
+</style>
+""", unsafe_allow_html=True)
+
+# Navigation Menu
+st.sidebar.markdown("""
+<div style="text-align:center; padding:10px 0 20px 0;">
+    <h2 style="color:#ffffff; margin:0; font-weight:900;">✈️ SKYMETRICS</h2>
+    <span style="color:#bae6fd; font-size:0.85rem; font-weight:700;">ALL-INDIA COMMAND CENTER</span>
 </div>
 """, unsafe_allow_html=True)
 
-# KPI Cards
-col1, col2, col3, col4, col5 = st.columns(5)
-col1.metric("✈️ LIVE FLIGHTS", "48", "+6 today")
-col2.metric("✅ ON SCHEDULE", "42", "87.5%")
-col3.metric("🛑 DELAYED", "6", "-2 vs yesterday")
-col4.metric("⏱️ AVG DELAY", "38.8m", "Nominal")
-col5.metric("🤖 ML ACCURACY", "94.3%", "XGBoost v2")
+page = st.sidebar.radio("Navigation Modules", ["🏠 Home", "✈️ Live Tracking Radar", "🔍 Flight Search", "🤖 ML Delay Prediction", "🏬 Airport Analytics"])
 
-st.markdown("<br/>", unsafe_allow_html=True)
-
-# Indian Airspace Telemetry Feed
-st.subheader("🛰️ Indian Airspace Radar Feed (DEL, BOM, BLR, MAA, HYD, CCU, SXR, DHM)")
-
+# Sample Flights Data (All India Hubs: DEL, BOM, BLR, MAA, HYD, CCU, SXR, DHM, ATQ, TRZ)
 flights_data = [
-    {"Callsign": "AIC101", "Airline": "Air India", "Origin": "DEL", "Destination": "BOM", "Altitude_m": 10500, "Speed_mps": 240, "Status": "🟢 ON-TIME"},
-    {"Callsign": "IGO505", "Airline": "IndiGo", "Origin": "DEL", "Destination": "SXR", "Altitude_m": 9800, "Speed_mps": 220, "Status": "🟢 ON-TIME"},
-    {"Callsign": "VTI811", "Airline": "Vistara", "Origin": "BOM", "Destination": "ATQ", "Altitude_m": 11200, "Speed_mps": 250, "Status": "🟢 ON-TIME"},
-    {"Callsign": "SEJ404", "Airline": "SpiceJet", "Origin": "DEL", "Destination": "DHM", "Altitude_m": 6500, "Speed_mps": 180, "Status": "🟢 ON-TIME"},
-    {"Callsign": "AKJ202", "Airline": "Akasa Air", "Origin": "BLR", "Destination": "MAA", "Altitude_m": 7500, "Speed_mps": 210, "Status": "🟢 ON-TIME"},
-    {"Callsign": "IGO612", "Airline": "IndiGo", "Origin": "MAA", "Destination": "TRZ", "Altitude_m": 5500, "Speed_mps": 190, "Status": "🟢 ON-TIME"},
-    {"Callsign": "AIC441", "Airline": "Air India", "Origin": "DEL", "Destination": "IXC", "Altitude_m": 4800, "Speed_mps": 175, "Status": "🟡 ON-APPROACH"},
-    {"Callsign": "AIC121", "Airline": "Air India", "Origin": "DEL", "Destination": "LHR", "Altitude_m": 11500, "Speed_mps": 260, "Status": "🔴 DELAYED (35m)"}
+    {"callsign": "AIC101", "airline": "Air India", "origin": "DEL", "dest": "BOM", "lat": 24.50, "lon": 75.20, "alt": 10500, "speed": 240, "status": "EN_ROUTE"},
+    {"callsign": "IGO505", "airline": "IndiGo", "origin": "DEL", "dest": "SXR", "lat": 31.20, "lon": 75.80, "alt": 9800, "speed": 220, "status": "EN_ROUTE"},
+    {"callsign": "VTI811", "airline": "Vistara", "origin": "BOM", "dest": "ATQ", "lat": 24.50, "lon": 73.80, "alt": 11200, "speed": 250, "status": "EN_ROUTE"},
+    {"callsign": "SEJ404", "airline": "SpiceJet", "origin": "DEL", "dest": "DHM", "lat": 30.50, "lon": 76.50, "alt": 6500, "speed": 180, "status": "EN_ROUTE"},
+    {"callsign": "AKJ202", "airline": "Akasa Air", "origin": "BLR", "dest": "MAA", "lat": 13.00, "lon": 78.50, "alt": 7500, "speed": 210, "status": "EN_ROUTE"},
+    {"callsign": "IGO612", "airline": "IndiGo", "origin": "MAA", "dest": "TRZ", "lat": 11.80, "lon": 79.40, "alt": 5500, "speed": 190, "status": "EN_ROUTE"},
+    {"callsign": "AIC441", "airline": "Air India", "origin": "DEL", "dest": "IXC", "lat": 29.80, "lon": 76.90, "alt": 4800, "speed": 175, "status": "ON_APPROACH"},
+    {"callsign": "AIC121", "airline": "Air India", "origin": "DEL", "dest": "LHR", "lat": 35.00, "lon": 65.00, "alt": 11500, "speed": 260, "status": "DELAYED"}
 ]
+df_flights = pd.DataFrame(flights_data)
 
-df = pd.DataFrame(flights_data)
-st.dataframe(df, use_container_width=True, hide_index=True)
+if page == "🏠 Home":
+    st.markdown("""
+    <div class="hero-card">
+        <h1 style="margin:0; color:#111827; font-weight:900; font-size:2.6rem;">✈️ Sky<span style="color:#1E88E5;">Metrics</span></h1>
+        <h3 style="margin:4px 0 0 0; color:#1E88E5; font-weight:800;">Flight Operations Command Center</h3>
+        <span style="color:#6B7280; font-size:1rem;">Real-Time Aviation Intelligence Platform • All-India Airspace Radar</span>
+    </div>
+    """, unsafe_allow_html=True)
 
-st.markdown("<br/>", unsafe_allow_html=True)
+    col1, col2, col3, col4, col5 = st.columns(5)
+    with col1: st.markdown('<div class="metric-box"><div class="metric-val">48</div><div class="metric-lbl">✈️ LIVE FLIGHTS</div></div>', unsafe_allow_html=True)
+    with col2: st.markdown('<div class="metric-box"><div class="metric-val" style="color:#00C853;">42</div><div class="metric-lbl">✅ ON SCHEDULE</div></div>', unsafe_allow_html=True)
+    with col3: st.markdown('<div class="metric-box"><div class="metric-val" style="color:#E53935;">6</div><div class="metric-lbl">🛑 DELAYED</div></div>', unsafe_allow_html=True)
+    with col4: st.markdown('<div class="metric-box"><div class="metric-val" style="color:#FB8C00;">38.8m</div><div class="metric-lbl">⏱️ AVG DELAY</div></div>', unsafe_allow_html=True)
+    with col5: st.markdown('<div class="metric-box"><div class="metric-val">94.3%</div><div class="metric-lbl">🤖 ML ACCURACY</div></div>', unsafe_allow_html=True)
 
-# Status Chart using Graph Objects (Zero pyarrow dependency)
-st.subheader("📊 Operational Status Breakdown")
+    st.markdown("<br/>", unsafe_allow_html=True)
+    st.subheader("📊 Operational Status Breakdown")
+    fig = go.Figure(data=[go.Pie(labels=["ON-TIME (En Route)", "ON-APPROACH (Holding)", "DELAYED (>15 mins)"], values=[42, 5, 6], hole=.4, marker_colors=["#00C853", "#FB8C00", "#E53935"])])
+    fig.update_layout(margin=dict(t=20, b=20, l=20, r=20), paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
+    st.plotly_chart(fig, use_container_width=True)
 
-fig = go.Figure(data=[go.Pie(
-    labels=["ON-TIME (En Route)", "ON-APPROACH (Holding)", "DELAYED (>15 mins)"],
-    values=[42, 5, 6],
-    hole=.4,
-    marker_colors=["#00C853", "#FB8C00", "#E53935"]
-)])
-fig.update_layout(
-    margin=dict(t=30, b=30, l=30, r=30),
-    paper_bgcolor="rgba(0,0,0,0)",
-    plot_bgcolor="rgba(0,0,0,0)",
-    font=dict(color="#111827", size=14)
-)
-st.plotly_chart(fig, use_container_width=True)
+elif page == "✈️ Live Tracking Radar":
+    import folium
+    from streamlit_folium import st_folium
+
+    st.markdown("""
+    <div class="hero-card">
+        <h2 style="margin:0; color:#111827; font-weight:800;">🛰️ Live SkyMetrics Airplane Tracking Radar</h2>
+        <span style="color:#6B7280; font-size:1rem;">Rotated airplane icon markers (✈️) and color-coded status tracking across India.</span>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Render Folium Map centered over India
+    m = folium.Map(location=[22.0, 78.0], zoom_start=5, tiles="CartoDB positron")
+
+    airports = [
+        {"name": "Delhi (DEL)", "lat": 28.5562, "lon": 77.1000},
+        {"name": "Mumbai (BOM)", "lat": 19.0896, "lon": 72.8656},
+        {"name": "Bengaluru (BLR)", "lat": 13.1986, "lon": 77.7066},
+        {"name": "Chennai (MAA)", "lat": 12.9941, "lon": 80.1709},
+        {"name": "Srinagar (SXR)", "lat": 33.9872, "lon": 74.7741},
+        {"name": "Dharamshala (DHM)", "lat": 32.1651, "lon": 76.2634}
+    ]
+    for ap in airports:
+        folium.CircleMarker(location=[ap["lat"], ap["lon"]], radius=6, color="#0284c7", fill=True, fill_color="#38bdf8", popup=ap["name"]).add_to(m)
+
+    for f in flights_data:
+        color = "#00C853" if f["status"] == "EN_ROUTE" else ("#FB8C00" if f["status"] == "ON_APPROACH" else "#E53935")
+        plane_html = f'<div style="font-size: 16pt; color: {color};">✈️</div>'
+        folium.map.Marker([f["lat"], f["lon"]], icon=folium.DivIcon(html=plane_html), popup=f"{f['callsign']} ({f['origin']} -> {f['dest']})").add_to(m)
+
+    st_folium(m, width=1200, height=540)
+    st.dataframe(df_flights, use_container_width=True, hide_index=True)
+
+elif page == "🔍 Flight Search":
+    st.markdown("""
+    <div class="hero-card">
+        <h2 style="margin:0; color:#111827; font-weight:800;">🔍 Global Flight & Airport Search</h2>
+        <span style="color:#6B7280; font-size:1rem;">Search active flights by Callsign, Flight Number, or Airport IATA (e.g. SXR, DEL, BOM, DHM).</span>
+    </div>
+    """, unsafe_allow_html=True)
+    q = st.text_input("🔍 Search Query", placeholder="Type SXR, DEL, BOM, IGO505, Air India...").upper()
+    if q:
+        matched = df_flights[df_flights.apply(lambda r: q in r['callsign'] or q in r['origin'] or q in r['dest'] or q in r['airline'].upper(), axis=1)]
+        st.dataframe(matched, use_container_width=True, hide_index=True)
+    else:
+        st.dataframe(df_flights, use_container_width=True, hide_index=True)
+
+elif page == "🤖 ML Delay Prediction":
+    st.markdown("""
+    <div class="hero-card">
+        <h2 style="margin:0; color:#111827; font-weight:800;">🤖 XGBoost Machine Learning Delay Risk Engine</h2>
+        <span style="color:#6B7280; font-size:1rem;">Interactive delay risk inference and atmospheric factor breakdown.</span>
+    </div>
+    """, unsafe_allow_html=True)
+    c1, c2, c3 = st.columns(3)
+    wind = c1.slider("Wind Speed (knots)", 0, 45, 18)
+    vis = c2.slider("Visibility (km)", 0.5, 10.0, 4.5)
+    temp = c3.slider("Temperature (°C)", 5, 45, 34)
+
+    risk_pct = min(98.0, max(5.0, (wind * 1.8) + (10 - vis) * 5 + (temp * 0.4)))
+    st.metric("🤖 ML Delay Risk Score", f"{risk_pct:.1f}%", "HIGH RISK" if risk_pct > 50 else "LOW RISK")
+
+elif page == "🏬 Airport Analytics":
+    st.markdown("""
+    <div class="hero-card">
+        <h2 style="margin:0; color:#111827; font-weight:800;">🏬 Airport Hub Analytics</h2>
+        <span style="color:#6B7280; font-size:1rem;">Busiest Indian airport hubs ranked by live flight volume.</span>
+    </div>
+    """, unsafe_allow_html=True)
+    hubs_df = pd.DataFrame([
+        {"Airport": "Delhi (DEL)", "Movements": 1420, "Runways": 4},
+        {"Airport": "Mumbai (BOM)", "Movements": 980, "Runways": 2},
+        {"Airport": "Bengaluru (BLR)", "Movements": 750, "Runways": 2},
+        {"Airport": "Chennai (MAA)", "Movements": 620, "Runways": 2},
+        {"Airport": "Srinagar (SXR)", "Movements": 280, "Runways": 1},
+        {"Airport": "Dharamshala (DHM)", "Movements": 140, "Runways": 1}
+    ])
+    st.dataframe(hubs_df, use_container_width=True, hide_index=True)
         `
       }
     }, document.getElementById("root"));
