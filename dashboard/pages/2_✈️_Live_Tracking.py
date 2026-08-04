@@ -21,7 +21,7 @@ st.markdown("""
 
 render_header("Live Airspace Vector Tracking Radar", "Real-time animated flight tracking map with smooth airplane motion vectors across all-India airspace control sectors.")
 
-st.subheader("🛰️ Animated Live Airplane Radar Map")
+st.subheader("🛰️ Continuous Animated Live Airplane Radar Map")
 st.markdown("Planes actively fly across the screen in real-time along their flight vector heading. Hover cursor over any moving airplane (✈️) to inspect telemetry.")
 
 # Sample Flights Data with Headings & Coordinates
@@ -50,7 +50,7 @@ anim_map = """
         #map { width: 100%; height: 550px; border-radius: 16px; border: 1px solid #E2E8F0; }
         .plane-marker {
             font-size: 22pt;
-            transition: all 0.8s linear;
+            transition: all 1.5s linear;
             cursor: pointer;
             text-shadow: 0 0 3px #ffffff, 0 0 2px #000000;
         }
@@ -94,12 +94,12 @@ anim_map = """
             });
         });
 
-        // 1-Second Continuous Smooth Flight Motion Loop
+        // 1.5-Second Smooth Slow Gliding Flight Motion Loop
         setInterval(function() {
             markers.forEach(function(item) {
                 var f = item.data;
                 var rad = f.heading * Math.PI / 180;
-                var step = 0.005;
+                var step = 0.002; // Slow realistic smooth glide speed
 
                 f.lat += step * Math.cos(rad);
                 f.lon += step * Math.sin(rad);
@@ -113,7 +113,7 @@ anim_map = """
                     el.style.transform = 'rotate(' + f.heading + 'deg)';
                 }
             });
-        }, 800);
+        }, 1500);
     </script>
 </body>
 </html>
