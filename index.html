@@ -520,17 +520,69 @@ elif module == "🤖 Delay Prediction":
         """, unsafe_allow_html=True)
 
 elif module == "🏬 Airport Analytics":
-    st.subheader("🏬 Airport Hub Movement & Runway Rankings")
-    df_hubs = pd.DataFrame([
-        {"IATA": "DEL", "Airport Name": "Indira Gandhi Int'l", "City": "Delhi", "Movements/Day": 1420, "Runways": 4},
-        {"IATA": "BOM", "Airport Name": "Chhatrapati Shivaji Maharaj Int'l", "City": "Mumbai", "Movements/Day": 980, "Runways": 2},
-        {"IATA": "BLR", "Airport Name": "Kempegowda Int'l", "City": "Bengaluru", "Movements/Day": 750, "Runways": 2},
-        {"IATA": "MAA", "Airport Name": "Chennai Int'l", "City": "Chennai", "Movements/Day": 620, "Runways": 2},
-        {"IATA": "HYD", "Airport Name": "Rajiv Gandhi Int'l", "City": "Hyderabad", "Movements/Day": 540, "Runways": 2},
-        {"IATA": "SXR", "Airport Name": "Sheikh ul-Alam Int'l", "City": "Srinagar", "Movements/Day": 280, "Runways": 1},
-        {"IATA": "DHM", "Airport Name": "Kangra Gaggal Airport", "City": "Dharamshala", "Movements/Day": 140, "Runways": 1}
+    st.subheader("🏬 Airport Hub Infrastructure & Runway Capacity Analytics")
+    st.markdown("Real-time runway capacity utilization, taxi times, terminal congestion metrics, peak hourly traffic flow, and airfield operational status across Indian and Global hubs.")
+
+    hub_db_index = [
+        {"iata": "DEL", "city": "New Delhi", "country": "India", "name": "Indira Gandhi Int'l", "display": "New Delhi, India - Indira Gandhi Int'l (DEL)", "runways": 4, "terminals": 3, "gates": 128, "apron_bays": 185, "ils_rating": "CAT III-B (All-Weather)", "daily_movements": 1420, "peak_hourly": 92, "taxi_out_min": 14.5, "taxi_in_min": 8.2, "sec_wait_min": 9.5, "baggage_min": 12.0, "utilization": 88.5},
+        {"iata": "BOM", "city": "Mumbai", "country": "India", "name": "Chhatrapati Shivaji Maharaj Int'l", "display": "Mumbai, India - Chhatrapati Shivaji Maharaj Int'l (BOM)", "runways": 2, "terminals": 2, "gates": 84, "apron_bays": 120, "ils_rating": "CAT II", "daily_movements": 980, "peak_hourly": 52, "taxi_out_min": 18.2, "taxi_in_min": 11.0, "sec_wait_min": 14.0, "baggage_min": 16.5, "utilization": 94.2},
+        {"iata": "BLR", "city": "Bengaluru", "country": "India", "name": "Kempegowda Int'l", "display": "Bengaluru, India - Kempegowda Int'l (BLR)", "runways": 2, "terminals": 2, "gates": 72, "apron_bays": 105, "ils_rating": "CAT III-B", "daily_movements": 750, "peak_hourly": 44, "taxi_out_min": 11.0, "taxi_in_min": 6.8, "sec_wait_min": 7.5, "baggage_min": 10.5, "utilization": 78.4},
+        {"iata": "SXR", "city": "Srinagar", "country": "India", "name": "Sheikh ul-Alam Int'l", "display": "Srinagar, India - Sheikh ul-Alam Int'l (SXR)", "runways": 1, "terminals": 1, "gates": 12, "apron_bays": 24, "ils_rating": "CAT I", "daily_movements": 280, "peak_hourly": 18, "taxi_out_min": 8.5, "taxi_in_min": 5.0, "sec_wait_min": 15.5, "baggage_min": 18.0, "utilization": 91.0},
+        {"iata": "DXB", "city": "Dubai", "country": "UAE", "name": "Dubai International", "display": "Dubai, UAE - Dubai International (DXB)", "runways": 2, "terminals": 3, "gates": 160, "apron_bays": 230, "ils_rating": "CAT III-B", "daily_movements": 1850, "peak_hourly": 110, "taxi_out_min": 16.0, "taxi_in_min": 9.5, "sec_wait_min": 6.0, "baggage_min": 9.5, "utilization": 96.5}
+    ]
+
+    c_ap1, c_ap2 = st.columns([6, 4])
+    with c_ap1:
+        q_ap = st.text_input("🔍 Search Airport Hub", placeholder="Type Srinagar, Delhi, Mumbai, Dubai...").strip().upper()
+    
+    m_hubs = [h["display"] for h in hub_db_index if not q_ap or q_ap in h["city"].upper() or q_ap in h["iata"] or q_ap in h["name"].upper()]
+    if not m_hubs:
+        m_hubs = [h["display"] for h in hub_db_index]
+
+    with c_ap2:
+        sel_h_disp = st.selectbox("📍 Target Airport Hub", m_hubs, index=0)
+
+    h_obj = next((h for h in hub_db_index if h["display"] == sel_h_disp), hub_db_index[0])
+
+    st.markdown("<br/>", unsafe_allow_html=True)
+    k1, k2, k3, k4, k5 = st.columns(5)
+    k1.metric("🛤️ Active Runways", f"{h_obj['runways']} Runways", f"{h_obj['ils_rating']}")
+    k2.metric("🛫 Daily Movements", f"{h_obj['daily_movements']:,}", f"Peak {h_obj['peak_hourly']}/hr")
+    k3.metric("🛞 Avg Taxi-Out Time", f"{h_obj['taxi_out_min']} mins", "-1.2 mins vs benchmark")
+    k4.metric("🛂 Security Wait Time", f"{h_obj['sec_wait_min']} mins", "Optimal Flow")
+    k5.metric("⚡ Runway Utilization", f"{h_obj['utilization']}%", "HIGH DENSITY" if h_obj['utilization']>85 else "NOMINAL")
+
+    st.markdown("<br/>", unsafe_allow_html=True)
+    col_chart1, col_chart2 = st.columns(2)
+
+    with col_chart1:
+        st.subheader("⏱️ Hourly Traffic Flight Movement Profile (UTC)")
+        hours = [f"{h:02d}:00" for h in range(24)]
+        base_m = h_obj["peak_hourly"]
+        movements_curve = [int(base_m*v) for v in [0.3,0.25,0.2,0.35,0.65,0.9,1.0,0.95,0.85,0.75,0.7,0.65,0.7,0.75,0.8,0.85,0.95,0.98,0.88,0.75,0.6,0.5,0.45,0.35]]
+        fig_hourly = go.Figure(data=[
+            go.Bar(name="Departures", x=hours, y=[int(v*0.52) for v in movements_curve], marker_color="#1E88E5"),
+            go.Bar(name="Arrivals", x=hours, y=[int(v*0.48) for v in movements_curve], marker_color="#0F172A")
+        ])
+        fig_hourly.update_layout(barmode='stack', paper_bgcolor="#FFFFFF", plot_bgcolor="#FFFFFF", font=dict(color="#0F172A"), yaxis_title="Hourly Movements")
+        st.plotly_chart(fig_hourly, use_container_width=True)
+
+    with col_chart2:
+        st.subheader("📊 Terminal Ground Efficiency Benchmark (Minutes)")
+        categories = ["Taxi-Out Time", "Taxi-In Time", "Security Queue", "Baggage First Belt"]
+        values = [h_obj["taxi_out_min"], h_obj["taxi_in_min"], h_obj["sec_wait_min"], h_obj["baggage_min"]]
+        fig_eff = go.Figure(data=[go.Bar(x=categories, y=values, marker_color=["#1E88E5", "#0284C7", "#38BDF8", "#0F172A"], text=[f"{v} min" for v in values], textposition="auto")])
+        fig_eff.update_layout(paper_bgcolor="#FFFFFF", plot_bgcolor="#FFFFFF", font=dict(color="#0F172A"), yaxis_title="Minutes")
+        st.plotly_chart(fig_eff, use_container_width=True)
+
+    st.markdown("<br/>", unsafe_allow_html=True)
+    st.subheader("🛤️ Airfield & Runway Operational Status Board")
+    df_runways = pd.DataFrame([
+        {"Runway ID": "RWY 28/10", "Heading": "280° / 100°", "Length": "4,430 meters", "Surface": "Asphalt", "ILS Rating": h_obj['ils_rating'], "Status": "OPERATIONAL", "Wind Component": "12 kts Headwind"},
+        {"Runway ID": "RWY 29L/11R", "Heading": "290° / 110°", "Length": "3,810 meters", "Surface": "Concrete", "ILS Rating": "CAT II", "Status": "OPERATIONAL", "Wind Component": "10 kts Headwind"},
+        {"Runway ID": "RWY 27/09", "Heading": "270° / 090°", "Length": "3,800 meters", "Surface": "Asphalt", "ILS Rating": "CAT I", "Status": "STANDBY / ACTIVE", "Wind Component": "8 kts Crosswind"}
     ])
-    st.dataframe(df_hubs, use_container_width=True, hide_index=True)
+    st.dataframe(df_runways, use_container_width=True, hide_index=True)
 
 elif module == "🌤️ Weather Impact":
     st.subheader("🌤️ Airport Weather Telemetry & METAR Search")
